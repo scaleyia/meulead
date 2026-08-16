@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { criarJob } from "@/app/dashboard/capture/actions";
-import { SEGMENTOS, UFS } from "@/lib/segmentos";
+import { UFS } from "@/lib/segmentos";
+import { CNAES } from "@/lib/cnaes";
 
 type Modo = "donos" | "google_maps";
 
@@ -14,7 +15,6 @@ export function CaptureForm() {
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [modo, setModo] = useState<Modo>("donos");
-  const [cnaeSel, setCnaeSel] = useState(SEGMENTOS[0].cnae);
 
   return (
     <Modal
@@ -32,32 +32,22 @@ export function CaptureForm() {
             const quantidade = Number(fd.get("quantidade") ?? 20);
 
             if (modo === "donos") {
-              const cnae = String(fd.get("cnae") ?? "");
               const uf = String(fd.get("uf") ?? "");
-
-              // Nicho personalizado: usa a busca por termo (Google Maps) para
-              // qualquer segmento que não esteja na lista.
-              if (cnae === "outro") {
-                const nicho = String(fd.get("nichoCustom") ?? "").trim();
-                if (!nicho) return setError("Digite o nicho que você quer captar.");
-                start(async () => {
-                  const res = await criarJob({
-                    origem: "google_maps",
-                    termoBusca: nicho,
-                    localizacao: uf,
-                    quantidade,
-                  });
-                  if (!res.ok) return setError(res.error);
-                  close();
-                  router.refresh();
-                });
-                return;
+              // O usuário busca o nicho e escolhe uma opção "Descrição · 5611201".
+              const raw = String(fd.get("segmentoBusca") ?? "");
+              const codigo = raw.match(/(\d{7})\s*$/)?.[1] ?? "";
+              const item = CNAES.find((c) => c.cnae === codigo);
+              if (!item) {
+                return setError("Digite o nicho e escolha uma opção da lista.");
               }
-
-              const segmentoLabel = SEGMENTOS.find((s) => s.cnae === cnae)?.label ?? "Segmento";
-              if (!cnae) return setError("Escolha um segmento.");
               start(async () => {
-                const res = await criarJob({ origem: "cnpj", cnae, segmentoLabel, uf, quantidade });
+                const res = await criarJob({
+                  origem: "cnpj",
+                  cnae: item.cnae,
+                  segmentoLabel: item.label,
+                  uf,
+                  quantidade,
+                });
                 if (!res.ok) return setError(res.error);
                 close();
                 router.refresh();
@@ -95,37 +85,25 @@ export function CaptureForm() {
           {modo === "donos" ? (
             <>
               <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-700">Segmento</span>
-                <select
-                  name="cnae"
-                  value={cnaeSel}
-                  onChange={(e) => setCnaeSel(e.target.value)}
-                  className="input"
+                <span className="text-sm font-medium text-neutral-700">Nicho (segmento)</span>
+                <input
+                  name="segmentoBusca"
+                  list="cnae-list"
+                  autoComplete="off"
                   autoFocus
-                >
-                  {SEGMENTOS.map((s) => (
-                    <option key={s.cnae} value={s.cnae}>
-                      {s.label}
-                    </option>
+                  placeholder="Digite: restaurantes, dentistas, manipulação…"
+                  className="input"
+                />
+                <datalist id="cnae-list">
+                  {CNAES.map((c) => (
+                    <option key={c.cnae} value={`${c.label} · ${c.cnae}`} />
                   ))}
-                  <option value="outro">✍️ Outro segmento (digitar)</option>
-                </select>
+                </datalist>
+                <span className="text-xs text-neutral-500">
+                  Digite o nicho e <strong>escolha uma opção da lista</strong> — traz o dono daquele
+                  segmento.
+                </span>
               </label>
-
-              {cnaeSel === "outro" && (
-                <label className="flex flex-col gap-1.5">
-                  <span className="text-sm font-medium text-neutral-700">Qual nicho?</span>
-                  <input
-                    name="nichoCustom"
-                    placeholder="Ex: petshops, dentistas, academias…"
-                    className="input"
-                    autoFocus
-                  />
-                  <span className="text-xs text-neutral-500">
-                    Nichos personalizados são buscados por termo (dados do estabelecimento).
-                  </span>
-                </label>
-              )}
 
               <label className="flex flex-col gap-1.5">
                 <span className="text-sm font-medium text-neutral-700">Estado</span>
@@ -140,7 +118,7 @@ export function CaptureForm() {
 
               <p className="rounded-md bg-emerald-500/10 px-3 py-2 text-xs text-emerald-700">
                 Traz <strong>nome do dono</strong> (sócio) + telefone e e-mail registrados na Receita
-                (empresas de pequeno porte). Custo ~US$0,01 por empresa.
+                (empresas de pequeno porte).
               </p>
             </>
           ) : (
