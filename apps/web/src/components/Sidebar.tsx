@@ -29,8 +29,9 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
 
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-neutral-800 bg-neutral-950 p-4">
-      <Link href="/dashboard" className="mb-6 px-2 text-lg font-bold text-white">
-        Meu<span className="text-emerald-400">Lead</span>
+      <Link href="/dashboard" className="mb-6 block px-2">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.png" alt="MeuLead" className="h-auto w-full max-w-[180px]" />
       </Link>
 
       <nav className="flex flex-1 flex-col gap-1">
