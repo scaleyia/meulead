@@ -43,9 +43,25 @@ function metaUrl(empresa: string): string {
   return `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=${q}&search_type=keyword_unordered`;
 }
 
-export async function iniciarAdsGoogle(empresa: string): Promise<string | null> {
+// Extrai o domínio registrável de uma URL: https://www.abc.com.br/loja -> abc.com.br
+function dominio(url: string): string {
+  return url
+    .replace(/^https?:\/\//i, "")
+    .replace(/^www\./i, "")
+    .replace(/\/.*$/, "")
+    .trim();
+}
+
+// Google Ads: se o lead tem site, busca pelo DOMÍNIO (o Google verifica o
+// anunciante por domínio — muito mais confiável que o nome da loja, que costuma
+// diferir da razão social da conta de anúncios). Sem site, cai pro nome.
+export async function iniciarAdsGoogle(
+  empresa: string,
+  website: string | null,
+): Promise<string | null> {
+  const query = website && website.trim() ? dominio(website) : empresa;
   const run = await iniciarRun(ACTOR_GOOGLE_ADS, {
-    searchQuery: empresa,
+    searchQuery: query,
     region: "BR",
     maxResults: 5,
   });
@@ -66,11 +82,20 @@ interface Resolucao {
 }
 
 // Verifica o run do Google. done=false → ainda rodando.
-export async function resolverAdsGoogle(runId: string, empresa: string): Promise<Resolucao> {
+// Se a busca foi por domínio (tem site), qualquer anúncio conta (o domínio é do
+// próprio negócio). Se foi por nome, exige casar o nome do anunciante.
+export async function resolverAdsGoogle(
+  runId: string,
+  empresa: string,
+  website: string | null,
+): Promise<Resolucao> {
   const run = await statusRun(runId);
   if (!run || !TERMINADOS.includes(run.status)) return { done: false, anuncia: false };
   if (run.status !== "SUCCEEDED") return { done: true, anuncia: false };
   const itens = await itensDataset(run.defaultDatasetId, 10);
+  if (website && website.trim()) {
+    return { done: true, anuncia: itens.length > 0 };
+  }
   const anuncia = itens.some((it) => casa(empresa, String(it.advertiserName ?? "")));
   return { done: true, anuncia };
 }

@@ -43,7 +43,7 @@ export async function verificarAnuncios(
   const supabase = await createClient();
   const { data: lead } = await supabase
     .from("leads")
-    .select("id, empresa")
+    .select("id, empresa, website")
     .eq("id", leadId)
     .eq("organizacao_id", org.orgId)
     .maybeSingle();
@@ -51,7 +51,7 @@ export async function verificarAnuncios(
   if (!lead?.empresa) return { ok: false, error: "Lead sem nome de empresa." };
 
   const [runGoogle, runMeta] = await Promise.all([
-    iniciarAdsGoogle(lead.empresa),
+    iniciarAdsGoogle(lead.empresa, lead.website),
     iniciarAdsMeta(lead.empresa),
   ]);
 

@@ -223,7 +223,7 @@ export async function resolverAnuncios(orgId: string, limite = 8): Promise<void>
   const supabase = await createClient();
   const { data: pendentes } = await supabase
     .from("leads")
-    .select("id, empresa, ads_run_google, ads_run_meta")
+    .select("id, empresa, website, ads_run_google, ads_run_meta")
     .eq("organizacao_id", orgId)
     .or("ads_run_google.not.is.null,ads_run_meta.not.is.null")
     .limit(limite);
@@ -240,7 +240,7 @@ export async function resolverAnuncios(orgId: string, limite = 8): Promise<void>
     } = {};
 
     if (lead.ads_run_google) {
-      const r = await resolverAdsGoogle(lead.ads_run_google, empresa);
+      const r = await resolverAdsGoogle(lead.ads_run_google, empresa, lead.website);
       if (r.done) {
         patch.anuncia_google = r.anuncia;
         patch.ads_run_google = null;
