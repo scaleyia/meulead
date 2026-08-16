@@ -188,6 +188,10 @@ export type Database = {
       }
       leads: {
         Row: {
+          ads_run_google: string | null
+          ads_run_meta: string | null
+          anuncia_google: boolean | null
+          anuncia_meta: boolean | null
           categoria: string | null
           criado_em: string
           dados_brutos: Json | null
@@ -209,6 +213,10 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          ads_run_google?: string | null
+          ads_run_meta?: string | null
+          anuncia_google?: boolean | null
+          anuncia_meta?: boolean | null
           categoria?: string | null
           criado_em?: string
           dados_brutos?: Json | null
@@ -230,6 +238,10 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          ads_run_google?: string | null
+          ads_run_meta?: string | null
+          anuncia_google?: boolean | null
+          anuncia_meta?: boolean | null
           categoria?: string | null
           criado_em?: string
           dados_brutos?: Json | null

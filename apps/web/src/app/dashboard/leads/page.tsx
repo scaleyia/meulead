@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrg } from "@/lib/org";
+import { resolverAnuncios } from "@/lib/captura";
+import { AutoRefresh } from "@/components/AutoRefresh";
 import {
   AllLeadsTable,
   type AllLeadRow,
@@ -35,11 +37,18 @@ export default async function LeadsPage() {
 async function LeadsContent({ orgId }: { orgId: string }) {
   const supabase = await createClient();
 
+  // Resolve verificações de anúncios que já terminaram no Apify.
+  try {
+    await resolverAnuncios(orgId);
+  } catch {
+    // segue carregando normalmente
+  }
+
   const [{ data: leadsData }, { data: listasData }] = await Promise.all([
     supabase
       .from("leads")
       .select(
-        "id, nome, empresa, telefone, email, origem, website, instagram, seguidores, nota, total_avaliacoes, endereco, lista_id",
+        "id, nome, empresa, telefone, email, origem, website, instagram, seguidores, nota, total_avaliacoes, endereco, lista_id, anuncia_google, anuncia_meta, ads_run_google, ads_run_meta",
       )
       .eq("organizacao_id", orgId)
       .order("criado_em", { ascending: false }),
@@ -68,7 +77,17 @@ async function LeadsContent({ orgId }: { orgId: string }) {
     endereco: l.endereco,
     lista_id: l.lista_id,
     listaNome: l.lista_id ? (nomePorLista.get(l.lista_id) ?? null) : null,
+    anunciaGoogle: l.anuncia_google,
+    anunciaMeta: l.anuncia_meta,
+    adsChecando: !!(l.ads_run_google || l.ads_run_meta),
   }));
 
-  return <AllLeadsTable leads={leads} listas={listas} />;
+  const adsPendentes = leads.some((l) => l.adsChecando);
+
+  return (
+    <>
+      <AutoRefresh ativo={adsPendentes} />
+      <AllLeadsTable leads={leads} listas={listas} />
+    </>
+  );
 }

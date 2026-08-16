@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deleteLead } from "@/app/dashboard/lists/[id]/actions";
 import { sourceLabel } from "@/lib/sources";
+import { AdsCell } from "@/components/AdsCell";
 
 export interface AllLeadRow {
   id: string;
@@ -21,6 +22,9 @@ export interface AllLeadRow {
   endereco: string | null;
   lista_id: string | null;
   listaNome: string | null;
+  anunciaGoogle: boolean | null;
+  anunciaMeta: boolean | null;
+  adsChecando: boolean;
 }
 
 export interface ListaOption {
@@ -149,13 +153,14 @@ export function AllLeadsTable({
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-neutral-200">
-        <table className="w-full min-w-[900px] text-sm">
+        <table className="w-full min-w-[1040px] text-sm">
           <thead className="bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               <th className="px-4 py-3 font-medium">Empresa / Dono</th>
               <th className="whitespace-nowrap px-4 py-3 font-medium">Telefone</th>
               <th className="px-4 py-3 font-medium">Site</th>
               <th className="px-4 py-3 font-medium">Nota</th>
+              <th className="px-4 py-3 font-medium">Anúncios</th>
               <th className="px-4 py-3 font-medium">Lista</th>
               <th className="px-4 py-3 font-medium">Origem</th>
               <th className="px-4 py-3" />
@@ -204,6 +209,14 @@ export function AllLeadsTable({
                   )}
                 </td>
                 <td className="px-4 py-3">
+                  <AdsCell
+                    leadId={l.id}
+                    anunciaGoogle={l.anunciaGoogle}
+                    anunciaMeta={l.anunciaMeta}
+                    checando={l.adsChecando}
+                  />
+                </td>
+                <td className="px-4 py-3">
                   {l.lista_id ? (
                     <Link
                       href={`/dashboard/lists/${l.lista_id}`}
@@ -231,7 +244,7 @@ export function AllLeadsTable({
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-neutral-500">
+                <td colSpan={8} className="px-4 py-8 text-center text-neutral-500">
                   Nenhum lead corresponde ao filtro.
                 </td>
               </tr>

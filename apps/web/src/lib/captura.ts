@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { saldoDaOrg } from "@/lib/creditos";
 import { statusRun, itensDataset } from "@/lib/apify";
 import { buscarDonoPorNome, ufDoEndereco } from "@/lib/cnpj";
+import { resolverAdsGoogle, resolverAdsMeta } from "@/lib/ads";
 
 // Lead pronto pra inserir (sem organizacao_id/lista_id, que entram no sync).
 interface LeadNovo {
@@ -203,5 +204,57 @@ export async function enriquecerDonos(orgId: string, limite = 6): Promise<void> 
     }
     // Marca como buscado sempre (com ou sem achado) pra não repetir.
     await supabase.from("leads").update({ nome: dono, dono_buscado: true }).eq("id", lead.id);
+  }
+}
+
+// Quantos leads estão com verificação de anúncios em andamento.
+export async function adsPendentes(orgId: string): Promise<number> {
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("leads")
+    .select("id", { count: "exact", head: true })
+    .eq("organizacao_id", orgId)
+    .or("ads_run_google.not.is.null,ads_run_meta.not.is.null");
+  return count ?? 0;
+}
+
+// Resolve as verificações de anúncios que já terminaram no Apify.
+export async function resolverAnuncios(orgId: string, limite = 8): Promise<void> {
+  const supabase = await createClient();
+  const { data: pendentes } = await supabase
+    .from("leads")
+    .select("id, empresa, ads_run_google, ads_run_meta")
+    .eq("organizacao_id", orgId)
+    .or("ads_run_google.not.is.null,ads_run_meta.not.is.null")
+    .limit(limite);
+
+  if (!pendentes?.length) return;
+
+  for (const lead of pendentes) {
+    const empresa = lead.empresa ?? "";
+    const patch: {
+      anuncia_google?: boolean;
+      ads_run_google?: string | null;
+      anuncia_meta?: boolean;
+      ads_run_meta?: string | null;
+    } = {};
+
+    if (lead.ads_run_google) {
+      const r = await resolverAdsGoogle(lead.ads_run_google, empresa);
+      if (r.done) {
+        patch.anuncia_google = r.anuncia;
+        patch.ads_run_google = null;
+      }
+    }
+    if (lead.ads_run_meta) {
+      const r = await resolverAdsMeta(lead.ads_run_meta, empresa);
+      if (r.done) {
+        patch.anuncia_meta = r.anuncia;
+        patch.ads_run_meta = null;
+      }
+    }
+    if (Object.keys(patch).length) {
+      await supabase.from("leads").update(patch).eq("id", lead.id);
+    }
   }
 }

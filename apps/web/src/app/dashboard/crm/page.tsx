@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrg } from "@/lib/org";
+import { resolverAnuncios } from "@/lib/captura";
+import { AutoRefresh } from "@/components/AutoRefresh";
 import { StatusView, type StatusItem, type CampanhaOption } from "@/components/StatusView";
 
 export default async function CrmPage() {
@@ -34,11 +36,18 @@ function EmptyState() {
 async function CrmContent({ orgId }: { orgId: string }) {
   const supabase = await createClient();
 
+  // Resolve verificações de anúncios que já terminaram no Apify.
+  try {
+    await resolverAnuncios(orgId);
+  } catch {
+    // segue carregando normalmente
+  }
+
   // Base = TODOS os leads (mesmo os que ainda não receberam disparo).
   const { data: leads } = await supabase
     .from("leads")
     .select(
-      "id, nome, empresa, telefone, email, origem, status_crm, website, instagram, seguidores, nota, endereco",
+      "id, nome, empresa, telefone, email, origem, status_crm, website, instagram, seguidores, nota, endereco, anuncia_google, anuncia_meta, ads_run_google, ads_run_meta",
     )
     .eq("organizacao_id", orgId)
     .order("criado_em", { ascending: false });
@@ -99,6 +108,9 @@ async function CrmContent({ orgId }: { orgId: string }) {
       seguidores: lead.seguidores,
       nota: lead.nota,
       endereco: lead.endereco,
+      anunciaGoogle: lead.anuncia_google,
+      anunciaMeta: lead.anuncia_meta,
+      adsChecando: !!(lead.ads_run_google || lead.ads_run_meta),
       campanha: campanha?.nome ?? null,
       chip: sessao?.nome ?? null,
       status,
@@ -110,5 +122,12 @@ async function CrmContent({ orgId }: { orgId: string }) {
     nome: c.nome ?? "—",
   }));
 
-  return <StatusView items={items} campanhas={campanhas} />;
+  const adsPendentes = items.some((i) => i.adsChecando);
+
+  return (
+    <>
+      <AutoRefresh ativo={adsPendentes} />
+      <StatusView items={items} campanhas={campanhas} />
+    </>
+  );
 }

@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { moverLeadStatus } from "@/app/dashboard/crm/actions";
 import { sourceLabel } from "@/lib/sources";
+import { AdsCell } from "@/components/AdsCell";
 
 export interface StatusItem {
   id: string;
@@ -18,6 +19,9 @@ export interface StatusItem {
   seguidores: number | null;
   nota: number | null;
   endereco: string | null;
+  anunciaGoogle: boolean | null;
+  anunciaMeta: boolean | null;
+  adsChecando: boolean;
   campanha: string | null;
   chip: string | null;
   status: string;
@@ -461,6 +465,17 @@ function LeadDetail({
               ) : (
                 <span className="text-neutral-500">—</span>
               )}
+            </dd>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <dt className="shrink-0 text-neutral-400">Anúncios</dt>
+            <dd className="text-right">
+              <AdsCell
+                leadId={lead.id}
+                anunciaGoogle={lead.anunciaGoogle}
+                anunciaMeta={lead.anunciaMeta}
+                checando={lead.adsChecando}
+              />
             </dd>
           </div>
           {lead.endereco && <Linha rotulo="Endereço" valor={lead.endereco} />}
