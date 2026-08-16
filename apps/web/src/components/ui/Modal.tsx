@@ -34,13 +34,13 @@ export function Modal({
       {trigger(() => setOpen(true))}
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 p-4 backdrop-blur-md"
           onClick={() => setOpen(false)}
         >
           <div
             className={clsx(
-              "w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6 shadow-2xl",
-              "animate-in",
+              "anim-in w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6",
+              "shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] ring-1 ring-black/5",
             )}
             onClick={(e) => e.stopPropagation()}
           >
