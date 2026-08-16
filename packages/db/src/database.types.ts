@@ -197,6 +197,7 @@ export type Database = {
           nome: string | null
           organizacao_id: string
           origem: string
+          status_crm: string | null
           telefone: string | null
         }
         Insert: {
@@ -209,6 +210,7 @@ export type Database = {
           nome?: string | null
           organizacao_id: string
           origem?: string
+          status_crm?: string | null
           telefone?: string | null
         }
         Update: {
@@ -221,6 +223,7 @@ export type Database = {
           nome?: string | null
           organizacao_id?: string
           origem?: string
+          status_crm?: string | null
           telefone?: string | null
         }
         Relationships: []

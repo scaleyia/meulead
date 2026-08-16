@@ -37,7 +37,7 @@ async function CrmContent({ orgId }: { orgId: string }) {
   // Base = TODOS os leads (mesmo os que ainda não receberam disparo).
   const { data: leads } = await supabase
     .from("leads")
-    .select("id, nome, empresa, telefone")
+    .select("id, nome, empresa, telefone, email, origem, status_crm")
     .eq("organizacao_id", orgId)
     .order("criado_em", { ascending: false });
 
@@ -83,14 +83,18 @@ async function CrmContent({ orgId }: { orgId: string }) {
     const alvo = alvoPorLead.get(lead.id);
     const campanha = alvo ? campanhasMap.get(alvo.campanha_id) : undefined;
     const sessao = alvo?.sessao_id ? sessoesMap.get(alvo.sessao_id) : undefined;
+    // Override manual (arrastar no kanban) vence o status derivado do disparo.
+    const status = lead.status_crm ?? alvo?.status ?? "nao_disparado";
     return {
       id: lead.id,
       dono: lead.nome,
       empresa: lead.empresa,
       telefone: lead.telefone,
+      email: lead.email,
+      origem: lead.origem,
       campanha: campanha?.nome ?? null,
       chip: sessao?.nome ?? null,
-      status: alvo?.status ?? "nao_disparado",
+      status,
     };
   });
 
