@@ -45,8 +45,8 @@ export function AdsCell({
     <div className="flex flex-wrap items-center gap-1">
       {/* Google Ads: só afirmamos quando ACHAMOS. Não achar é inconclusivo. */}
       {anunciaGoogle === true ? (
-        <span className="rounded-md bg-blue-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-blue-600">
-          Google Ads
+        <span className="inline-flex items-center gap-1 rounded-md bg-blue-600 px-1.5 py-0.5 text-[11px] font-semibold text-white">
+          ✓ Anuncia no Google
         </span>
       ) : anunciaGoogle === false ? (
         <span
@@ -59,8 +59,8 @@ export function AdsCell({
 
       {/* Meta Ads: quando a página exata aparece, confirmamos. Senão, inconclusivo. */}
       {anunciaMeta === true ? (
-        <span className="rounded-md bg-fuchsia-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-fuchsia-600">
-          Meta Ads
+        <span className="inline-flex items-center gap-1 rounded-md bg-fuchsia-600 px-1.5 py-0.5 text-[11px] font-semibold text-white">
+          ✓ Anuncia no Meta
         </span>
       ) : anunciaMeta === false ? (
         <span
