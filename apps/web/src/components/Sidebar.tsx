@@ -31,7 +31,7 @@ const nav: NavItem[] = [
   { href: "/dashboard/capture", label: "Captação", icon: Radar, ready: true },
   { href: "/dashboard/campaigns", label: "Disparos", icon: Send, ready: true },
   { href: "/dashboard/crm", label: "CRM", icon: KanbanSquare, ready: true },
-  { href: "/dashboard/whatsapp", label: "WhatsApp", icon: MessageCircle, ready: true },
+  { href: "/dashboard/whatsapp", label: "Conexões", icon: MessageCircle, ready: true },
   { href: "/dashboard/creditos", label: "Créditos", icon: Coins, ready: true },
   { href: "/dashboard/interessados", label: "Interessados", icon: Magnet, ready: true, adminOnly: true },
 ];
