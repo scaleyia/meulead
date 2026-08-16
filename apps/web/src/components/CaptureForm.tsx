@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { criarJob } from "@/app/dashboard/capture/actions";
 import { UFS } from "@/lib/segmentos";
 import { CNAES } from "@/lib/cnaes";
+import { SegmentoBusca } from "@/components/SegmentoBusca";
 
 type Modo = "donos" | "google_maps";
 
@@ -33,9 +34,7 @@ export function CaptureForm() {
 
             if (modo === "donos") {
               const uf = String(fd.get("uf") ?? "");
-              // O usuário busca o nicho e escolhe uma opção "Descrição · 5611201".
-              const raw = String(fd.get("segmentoBusca") ?? "");
-              const codigo = raw.match(/(\d{7})\s*$/)?.[1] ?? "";
+              const codigo = String(fd.get("cnae") ?? "");
               const item = CNAES.find((c) => c.cnae === codigo);
               if (!item) {
                 return setError("Digite o nicho e escolha uma opção da lista.");
@@ -86,19 +85,7 @@ export function CaptureForm() {
             <>
               <label className="flex flex-col gap-1.5">
                 <span className="text-sm font-medium text-neutral-700">Nicho (segmento)</span>
-                <input
-                  name="segmentoBusca"
-                  list="cnae-list"
-                  autoComplete="off"
-                  autoFocus
-                  placeholder="Digite: restaurantes, dentistas, manipulação…"
-                  className="input"
-                />
-                <datalist id="cnae-list">
-                  {CNAES.map((c) => (
-                    <option key={c.cnae} value={`${c.label} · ${c.cnae}`} />
-                  ))}
-                </datalist>
+                <SegmentoBusca />
                 <span className="text-xs text-neutral-500">
                   Digite o nicho e <strong>escolha uma opção da lista</strong> — traz o dono daquele
                   segmento.
