@@ -1,12 +1,14 @@
 "use client";
 
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { verificarAnuncios } from "@/app/dashboard/crm/actions";
 
 // Mostra os selos de anúncios (Google/Meta) e o botão de verificar sob demanda.
-// `planoPago` = recurso liberado (verificação é exclusiva de planos pagos).
+// `planoPago` = recurso liberado. No grátis o botão continua clicável, mas o
+// clique abre o popup de upgrade em vez de rodar a verificação.
 export function AdsCell({
   leadId,
   anunciaGoogle,
@@ -22,86 +24,135 @@ export function AdsCell({
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
+  const [upgrade, setUpgrade] = useState(false);
 
-  if (checando || pending) {
-    return <span className="text-xs text-neutral-400">verificando…</span>;
+  function disparar() {
+    if (!planoPago) {
+      setUpgrade(true);
+      return;
+    }
+    start(async () => {
+      await verificarAnuncios(leadId);
+      router.refresh();
+    });
   }
 
-  const verificado = anunciaGoogle !== null || anunciaMeta !== null;
-
-  // Plano grátis e ainda sem resultado: mostra cadeado com upgrade.
-  if (!planoPago && !verificado) {
-    return (
-      <Link
-        href="/planos"
-        title="Verificação de anúncios (Google/Meta) é exclusiva dos planos pagos."
-        className="inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-amber-300 bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 transition hover:bg-amber-100"
-      >
-        🔒 plano pago
-      </Link>
-    );
-  }
-
-  if (!verificado) {
-    return (
-      <button
-        onClick={() =>
-          start(async () => {
-            await verificarAnuncios(leadId);
-            router.refresh();
-          })
-        }
-        className="whitespace-nowrap rounded-md border border-neutral-300 px-2 py-1 text-xs font-medium text-neutral-600 transition hover:bg-neutral-100"
-      >
-        🔎 verificar
-      </button>
-    );
-  }
+  const conteudo = renderConteudo();
 
   return (
-    <div className="flex flex-wrap items-center gap-1">
-      {/* Google Ads: só afirmamos quando ACHAMOS. Não achar é inconclusivo. */}
-      {anunciaGoogle === true ? (
-        <span className="inline-flex items-center gap-1 rounded-md bg-blue-600 px-1.5 py-0.5 text-[11px] font-semibold text-white">
-          ✓ Anuncia no Google
-        </span>
-      ) : anunciaGoogle === false ? (
-        <span
-          className="cursor-help rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700"
-          title="Não encontramos anúncios no Google. Pode ser que o comércio NÃO anuncie — ou que a conta de anúncios esteja registrada com outro nome/razão social (bem comum). Vale checar manualmente."
-        >
-          Google: não localizado ⓘ
-        </span>
-      ) : null}
+    <>
+      {conteudo}
+      {upgrade && <UpgradeModal onClose={() => setUpgrade(false)} />}
+    </>
+  );
 
-      {/* Meta Ads: quando a página exata aparece, confirmamos. Senão, inconclusivo. */}
-      {anunciaMeta === true ? (
-        <span className="inline-flex items-center gap-1 rounded-md bg-fuchsia-600 px-1.5 py-0.5 text-[11px] font-semibold text-white">
-          ✓ Anuncia no Meta
-        </span>
-      ) : anunciaMeta === false ? (
-        <span
-          className="cursor-help rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700"
-          title="Não localizamos a página exata anunciando no Meta. Pode ser que não anuncie — ou que o nome da página no Facebook/Instagram seja diferente do nome do comércio. Vale conferir na Biblioteca de Anúncios da Meta."
-        >
-          Meta: não localizado ⓘ
-        </span>
-      ) : null}
+  function renderConteudo() {
+    if (checando || pending) {
+      return <span className="text-xs text-neutral-400">verificando…</span>;
+    }
 
-      {planoPago && (
+    const verificado = anunciaGoogle !== null || anunciaMeta !== null;
+
+    if (!verificado) {
+      return (
         <button
-          onClick={() =>
-            start(async () => {
-              await verificarAnuncios(leadId);
-              router.refresh();
-            })
-          }
+          onClick={disparar}
+          className="whitespace-nowrap rounded-md border border-neutral-300 px-2 py-1 text-xs font-medium text-neutral-600 transition hover:bg-neutral-100"
+        >
+          🔎 verificar
+        </button>
+      );
+    }
+
+    return (
+      <div className="flex flex-wrap items-center gap-1">
+        {anunciaGoogle === true ? (
+          <span className="inline-flex items-center gap-1 rounded-md bg-blue-600 px-1.5 py-0.5 text-[11px] font-semibold text-white">
+            ✓ Anuncia no Google
+          </span>
+        ) : anunciaGoogle === false ? (
+          <span
+            className="cursor-help rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700"
+            title="Não encontramos anúncios no Google. Pode ser que o comércio NÃO anuncie — ou que a conta de anúncios esteja registrada com outro nome/razão social (bem comum). Vale checar manualmente."
+          >
+            Google: não localizado ⓘ
+          </span>
+        ) : null}
+
+        {anunciaMeta === true ? (
+          <span className="inline-flex items-center gap-1 rounded-md bg-fuchsia-600 px-1.5 py-0.5 text-[11px] font-semibold text-white">
+            ✓ Anuncia no Meta
+          </span>
+        ) : anunciaMeta === false ? (
+          <span
+            className="cursor-help rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700"
+            title="Não localizamos a página exata anunciando no Meta. Pode ser que não anuncie — ou que o nome da página no Facebook/Instagram seja diferente do nome do comércio. Vale conferir na Biblioteca de Anúncios da Meta."
+          >
+            Meta: não localizado ⓘ
+          </span>
+        ) : null}
+
+        <button
+          onClick={disparar}
           className="text-[11px] text-neutral-400 hover:text-neutral-700"
           title="Verificar de novo"
         >
           ↻
         </button>
-      )}
-    </div>
+      </div>
+    );
+  }
+}
+
+function UpgradeModal({ onClose }: { onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  if (!mounted) return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/20 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="anim-in w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] ring-1 ring-black/5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-2xl">
+          🔒
+        </div>
+        <h2 className="mt-4 text-lg font-semibold text-neutral-900">Recurso do plano pago</h2>
+        <p className="mt-2 text-sm text-neutral-500">
+          A verificação de anúncios no <strong>Google</strong> e no <strong>Meta</strong> está
+          disponível a partir dos planos pagos. Faça o upgrade para descobrir quais leads já
+          investem em tráfego — os clientes mais quentes.
+        </p>
+        <div className="mt-6 flex flex-col gap-2">
+          <Link
+            href="/planos"
+            className="rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-400"
+          >
+            Ver planos e fazer upgrade
+          </Link>
+          <button
+            onClick={onClose}
+            className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-500 hover:text-neutral-900"
+          >
+            Agora não
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body,
   );
 }
