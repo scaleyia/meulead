@@ -34,7 +34,7 @@ export function Modal({
       {trigger(() => setOpen(true))}
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/20 p-4"
           onClick={() => setOpen(false)}
         >
           <div
