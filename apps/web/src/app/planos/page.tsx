@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PLANOS, formatarPreco } from "@/lib/planos";
 
 export const metadata = {
-  title: "Planos e preços | MeuLead",
+  title: "Planos",
   description: "Escolha o plano do MeuLead: capte donos, dispare com segurança e acompanhe no CRM.",
 };
 

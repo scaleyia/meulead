@@ -2,7 +2,7 @@ import Link from "next/link";
 import { DescubraForm } from "./DescubraForm";
 
 export const metadata = {
-  title: "Descubra quantos donos existem na sua região | MeuLead",
+  title: "Descubra seus leads",
   description:
     "Veja quantos donos de empresa existem no seu segmento e estado — e comece a prospectar falando direto com o dono.",
 };

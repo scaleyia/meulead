@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MeuLead — Prospecção de donos e disparo no WhatsApp",
+  title: { default: "MeuLead", template: "%s · MeuLead" },
   description:
     "Capte o contato do dono, dispare no WhatsApp com segurança e acompanhe no CRM.",
 };
