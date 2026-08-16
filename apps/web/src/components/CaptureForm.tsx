@@ -31,6 +31,7 @@ export function CaptureForm() {
             setError(null);
             const fd = new FormData(e.currentTarget);
             const quantidade = Number(fd.get("quantidade") ?? 20);
+            const nomeLista = String(fd.get("nomeLista") ?? "").trim();
 
             if (modo === "donos") {
               const uf = String(fd.get("uf") ?? "");
@@ -46,6 +47,7 @@ export function CaptureForm() {
                   segmentoLabel: item.label,
                   uf,
                   quantidade,
+                  nomeLista,
                 });
                 if (!res.ok) return setError(res.error);
                 close();
@@ -58,7 +60,7 @@ export function CaptureForm() {
             const localizacao = String(fd.get("localizacao") ?? "");
             if (!termoBusca.trim()) return setError("Informe o termo de busca.");
             start(async () => {
-              const res = await criarJob({ origem: "google_maps", termoBusca, localizacao, quantidade });
+              const res = await criarJob({ origem: "google_maps", termoBusca, localizacao, quantidade, nomeLista });
               if (!res.ok) return setError(res.error);
               close();
               router.refresh();
@@ -80,6 +82,19 @@ export function CaptureForm() {
               sub="Número comercial (por termo)"
             />
           </div>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-neutral-700">Nome da lista</span>
+            <input
+              name="nomeLista"
+              placeholder="Ex: Restaurantes SP — campanha agosto"
+              maxLength={80}
+              className="input"
+            />
+            <span className="text-xs text-neutral-500">
+              Dê um nome pra reconhecer essa lista no CRM. Se deixar vazio, usamos o nicho automaticamente.
+            </span>
+          </label>
 
           {modo === "donos" ? (
             <>

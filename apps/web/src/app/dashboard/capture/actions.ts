@@ -10,6 +10,7 @@ export type ActionResult = { ok: true } | { ok: false; error: string };
 interface JobInput {
   origem: string;
   quantidade: number;
+  nomeLista?: string; // nome escolhido pelo usuário (opcional)
   // modo google_maps
   termoBusca?: string;
   localizacao?: string;
@@ -45,7 +46,7 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
     const qtd = Math.min(500, saldo, Math.max(1, Math.trunc(input.quantidade) || 20));
     const seg = input.segmentoLabel ?? "Segmento";
 
-    const nomeLista = `${seg}${uf ? ` · ${uf}` : ""}`;
+    const nomeLista = (input.nomeLista ?? "").trim() || `${seg}${uf ? ` · ${uf}` : ""}`;
     const { data: lista, error: e1 } = await supabase
       .from("listas")
       .insert({ organizacao_id: org.orgId, nome: nomeLista, origem: "cnpj" })
@@ -100,7 +101,7 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
   // Nunca pede mais leads do que o saldo cobre.
   const qtd = Math.min(100, saldo, Math.max(1, Math.trunc(input.quantidade) || 20));
 
-  const nomeLista = `${termoBusca}${localizacao ? ` · ${localizacao}` : ""}`;
+  const nomeLista = (input.nomeLista ?? "").trim() || `${termoBusca}${localizacao ? ` · ${localizacao}` : ""}`;
   const { data: lista, error: e1 } = await supabase
     .from("listas")
     .insert({ organizacao_id: org.orgId, nome: nomeLista, origem: "google_maps" })
