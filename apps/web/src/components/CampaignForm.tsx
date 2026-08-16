@@ -106,7 +106,7 @@ function CampaignFields({
       }}
     >
       <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-300">Nome da campanha</span>
+        <span className="text-sm font-medium text-neutral-700">Nome da campanha</span>
         <input
           name="nome"
           required
@@ -119,7 +119,7 @@ function CampaignFields({
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-300">Lista de contatos</span>
+        <span className="text-sm font-medium text-neutral-700">Lista de contatos</span>
         <select
           value={listaId}
           onChange={(e) => setListaId(e.target.value)}
@@ -135,7 +135,7 @@ function CampaignFields({
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-300">Mensagem</span>
+        <span className="text-sm font-medium text-neutral-700">Mensagem</span>
         <textarea
           required
           rows={5}
@@ -151,18 +151,18 @@ function CampaignFields({
 
       {/* Chips (contingência) — pool que será revezado no disparo. */}
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium text-neutral-300">Chips (contingência)</span>
+        <span className="text-sm font-medium text-neutral-700">Chips (contingência)</span>
         {sessoes.length === 0 ? (
-          <p className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
+          <p className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-600">
             Conecte um número em Conectar WhatsApp.
           </p>
         ) : (
           <>
-            <div className="flex flex-col gap-1.5 rounded-lg border border-neutral-800 bg-neutral-950/40 p-3">
+            <div className="flex flex-col gap-1.5 rounded-lg border border-neutral-200 bg-neutral-100 p-3">
               {sessoes.map((s) => (
                 <label
                   key={s.id}
-                  className="flex cursor-pointer items-center gap-2.5 text-sm text-neutral-200"
+                  className="flex cursor-pointer items-center gap-2.5 text-sm text-neutral-800"
                 >
                   <input
                     type="checkbox"
@@ -183,7 +183,7 @@ function CampaignFields({
 
       {/* Modo de envio */}
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium text-neutral-300">Modo de envio</span>
+        <span className="text-sm font-medium text-neutral-700">Modo de envio</span>
         <div className="grid grid-cols-2 gap-2">
           <ModeCard
             active={modoEnvio === "auto"}
@@ -202,7 +202,7 @@ function CampaignFields({
         {modoEnvio === "manual" && (
           <div className="mt-1 grid grid-cols-3 gap-2">
             <label className="flex flex-col gap-1">
-              <span className="text-xs text-neutral-400">Intervalo mín. (s)</span>
+              <span className="text-xs text-neutral-500">Intervalo mín. (s)</span>
               <input
                 type="number"
                 min={1}
@@ -212,7 +212,7 @@ function CampaignFields({
               />
             </label>
             <label className="flex flex-col gap-1">
-              <span className="text-xs text-neutral-400">Intervalo máx. (s)</span>
+              <span className="text-xs text-neutral-500">Intervalo máx. (s)</span>
               <input
                 type="number"
                 min={1}
@@ -222,7 +222,7 @@ function CampaignFields({
               />
             </label>
             <label className="flex flex-col gap-1">
-              <span className="text-xs text-neutral-400">Limite por dia</span>
+              <span className="text-xs text-neutral-500">Limite por dia</span>
               <input
                 type="number"
                 min={1}
@@ -236,7 +236,7 @@ function CampaignFields({
       </div>
 
       {error && (
-        <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-400">{error}</p>
+        <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>
       )}
 
       <div className="mt-2 flex justify-end gap-2">
@@ -270,11 +270,11 @@ function ModeCard({
         "flex flex-col gap-1 rounded-lg border p-3 text-left transition",
         active
           ? "border-emerald-500/60 bg-emerald-500/10"
-          : "border-neutral-800 bg-neutral-950/40 hover:border-neutral-700",
+          : "border-neutral-200 bg-neutral-100 hover:border-neutral-300",
       )}
     >
-      <span className="text-sm font-medium text-white">{title}</span>
-      <span className="text-xs text-neutral-400">{hint}</span>
+      <span className="text-sm font-medium text-neutral-900">{title}</span>
+      <span className="text-xs text-neutral-500">{hint}</span>
     </button>
   );
 }

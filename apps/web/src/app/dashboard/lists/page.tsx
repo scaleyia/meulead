@@ -21,16 +21,16 @@ export default async function ListsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Listas de Leads</h1>
-          <p className="mt-1 text-neutral-400">Agrupe seus leads por campanha ou origem.</p>
+          <p className="mt-1 text-neutral-500">Agrupe seus leads por campanha ou origem.</p>
         </div>
         <NewListDialog />
       </div>
 
       {rows.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/30 p-12 text-center">
+        <div className="mt-10 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
           <p className="text-4xl">📋</p>
-          <h2 className="mt-3 font-medium text-white">Nenhuma lista ainda</h2>
-          <p className="mt-1 text-sm text-neutral-400">
+          <h2 className="mt-3 font-medium text-neutral-900">Nenhuma lista ainda</h2>
+          <p className="mt-1 text-sm text-neutral-500">
             Crie sua primeira lista para começar a organizar seus leads.
           </p>
           <div className="mt-5 flex justify-center">
@@ -42,12 +42,12 @@ export default async function ListsPage() {
           {rows.map((l) => (
             <div
               key={l.id}
-              className="group relative rounded-xl border border-neutral-800 bg-neutral-900/50 p-5 transition hover:border-neutral-700"
+              className="group relative rounded-xl border border-neutral-200 bg-neutral-50 p-5 transition hover:border-neutral-300"
             >
               <Link href={`/dashboard/lists/${l.id}`} className="block">
-                <h3 className="font-medium text-white">{l.nome}</h3>
+                <h3 className="font-medium text-neutral-900">{l.nome}</h3>
                 <p className="mt-1 text-xs text-neutral-500">{sourceLabel(l.origem)}</p>
-                <p className="mt-4 text-2xl font-bold text-emerald-400">{l.leadCount}</p>
+                <p className="mt-4 text-2xl font-bold text-emerald-600">{l.leadCount}</p>
                 <p className="text-xs text-neutral-500">leads</p>
               </Link>
               <div className="absolute right-3 top-3 opacity-0 transition group-hover:opacity-100">

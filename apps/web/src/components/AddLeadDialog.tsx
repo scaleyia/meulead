@@ -48,7 +48,7 @@ export function AddLeadDialog({ listId }: { listId: string }) {
           <input name="email" type="email" placeholder="E-mail" className="input" />
 
           {error && (
-            <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-400">{error}</p>
+            <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>
           )}
 
           <div className="mt-1 flex justify-end gap-2">

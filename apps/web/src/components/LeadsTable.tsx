@@ -37,10 +37,10 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
 
   if (leads.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/30 p-12 text-center">
+      <div className="rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
         <p className="text-4xl">🗂️</p>
-        <h2 className="mt-3 font-medium text-white">Lista vazia</h2>
-        <p className="mt-1 text-sm text-neutral-400">
+        <h2 className="mt-3 font-medium text-neutral-900">Lista vazia</h2>
+        <p className="mt-1 text-sm text-neutral-500">
           Adicione um lead manualmente ou importe um arquivo CSV.
         </p>
       </div>
@@ -56,9 +56,9 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
         className="input mb-3 max-w-md"
       />
 
-      <div className="overflow-hidden rounded-xl border border-neutral-800">
+      <div className="overflow-hidden rounded-xl border border-neutral-200">
         <table className="w-full text-sm">
-          <thead className="bg-neutral-900/60 text-left text-xs uppercase tracking-wide text-neutral-500">
+          <thead className="bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               <th className="px-4 py-3 font-medium">Nome</th>
               <th className="px-4 py-3 font-medium">Empresa</th>
@@ -68,19 +68,19 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
               <th className="px-4 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-800">
+          <tbody className="divide-y divide-neutral-200">
             {filtered.map((l) => (
-              <tr key={l.id} className="hover:bg-neutral-900/40">
-                <td className="px-4 py-3 text-neutral-100">{l.nome ?? "—"}</td>
-                <td className="px-4 py-3 text-neutral-300">{l.empresa ?? "—"}</td>
-                <td className="px-4 py-3 text-neutral-300">{l.telefone ?? "—"}</td>
-                <td className="px-4 py-3 text-neutral-300">{l.email ?? "—"}</td>
+              <tr key={l.id} className="hover:bg-neutral-100">
+                <td className="px-4 py-3 text-neutral-900">{l.nome ?? "—"}</td>
+                <td className="px-4 py-3 text-neutral-700">{l.empresa ?? "—"}</td>
+                <td className="px-4 py-3 text-neutral-700">{l.telefone ?? "—"}</td>
+                <td className="px-4 py-3 text-neutral-700">{l.email ?? "—"}</td>
                 <td className="px-4 py-3 text-neutral-500">{sourceLabel(l.origem)}</td>
                 <td className="px-4 py-3 text-right">
                   <button
                     onClick={() => remove(l.id)}
                     disabled={pending}
-                    className="text-xs text-neutral-500 hover:text-red-400"
+                    className="text-xs text-neutral-500 hover:text-red-600"
                   >
                     excluir
                   </button>

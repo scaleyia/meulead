@@ -13,10 +13,10 @@ export type CaptureJob = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  pendente: "bg-neutral-500/10 text-neutral-300 border-neutral-700",
-  rodando: "bg-blue-500/10 text-blue-400 border-blue-500/30",
-  concluido: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
-  erro: "bg-red-500/10 text-red-400 border-red-500/30",
+  pendente: "bg-neutral-100 text-neutral-700 border-neutral-300",
+  rodando: "bg-blue-500/10 text-blue-600 border-blue-500/30",
+  concluido: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
+  erro: "bg-red-500/10 text-red-600 border-red-500/30",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -52,9 +52,9 @@ function formatDate(value: string): string {
 
 export function CaptureJobsTable({ jobs }: { jobs: CaptureJob[] }) {
   return (
-    <div className="mt-6 overflow-hidden rounded-xl border border-neutral-800">
+    <div className="mt-6 overflow-hidden rounded-xl border border-neutral-200">
       <table className="w-full text-left text-sm">
-        <thead className="bg-neutral-900/60 text-neutral-400">
+        <thead className="bg-neutral-50 text-neutral-500">
           <tr>
             <th className="px-4 py-3 font-medium">Origem</th>
             <th className="px-4 py-3 font-medium">Termo</th>
@@ -64,13 +64,13 @@ export function CaptureJobsTable({ jobs }: { jobs: CaptureJob[] }) {
             <th className="px-4 py-3 font-medium">Data</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-neutral-800">
+        <tbody className="divide-y divide-neutral-200">
           {jobs.map((job) => (
-            <tr key={job.id} className="text-neutral-200 transition hover:bg-neutral-900/40">
+            <tr key={job.id} className="text-neutral-800 transition hover:bg-neutral-100">
               <td className="px-4 py-3">{sourceLabel(job.origem)}</td>
               <td className="px-4 py-3">{job.termo_busca ?? "—"}</td>
-              <td className="px-4 py-3 text-neutral-400">{job.localizacao ?? "—"}</td>
-              <td className="px-4 py-3 text-neutral-400">{job.quantidade ?? "—"}</td>
+              <td className="px-4 py-3 text-neutral-500">{job.localizacao ?? "—"}</td>
+              <td className="px-4 py-3 text-neutral-500">{job.quantidade ?? "—"}</td>
               <td className="px-4 py-3">
                 <StatusBadge status={job.status} />
               </td>

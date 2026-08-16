@@ -15,14 +15,14 @@ export default async function WhatsappPage() {
     <div>
       <div>
         <h1 className="text-2xl font-semibold">Conectar WhatsApp</h1>
-        <p className="mt-1 text-neutral-400">
+        <p className="mt-1 text-neutral-500">
           Conecte o número que será usado para os disparos das suas campanhas.
         </p>
       </div>
 
       <div className="mt-6 flex items-start gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
         <span className="text-lg leading-none">ℹ️</span>
-        <p className="text-sm text-emerald-200/80">
+        <p className="text-sm text-emerald-700">
           A leitura do <strong>QR code</strong> via Evolution API será ativada com as credenciais da
           sua VPS. Cada número conectado aqui fica disponível para escolher no{" "}
           <strong>Disparador</strong>.

@@ -28,7 +28,7 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
   const itens = nav.filter((i) => !i.adminOnly || isAdmin);
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-neutral-800 bg-neutral-950 p-4">
+    <aside className="flex w-60 shrink-0 flex-col border-r border-neutral-200 bg-white p-4">
       <Link href="/dashboard" className="mb-6 block px-2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.png" alt="MeuLead" className="h-auto w-full max-w-[180px]" />
@@ -46,12 +46,12 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
             return (
               <span
                 key={item.label}
-                className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm text-neutral-600"
+                className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm text-neutral-400"
                 title="Em breve"
               >
                 <span className="w-4 text-center">{item.icon}</span>
                 {item.label}
-                <span className="ml-auto text-[10px] uppercase tracking-wide text-neutral-700">
+                <span className="ml-auto text-[10px] uppercase tracking-wide text-neutral-400">
                   breve
                 </span>
               </span>
@@ -65,8 +65,8 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
               className={clsx(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition",
                 active
-                  ? "bg-emerald-500/10 font-medium text-emerald-400"
-                  : "text-neutral-300 hover:bg-neutral-900",
+                  ? "bg-emerald-500/10 font-medium text-emerald-600"
+                  : "text-neutral-700 hover:bg-neutral-100",
               )}
             >
               <span className="w-4 text-center">{item.icon}</span>

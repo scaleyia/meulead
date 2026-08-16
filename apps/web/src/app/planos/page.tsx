@@ -8,16 +8,16 @@ export const metadata = {
 
 export default function PlanosPage() {
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-100">
+    <main className="min-h-screen bg-white text-neutral-900">
       <header className="flex items-center justify-between px-6 py-5">
         <Link href="/descubra" className="text-lg font-bold">
-          Meu<span className="text-emerald-400">Lead</span>
+          Meu<span className="text-emerald-600">Lead</span>
         </Link>
         <nav className="flex items-center gap-4 text-sm">
-          <Link href="/descubra" className="text-neutral-400 hover:text-white">
+          <Link href="/descubra" className="text-neutral-500 hover:text-neutral-900">
             Descobrir leads
           </Link>
-          <Link href="/login" className="text-neutral-400 hover:text-white">
+          <Link href="/login" className="text-neutral-500 hover:text-neutral-900">
             Entrar
           </Link>
         </nav>
@@ -25,7 +25,7 @@ export default function PlanosPage() {
 
       <section className="mx-auto max-w-6xl px-6 py-10 text-center lg:py-14">
         <h1 className="text-3xl font-bold sm:text-4xl">Planos que crescem com você</h1>
-        <p className="mx-auto mt-3 max-w-xl text-neutral-400">
+        <p className="mx-auto mt-3 max-w-xl text-neutral-500">
           Comece grátis. Suba de plano quando quiser mais leads, mais números e mais disparos.
         </p>
 
@@ -36,7 +36,7 @@ export default function PlanosPage() {
               className={`relative flex flex-col rounded-2xl border p-6 text-left ${
                 p.destaque
                   ? "border-emerald-500/50 bg-emerald-500/[0.06] shadow-xl shadow-emerald-500/5"
-                  : "border-neutral-800 bg-neutral-900/50"
+                  : "border-neutral-200 bg-neutral-50"
               }`}
             >
               {p.destaque && (
@@ -44,17 +44,17 @@ export default function PlanosPage() {
                   Mais popular
                 </span>
               )}
-              <h2 className="font-semibold text-white">{p.nome}</h2>
-              <p className="text-xs text-neutral-400">{p.resumo}</p>
+              <h2 className="font-semibold text-neutral-900">{p.nome}</h2>
+              <p className="text-xs text-neutral-500">{p.resumo}</p>
               <div className="mt-4">
-                <span className="text-3xl font-bold text-white">{formatarPreco(p.preco)}</span>
+                <span className="text-3xl font-bold text-neutral-900">{formatarPreco(p.preco)}</span>
                 {p.preco > 0 && <span className="text-sm text-neutral-500">/mês</span>}
               </div>
 
-              <ul className="mt-5 flex-1 space-y-2 text-sm text-neutral-300">
+              <ul className="mt-5 flex-1 space-y-2 text-sm text-neutral-700">
                 {p.recursos.map((r) => (
                   <li key={r} className="flex items-start gap-2">
-                    <span className="mt-0.5 text-emerald-400">✓</span>
+                    <span className="mt-0.5 text-emerald-600">✓</span>
                     <span>{r}</span>
                   </li>
                 ))}
@@ -65,7 +65,7 @@ export default function PlanosPage() {
                 className={`mt-6 rounded-lg px-4 py-2.5 text-center text-sm font-medium transition ${
                   p.destaque
                     ? "bg-emerald-500 text-white hover:bg-emerald-400"
-                    : "border border-neutral-700 text-neutral-200 hover:bg-neutral-800"
+                    : "border border-neutral-300 text-neutral-800 hover:bg-neutral-100"
                 }`}
               >
                 {p.preco === 0 ? "Começar grátis" : "Assinar"}

@@ -36,20 +36,20 @@ export function ComprarCreditos({ packs }: { packs: Pack[] }) {
             key={p.id}
             disabled={pendingId !== null}
             onClick={() => comprar(p.id)}
-            className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 text-left transition hover:border-amber-500/40 disabled:opacity-60"
+            className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-left transition hover:border-amber-500/40 disabled:opacity-60"
           >
-            <p className="text-2xl font-bold text-amber-300">⚡ {p.creditos.toLocaleString("pt-BR")}</p>
+            <p className="text-2xl font-bold text-amber-600">⚡ {p.creditos.toLocaleString("pt-BR")}</p>
             <p className="text-xs text-neutral-500">créditos</p>
-            <p className="mt-2 text-lg font-semibold text-white">
+            <p className="mt-2 text-lg font-semibold text-neutral-900">
               {p.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 })}
             </p>
-            <span className="mt-2 inline-block text-xs text-emerald-400">
+            <span className="mt-2 inline-block text-xs text-emerald-600">
               {pendingId === p.id ? "Abrindo checkout…" : "Comprar →"}
             </span>
           </button>
         ))}
       </div>
-      {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </div>
   );
 }

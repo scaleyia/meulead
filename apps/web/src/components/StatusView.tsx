@@ -36,10 +36,10 @@ function normalizar(status: string): Coluna {
 }
 
 const BADGE: Record<Coluna, string> = {
-  pendente: "bg-neutral-800 text-neutral-300 border border-neutral-700",
-  enviado: "bg-blue-500/10 text-blue-400 border border-blue-500/30",
-  entregue: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30",
-  falhou: "bg-red-500/10 text-red-400 border border-red-500/30",
+  pendente: "bg-neutral-100 text-neutral-700 border border-neutral-300",
+  enviado: "bg-blue-500/10 text-blue-600 border border-blue-500/30",
+  entregue: "bg-emerald-500/10 text-emerald-600 border border-emerald-500/30",
+  falhou: "bg-red-500/10 text-red-600 border border-red-500/30",
 };
 
 function Badge({ coluna }: { coluna: Coluna }) {
@@ -81,13 +81,13 @@ export function StatusView({
   return (
     <div className="mt-6">
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-800">
+        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200">
           <button
             onClick={() => setVisao("kanban")}
             className={`px-4 py-2 text-sm font-medium transition ${
               visao === "kanban"
-                ? "bg-neutral-800 text-white"
-                : "text-neutral-400 hover:text-white"
+                ? "bg-neutral-100 text-neutral-900"
+                : "text-neutral-500 hover:text-neutral-900"
             }`}
           >
             Kanban
@@ -96,8 +96,8 @@ export function StatusView({
             onClick={() => setVisao("tabela")}
             className={`px-4 py-2 text-sm font-medium transition ${
               visao === "tabela"
-                ? "bg-neutral-800 text-white"
-                : "text-neutral-400 hover:text-white"
+                ? "bg-neutral-100 text-neutral-900"
+                : "text-neutral-500 hover:text-neutral-900"
             }`}
           >
             Tabela
@@ -125,31 +125,31 @@ export function StatusView({
           {COLUNAS.map((col) => (
             <div
               key={col.key}
-              className="rounded-xl border border-neutral-800 bg-neutral-900/40"
+              className="rounded-xl border border-neutral-200 bg-neutral-50"
             >
-              <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-3">
-                <span className="text-sm font-medium text-white">{col.label}</span>
+              <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-3">
+                <span className="text-sm font-medium text-neutral-900">{col.label}</span>
                 <span className="text-xs text-neutral-500">{porColuna[col.key].length}</span>
               </div>
               <div className="space-y-3 p-3">
                 {porColuna[col.key].length === 0 ? (
-                  <p className="px-1 py-4 text-center text-xs text-neutral-600">
+                  <p className="px-1 py-4 text-center text-xs text-neutral-400">
                     Nenhum lead aqui.
                   </p>
                 ) : (
                   porColuna[col.key].map((i) => (
                     <div
                       key={i.id}
-                      className="rounded-xl border border-neutral-800 bg-neutral-950 p-3"
+                      className="rounded-xl border border-neutral-200 bg-white p-3"
                     >
-                      <p className="font-medium text-white">{i.dono ?? "—"}</p>
+                      <p className="font-medium text-neutral-900">{i.dono ?? "—"}</p>
                       {i.empresa && (
-                        <p className="mt-0.5 text-xs text-neutral-400">{i.empresa}</p>
+                        <p className="mt-0.5 text-xs text-neutral-500">{i.empresa}</p>
                       )}
                       <p className="mt-1 text-xs text-neutral-500">{i.telefone ?? "—"}</p>
-                      <div className="mt-3 flex flex-wrap gap-1 border-t border-neutral-800 pt-2 text-[11px] text-neutral-500">
+                      <div className="mt-3 flex flex-wrap gap-1 border-t border-neutral-200 pt-2 text-[11px] text-neutral-500">
                         <span>{i.campanha ?? "—"}</span>
-                        <span className="text-neutral-700">•</span>
+                        <span className="text-neutral-400">•</span>
                         <span>{i.chip ?? "—"}</span>
                       </div>
                     </div>
@@ -160,9 +160,9 @@ export function StatusView({
           ))}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-neutral-800">
+        <div className="overflow-hidden rounded-xl border border-neutral-200">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-900/60 text-left text-xs uppercase tracking-wide text-neutral-500">
+            <thead className="bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500">
               <tr>
                 <th className="px-4 py-3 font-medium">Dono</th>
                 <th className="px-4 py-3 font-medium">Empresa</th>
@@ -172,14 +172,14 @@ export function StatusView({
                 <th className="px-4 py-3 font-medium">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-800">
+            <tbody className="divide-y divide-neutral-200">
               {filtrados.map((i) => (
-                <tr key={i.id} className="hover:bg-neutral-900/40">
-                  <td className="px-4 py-3 text-neutral-100">{i.dono ?? "—"}</td>
-                  <td className="px-4 py-3 text-neutral-300">{i.empresa ?? "—"}</td>
-                  <td className="px-4 py-3 text-neutral-300">{i.telefone ?? "—"}</td>
-                  <td className="px-4 py-3 text-neutral-400">{i.campanha ?? "—"}</td>
-                  <td className="px-4 py-3 text-neutral-400">{i.chip ?? "—"}</td>
+                <tr key={i.id} className="hover:bg-neutral-100">
+                  <td className="px-4 py-3 text-neutral-900">{i.dono ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-700">{i.empresa ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-700">{i.telefone ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-500">{i.campanha ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-500">{i.chip ?? "—"}</td>
                   <td className="px-4 py-3">
                     <Badge coluna={normalizar(i.status)} />
                   </td>

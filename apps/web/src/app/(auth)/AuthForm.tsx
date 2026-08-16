@@ -39,7 +39,7 @@ export function AuthForm({ mode, action }: { mode: "login" | "signup"; action: A
       </Field>
 
       {state?.error && (
-        <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-400">{state.error}</p>
+        <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-600">{state.error}</p>
       )}
 
       <button
@@ -50,18 +50,18 @@ export function AuthForm({ mode, action }: { mode: "login" | "signup"; action: A
         {pending ? "Aguarde…" : isSignup ? "Criar conta" : "Entrar"}
       </button>
 
-      <p className="text-center text-sm text-neutral-400">
+      <p className="text-center text-sm text-neutral-500">
         {isSignup ? (
           <>
             Já tem conta?{" "}
-            <Link href="/login" className="text-emerald-400 hover:underline">
+            <Link href="/login" className="text-emerald-600 hover:underline">
               Entrar
             </Link>
           </>
         ) : (
           <>
             Não tem conta?{" "}
-            <Link href="/signup" className="text-emerald-400 hover:underline">
+            <Link href="/signup" className="text-emerald-600 hover:underline">
               Criar agora
             </Link>
           </>
@@ -74,7 +74,7 @@ export function AuthForm({ mode, action }: { mode: "login" | "signup"; action: A
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-sm font-medium text-neutral-300">{label}</span>
+      <span className="text-sm font-medium text-neutral-700">{label}</span>
       {children}
     </label>
   );

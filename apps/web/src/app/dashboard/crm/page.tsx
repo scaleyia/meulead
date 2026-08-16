@@ -9,7 +9,7 @@ export default async function CrmPage() {
     <div>
       <div>
         <h1 className="text-2xl font-semibold">Status dos disparos</h1>
-        <p className="mt-1 text-neutral-400">
+        <p className="mt-1 text-neutral-500">
           Acompanhe cada lead do disparo — atualiza sozinho.
         </p>
       </div>
@@ -21,10 +21,10 @@ export default async function CrmPage() {
 
 function EmptyState() {
   return (
-    <div className="mt-10 rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/30 p-12 text-center">
+    <div className="mt-10 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
       <p className="text-4xl">📡</p>
-      <h2 className="mt-3 font-medium text-white">Nenhum disparo ainda</h2>
-      <p className="mt-1 text-sm text-neutral-400">
+      <h2 className="mt-3 font-medium text-neutral-900">Nenhum disparo ainda</h2>
+      <p className="mt-1 text-sm text-neutral-500">
         Crie e dispare uma campanha no Disparador.
       </p>
     </div>

@@ -74,7 +74,7 @@ export function CaptureForm() {
           {modo === "donos" ? (
             <>
               <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-300">Segmento</span>
+                <span className="text-sm font-medium text-neutral-700">Segmento</span>
                 <select name="cnae" defaultValue={SEGMENTOS[0].cnae} className="input" autoFocus>
                   {SEGMENTOS.map((s) => (
                     <option key={s.cnae} value={s.cnae}>
@@ -85,7 +85,7 @@ export function CaptureForm() {
               </label>
 
               <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-300">Estado</span>
+                <span className="text-sm font-medium text-neutral-700">Estado</span>
                 <select name="uf" defaultValue="SP" className="input">
                   {UFS.map((uf) => (
                     <option key={uf} value={uf}>
@@ -95,7 +95,7 @@ export function CaptureForm() {
                 </select>
               </label>
 
-              <p className="rounded-md bg-emerald-500/10 px-3 py-2 text-xs text-emerald-300">
+              <p className="rounded-md bg-emerald-500/10 px-3 py-2 text-xs text-emerald-700">
                 Traz <strong>nome do dono</strong> (sócio) + telefone e e-mail registrados na Receita
                 (empresas de pequeno porte). Custo ~US$0,01 por empresa.
               </p>
@@ -103,14 +103,14 @@ export function CaptureForm() {
           ) : (
             <>
               <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-300">Termo de busca</span>
+                <span className="text-sm font-medium text-neutral-700">Termo de busca</span>
                 <input name="termoBusca" required placeholder="Ex: restaurantes" className="input" />
               </label>
               <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-300">Localização (opcional)</span>
+                <span className="text-sm font-medium text-neutral-700">Localização (opcional)</span>
                 <input name="localizacao" placeholder="Ex: São Paulo, SP" className="input" />
               </label>
-              <p className="rounded-md bg-neutral-800/60 px-3 py-2 text-xs text-neutral-400">
+              <p className="rounded-md bg-neutral-100 px-3 py-2 text-xs text-neutral-500">
                 Traz o <strong>número comercial</strong> da loja (público no Google Maps) — nem sempre é
                 o dono.
               </p>
@@ -118,15 +118,15 @@ export function CaptureForm() {
           )}
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-300">Quantidade</span>
+            <span className="text-sm font-medium text-neutral-700">Quantidade</span>
             <input name="quantidade" type="number" defaultValue={20} min={1} max={500} className="input" />
-            <span className="text-xs text-amber-300/80">
+            <span className="text-xs text-amber-600">
               ⚡ Cada lead captado usa 1 crédito (limitado ao seu saldo).
             </span>
           </label>
 
           {error && (
-            <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-400">{error}</p>
+            <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>
           )}
 
           <div className="mt-2 flex justify-end gap-2">
@@ -161,11 +161,11 @@ function ModoCard({
       className={`rounded-lg border p-3 text-left transition ${
         ativo
           ? "border-emerald-500/50 bg-emerald-500/10"
-          : "border-neutral-800 bg-neutral-900/40 hover:border-neutral-700"
+          : "border-neutral-200 bg-neutral-50 hover:border-neutral-300"
       }`}
     >
-      <p className="text-sm font-medium text-white">{titulo}</p>
-      <p className="mt-0.5 text-xs text-neutral-400">{sub}</p>
+      <p className="text-sm font-medium text-neutral-900">{titulo}</p>
+      <p className="mt-0.5 text-xs text-neutral-500">{sub}</p>
     </button>
   );
 }

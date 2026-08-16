@@ -34,15 +34,15 @@ export function AssinarPlano({ planoAtual }: { planoAtual: string }) {
             <div
               key={p.id}
               className={`rounded-xl border p-4 ${
-                p.destaque ? "border-emerald-500/40 bg-emerald-500/[0.05]" : "border-neutral-800 bg-neutral-900/50"
+                p.destaque ? "border-emerald-500/40 bg-emerald-500/[0.05]" : "border-neutral-200 bg-neutral-50"
               }`}
             >
-              <p className="font-semibold text-white">{p.nome}</p>
-              <p className="mt-1 text-2xl font-bold text-white">
+              <p className="font-semibold text-neutral-900">{p.nome}</p>
+              <p className="mt-1 text-2xl font-bold text-neutral-900">
                 {formatarPreco(p.preco)}
                 <span className="text-sm text-neutral-500">/mês</span>
               </p>
-              <p className="mt-1 text-xs text-neutral-400">
+              <p className="mt-1 text-xs text-neutral-500">
                 {p.creditosMes.toLocaleString("pt-BR")} créditos/mês
               </p>
               <button
@@ -50,7 +50,7 @@ export function AssinarPlano({ planoAtual }: { planoAtual: string }) {
                 onClick={() => assinar(p.id)}
                 className={`mt-3 w-full rounded-lg px-3 py-2 text-sm font-medium transition ${
                   atual
-                    ? "cursor-default border border-neutral-700 text-neutral-500"
+                    ? "cursor-default border border-neutral-300 text-neutral-500"
                     : "bg-emerald-500 text-white hover:bg-emerald-400 disabled:opacity-60"
                 }`}
               >
@@ -60,7 +60,7 @@ export function AssinarPlano({ planoAtual }: { planoAtual: string }) {
           );
         })}
       </div>
-      {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </div>
   );
 }

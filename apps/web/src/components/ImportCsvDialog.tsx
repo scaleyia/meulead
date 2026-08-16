@@ -63,9 +63,9 @@ export function ImportCsvDialog({ listId }: { listId: string }) {
     >
       {(close) => (
         <div className="flex flex-col gap-4">
-          <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-neutral-700 bg-neutral-950/50 px-4 py-8 text-center hover:border-neutral-600">
+          <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed border-neutral-300 bg-neutral-100 px-4 py-8 text-center hover:border-neutral-400">
             <span className="text-2xl">📄</span>
-            <span className="text-sm text-neutral-300">
+            <span className="text-sm text-neutral-700">
               {fileName || "Clique para escolher um arquivo .csv"}
             </span>
             <input
@@ -77,12 +77,12 @@ export function ImportCsvDialog({ listId }: { listId: string }) {
           </label>
 
           {rows && (
-            <p className="rounded-md bg-emerald-500/10 px-3 py-2 text-sm text-emerald-400">
+            <p className="rounded-md bg-emerald-500/10 px-3 py-2 text-sm text-emerald-600">
               ✓ {rows.length} leads prontos para importar.
             </p>
           )}
           {error && (
-            <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-400">{error}</p>
+            <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>
           )}
 
           <div className="flex justify-end gap-2">

@@ -23,9 +23,9 @@ export default async function InteressadosPage() {
     <div>
       <div>
         <h1 className="text-2xl font-semibold">Interessados</h1>
-        <p className="mt-1 text-neutral-400">
+        <p className="mt-1 text-neutral-500">
           Leads capturados na landing pública (
-          <a href="/descubra" target="_blank" className="text-emerald-400 hover:underline">
+          <a href="/descubra" target="_blank" className="text-emerald-600 hover:underline">
             /descubra
           </a>
           ) — seus próprios prospects de venda.
@@ -33,18 +33,18 @@ export default async function InteressadosPage() {
       </div>
 
       {rows.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-dashed border-neutral-800 bg-neutral-900/30 p-12 text-center">
+        <div className="mt-10 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
           <p className="text-4xl">🧲</p>
-          <h2 className="mt-3 font-medium text-white">Nenhum interessado ainda</h2>
-          <p className="mt-1 text-sm text-neutral-400">
+          <h2 className="mt-3 font-medium text-neutral-900">Nenhum interessado ainda</h2>
+          <p className="mt-1 text-sm text-neutral-500">
             Rode tráfego para a landing <strong>/descubra</strong> — cada visitante que deixar o
             contato aparece aqui.
           </p>
         </div>
       ) : (
-        <div className="mt-6 overflow-hidden rounded-xl border border-neutral-800">
+        <div className="mt-6 overflow-hidden rounded-xl border border-neutral-200">
           <table className="w-full text-left text-sm">
-            <thead className="bg-neutral-900/60 text-xs uppercase tracking-wide text-neutral-500">
+            <thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
               <tr>
                 <th className="px-4 py-3 font-medium">Nome</th>
                 <th className="px-4 py-3 font-medium">E-mail</th>
@@ -54,14 +54,14 @@ export default async function InteressadosPage() {
                 <th className="px-4 py-3 font-medium">Quando</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-800">
+            <tbody className="divide-y divide-neutral-200">
               {rows.map((i) => (
-                <tr key={i.id} className="hover:bg-neutral-900/40">
-                  <td className="px-4 py-3 text-neutral-100">{i.nome ?? "—"}</td>
-                  <td className="px-4 py-3 text-neutral-300">{i.email}</td>
-                  <td className="px-4 py-3 text-neutral-300">{i.telefone ?? "—"}</td>
-                  <td className="px-4 py-3 text-neutral-300">{i.empresa ?? "—"}</td>
-                  <td className="px-4 py-3 text-neutral-400">
+                <tr key={i.id} className="hover:bg-neutral-100">
+                  <td className="px-4 py-3 text-neutral-900">{i.nome ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-700">{i.email}</td>
+                  <td className="px-4 py-3 text-neutral-700">{i.telefone ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-700">{i.empresa ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-500">
                     {i.segmento ?? "—"}
                     {i.uf ? ` · ${i.uf}` : ""}
                   </td>

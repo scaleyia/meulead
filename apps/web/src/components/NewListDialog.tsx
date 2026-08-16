@@ -36,12 +36,12 @@ export function NewListDialog() {
           }}
         >
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-300">Nome da lista</span>
+            <span className="text-sm font-medium text-neutral-700">Nome da lista</span>
             <input name="name" required autoFocus placeholder="Ex: Restaurantes SP" className="input" />
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-300">Origem (opcional)</span>
+            <span className="text-sm font-medium text-neutral-700">Origem (opcional)</span>
             <select name="source" defaultValue="manual" className="input">
               {SOURCE_OPTIONS.map((s) => (
                 <option key={s} value={s}>
@@ -52,7 +52,7 @@ export function NewListDialog() {
           </label>
 
           {error && (
-            <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-400">{error}</p>
+            <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>
           )}
 
           <div className="mt-2 flex justify-end gap-2">

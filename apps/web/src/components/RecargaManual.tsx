@@ -34,7 +34,7 @@ export function RecargaManual() {
       <Button type="submit" disabled={pending}>
         {pending ? "Adicionando…" : "Adicionar créditos"}
       </Button>
-      {msg && <span className="text-sm text-neutral-400">{msg}</span>}
+      {msg && <span className="text-sm text-neutral-500">{msg}</span>}
     </form>
   );
 }

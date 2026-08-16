@@ -39,14 +39,14 @@ export function Modal({
         >
           <div
             className={clsx(
-              "w-full max-w-md rounded-2xl border border-neutral-800 bg-neutral-900 p-6 shadow-2xl",
+              "w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6 shadow-2xl",
               "animate-in",
             )}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4">
-              <h2 className="text-lg font-semibold text-white">{title}</h2>
-              {description && <p className="mt-1 text-sm text-neutral-400">{description}</p>}
+              <h2 className="text-lg font-semibold text-neutral-900">{title}</h2>
+              {description && <p className="mt-1 text-sm text-neutral-500">{description}</p>}
             </div>
             {children(() => setOpen(false))}
           </div>

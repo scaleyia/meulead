@@ -18,7 +18,7 @@ export async function login(_prev: ActionState, formData: FormData): Promise<Act
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) return { error: traduzErro(error.message) };
-  redirect("/dashboard?entrada=1");
+  redirect("/dashboard");
 }
 
 export async function signup(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -38,7 +38,7 @@ export async function signup(_prev: ActionState, formData: FormData): Promise<Ac
   });
 
   if (error) return { error: traduzErro(error.message) };
-  redirect("/dashboard?entrada=1");
+  redirect("/dashboard");
 }
 
 export async function logout() {
