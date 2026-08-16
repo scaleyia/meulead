@@ -3,10 +3,12 @@ import { clsx } from "@/lib/clsx";
 type Variant = "primary" | "ghost" | "danger" | "outline";
 
 const styles: Record<Variant, string> = {
-  primary: "bg-emerald-500 text-white hover:bg-emerald-400",
-  outline: "border border-neutral-300 text-neutral-800 hover:bg-neutral-100",
-  ghost: "text-neutral-700 hover:bg-neutral-100",
-  danger: "bg-red-500/90 text-white hover:bg-red-500",
+  primary:
+    "bg-gradient-to-b from-emerald-500 to-emerald-600 text-white shadow-sm shadow-emerald-600/20 hover:from-emerald-400 hover:to-emerald-500",
+  outline: "border border-neutral-300 bg-white text-neutral-800 shadow-sm hover:bg-neutral-50",
+  ghost: "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
+  danger:
+    "bg-gradient-to-b from-red-500 to-red-600 text-white shadow-sm shadow-red-600/20 hover:from-red-400 hover:to-red-500",
 };
 
 export function Button({
@@ -17,7 +19,9 @@ export function Button({
   return (
     <button
       className={clsx(
-        "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition disabled:opacity-60",
+        "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-150",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40",
+        "active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60",
         styles[variant],
         className,
       )}

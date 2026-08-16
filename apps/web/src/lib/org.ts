@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 
 export interface ActiveOrg {
@@ -11,8 +12,9 @@ export interface ActiveOrg {
 }
 
 // Retorna a org ativa do usuário logado (a primeira da qual é membro).
-// Retorna null se não houver sessão. Usar em Server Components / Actions.
-export async function getActiveOrg(): Promise<ActiveOrg | null> {
+// Retorna null se não houver sessão. `cache` deduplica chamadas no mesmo
+// render (layout + página não consultam o banco duas vezes).
+export const getActiveOrg = cache(async (): Promise<ActiveOrg | null> => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -42,4 +44,4 @@ export async function getActiveOrg(): Promise<ActiveOrg | null> {
     creditosExtra: org?.creditos_extra ?? 0,
     creditosRenovamEm: org?.creditos_renovam_em ?? new Date().toISOString(),
   };
-}
+});

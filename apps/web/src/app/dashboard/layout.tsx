@@ -17,7 +17,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <Sidebar isAdmin={isAdmin(org.email)} />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-neutral-200 px-6 py-3">
+        <header className="sticky top-0 z-20 flex items-center justify-between border-b border-neutral-200 bg-white/70 px-6 py-3 backdrop-blur-xl">
           <div className="flex items-center gap-2 text-sm">
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/15 text-xs font-bold text-emerald-600">
               {org.orgName.charAt(0).toUpperCase()}
@@ -49,7 +49,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto p-6 lg:p-8">{children}</main>
+        <main className="flex-1 overflow-auto p-6 lg:p-8">
+          <div className="anim-in h-full">{children}</div>
+        </main>
       </div>
     </div>
   );
