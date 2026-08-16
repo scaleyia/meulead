@@ -6,11 +6,11 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_place
 export const stripeConfigurado = (process.env.STRIPE_SECRET_KEY ?? "").startsWith("rk_") ||
   (process.env.STRIPE_SECRET_KEY ?? "").startsWith("sk_");
 
-// Catálogo de preços criados na Stripe (modo teste).
+// Catálogo de preços criados na Stripe (modo LIVE).
 export const PRECOS_ASSINATURA: Record<string, string> = {
-  starter: "price_1U5A49COGF2r7yId9yKoZd1h",
-  pro: "price_1U5A4ACOGF2r7yIdCD2jLYXj",
-  scale: "price_1U5A4CCOGF2r7yIdYrwRd4q3",
+  starter: "price_1U5AmyFlEn26WuJOmNmsB9qR",
+  pro: "price_1U5AmzFlEn26WuJOfYdo4nh5",
+  scale: "price_1U5An0FlEn26WuJOqSQVUtVT",
 };
 
 export interface PacoteRecarga {
@@ -21,9 +21,9 @@ export interface PacoteRecarga {
 }
 
 export const PACOTES_RECARGA: PacoteRecarga[] = [
-  { id: "pack_100", creditos: 100, preco: 49, priceId: "price_1U5A4DCOGF2r7yIdsYusWQ9S" },
-  { id: "pack_500", creditos: 500, preco: 199, priceId: "price_1U5A4ECOGF2r7yIdkgyCHUUT" },
-  { id: "pack_1000", creditos: 1000, preco: 349, priceId: "price_1U5A4GCOGF2r7yIdlVd5Mpad" },
+  { id: "pack_100", creditos: 100, preco: 49, priceId: "price_1U5An2FlEn26WuJOITrpJOcv" },
+  { id: "pack_500", creditos: 500, preco: 199, priceId: "price_1U5An3FlEn26WuJOeR0QYUv8" },
+  { id: "pack_1000", creditos: 1000, preco: 349, priceId: "price_1U5An4FlEn26WuJOfo9Wo7Wi" },
 ];
 
 // Processa uma sessão de checkout paga e credita a org. IDEMPOTENTE:
