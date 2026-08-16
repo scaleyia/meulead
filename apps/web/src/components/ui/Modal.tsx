@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { clsx } from "@/lib/clsx";
 
 // Modal reutilizável. `children` é uma função que recebe `close`
@@ -17,6 +18,9 @@ export function Modal({
   children: (close: () => void) => React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;
@@ -32,7 +36,9 @@ export function Modal({
   return (
     <>
       {trigger(() => setOpen(true))}
-      {open && (
+      {mounted &&
+        open &&
+        createPortal(
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/20 p-4"
           onClick={() => setOpen(false)}
@@ -50,8 +56,9 @@ export function Modal({
             </div>
             {children(() => setOpen(false))}
           </div>
-        </div>
-      )}
+        </div>,
+          document.body,
+        )}
     </>
   );
 }
