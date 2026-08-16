@@ -30,12 +30,6 @@ export default async function CampaignsPage() {
         </div>
         <CampaignForm listas={listas ?? []} sessoes={sessoes ?? []} />
       </div>
-
-      <div className="mt-6 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-sm text-neutral-700">
-        O envio é processado pelo n8n + Evolution API, com revezamento entre os chips e
-        intervalos seguros. Conecte seus números em Conectar WhatsApp.
-      </div>
-
       {rows.length === 0 ? (
         <div className="mt-10 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
           <p className="text-4xl">🚀</p>

@@ -106,7 +106,7 @@ export function WhatsappPanel({ sessoes }: { sessoes: Sessao[] }) {
                   <div>
                     <h3 className="font-medium text-neutral-900">{s.nome}</h3>
                     <p className="text-xs text-neutral-500">
-                      {s.numero || `instância: ${s.instancia}`}
+                      {s.numero || "Ainda não conectado"}
                     </p>
                   </div>
                   <div className="flex flex-col items-end gap-1.5">
@@ -168,7 +168,7 @@ function NovaSessao() {
   return (
     <Modal
       title="Novo número"
-      description="Dê um nome e o identificador da instância na Evolution API."
+      description="Dê um nome para identificar este número (ex: Comercial)."
       trigger={(open) => <Button onClick={open}>+ Número</Button>}
     >
       {(close) => (
@@ -179,10 +179,9 @@ function NovaSessao() {
             setError(null);
             const fd = new FormData(e.currentTarget);
             const nome = String(fd.get("nome") ?? "");
-            const instancia = String(fd.get("instancia") ?? "");
-            if (!nome.trim() || !instancia.trim()) return setError("Preencha nome e instância.");
+            if (!nome.trim()) return setError("Dê um nome ao número.");
             start(async () => {
-              const res = await criarSessao(nome, instancia);
+              const res = await criarSessao(nome);
               if (res && !res.ok) return setError(res.error);
               close();
               router.refresh();
@@ -190,7 +189,6 @@ function NovaSessao() {
           }}
         >
           <input name="nome" autoFocus placeholder="Ex: Comercial" className="input" />
-          <input name="instancia" placeholder="Ex: vendas-01" className="input" />
           {error && (
             <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>
           )}

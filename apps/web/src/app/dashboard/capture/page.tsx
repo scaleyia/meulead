@@ -17,17 +17,11 @@ export default async function CapturePage() {
         <div>
           <h1 className="text-2xl font-semibold">Captação de Leads</h1>
           <p className="mt-1 text-neutral-500">
-            Dispare captações de leads via Apify e acompanhe cada execução.
+            Capte o contato do dono por segmento e acompanhe cada busca.
           </p>
         </div>
         <CaptureForm />
       </div>
-
-      <div className="mt-6 rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-amber-700">
-        A execução real no Apify será disparada pelo n8n/worker com o seu token. Por enquanto, cada
-        captação fica registrada como <span className="font-medium">&quot;pendente&quot;</span>.
-      </div>
-
       {jobs.length === 0 ? (
         <div className="mt-10 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
           <p className="text-4xl">🎯</p>

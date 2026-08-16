@@ -17,23 +17,23 @@ export type ConectarResult =
   | { ok: true; qr: string | null; pairingCode: string | null }
   | { ok: false; error: string };
 
-export async function criarSessao(nome: string, instancia: string): Promise<ActionResult> {
+export async function criarSessao(nome: string): Promise<ActionResult> {
   const org = await getActiveOrg();
   if (!org) return { ok: false, error: "Sessão expirada." };
-  if (!nome.trim()) return { ok: false, error: "Dê um nome à sessão." };
-  if (!instancia.trim()) return { ok: false, error: "Informe o nome da instância." };
+  if (!nome.trim()) return { ok: false, error: "Dê um nome ao número." };
 
-  // Isola por organização: o nome da instância na Evolution precisa ser único
-  // globalmente (multi-tenant). Prefixamos com um trecho do org id.
-  const slug = instancia
+  // Gera automaticamente um identificador técnico único (multi-tenant),
+  // a partir do nome + org + sufixo aleatório. O usuário não precisa saber disso.
+  const slug = nome
     .trim()
     .toLowerCase()
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .slice(0, 24);
-  const instanciaUnica = `${org.orgId.slice(0, 8)}-${slug || "wpp"}`;
+    .slice(0, 20);
+  const rand = Math.random().toString(36).slice(2, 6);
+  const instanciaUnica = `${org.orgId.slice(0, 8)}-${slug || "wpp"}-${rand}`;
 
   const supabase = await createClient();
   const { error } = await supabase.from("sessoes_whatsapp").insert({
