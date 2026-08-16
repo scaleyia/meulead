@@ -37,7 +37,9 @@ async function CrmContent({ orgId }: { orgId: string }) {
   // Base = TODOS os leads (mesmo os que ainda não receberam disparo).
   const { data: leads } = await supabase
     .from("leads")
-    .select("id, nome, empresa, telefone, email, origem, status_crm")
+    .select(
+      "id, nome, empresa, telefone, email, origem, status_crm, website, instagram, seguidores, nota, endereco",
+    )
     .eq("organizacao_id", orgId)
     .order("criado_em", { ascending: false });
 
@@ -92,6 +94,11 @@ async function CrmContent({ orgId }: { orgId: string }) {
       telefone: lead.telefone,
       email: lead.email,
       origem: lead.origem,
+      website: lead.website,
+      instagram: lead.instagram,
+      seguidores: lead.seguidores,
+      nota: lead.nota,
+      endereco: lead.endereco,
       campanha: campanha?.nome ?? null,
       chip: sessao?.nome ?? null,
       status,

@@ -5,22 +5,19 @@ import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { criarJob } from "@/app/dashboard/capture/actions";
-import { UFS } from "@/lib/segmentos";
-import { CNAES } from "@/lib/cnaes";
-import { SegmentoBusca } from "@/components/SegmentoBusca";
 
-type Modo = "donos" | "google_maps";
+type Modo = "google_maps" | "instagram";
 
 export function CaptureForm() {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [modo, setModo] = useState<Modo>("donos");
+  const [modo, setModo] = useState<Modo>("google_maps");
 
   return (
     <Modal
       title="Nova captação"
-      description="Escolha como quer captar os leads."
+      description="Escolha a fonte e o que quer buscar."
       trigger={(open) => <Button onClick={open}>+ Nova captação</Button>}
     >
       {(close) => (
@@ -32,54 +29,37 @@ export function CaptureForm() {
             const fd = new FormData(e.currentTarget);
             const quantidade = Number(fd.get("quantidade") ?? 20);
             const nomeLista = String(fd.get("nomeLista") ?? "").trim();
+            const termoBusca = String(fd.get("termoBusca") ?? "").trim();
+            if (!termoBusca) return setError("Informe o que você quer buscar.");
+            const localizacao = String(fd.get("localizacao") ?? "").trim();
 
-            if (modo === "donos") {
-              const uf = String(fd.get("uf") ?? "");
-              const codigo = String(fd.get("cnae") ?? "");
-              const item = CNAES.find((c) => c.cnae === codigo);
-              if (!item) {
-                return setError("Digite o nicho e escolha uma opção da lista.");
-              }
-              start(async () => {
-                const res = await criarJob({
-                  origem: "cnpj",
-                  cnae: item.cnae,
-                  segmentoLabel: item.label,
-                  uf,
-                  quantidade,
-                  nomeLista,
-                });
-                if (!res.ok) return setError(res.error);
-                close();
-                router.refresh();
-              });
-              return;
-            }
-
-            const termoBusca = String(fd.get("termoBusca") ?? "");
-            const localizacao = String(fd.get("localizacao") ?? "");
-            if (!termoBusca.trim()) return setError("Informe o termo de busca.");
             start(async () => {
-              const res = await criarJob({ origem: "google_maps", termoBusca, localizacao, quantidade, nomeLista });
+              const res = await criarJob({
+                origem: modo,
+                termoBusca,
+                localizacao,
+                quantidade,
+                nomeLista,
+              });
               if (!res.ok) return setError(res.error);
               close();
               router.refresh();
             });
           }}
         >
-          {/* Seletor de modo */}
+          {/* Seletor de fonte */}
           <div className="grid grid-cols-2 gap-2">
-            <ModoCard
-              ativo={modo === "donos"}
-              onClick={() => setModo("donos")}
-              titulo="👤 Donos"
-              sub="Nome + telefone do dono (por segmento)"
-            />
             <ModoCard
               ativo={modo === "google_maps"}
               onClick={() => setModo("google_maps")}
               titulo="🗺️ Google Maps"
-              sub="Número comercial (por termo)"
+              sub="Negócios locais — com site, nota e endereço"
+            />
+            <ModoCard
+              ativo={modo === "instagram"}
+              onClick={() => setModo("instagram")}
+              titulo="📸 Instagram"
+              sub="Perfis por nicho — com seguidores e link"
             />
           </div>
 
@@ -92,57 +72,56 @@ export function CaptureForm() {
               className="input"
             />
             <span className="text-xs text-neutral-500">
-              Dê um nome pra reconhecer essa lista no CRM. Se deixar vazio, usamos o nicho automaticamente.
+              Dê um nome pra reconhecer no CRM. Se deixar vazio, geramos automaticamente.
             </span>
           </label>
 
-          {modo === "donos" ? (
-            <>
-              <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-700">Nicho (segmento)</span>
-                <SegmentoBusca />
-                <span className="text-xs text-neutral-500">
-                  Digite o nicho e <strong>escolha uma opção da lista</strong> — traz o dono daquele
-                  segmento.
-                </span>
-              </label>
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-neutral-700">
+              {modo === "instagram" ? "Nicho / palavra-chave" : "O que buscar"}
+            </span>
+            <input
+              name="termoBusca"
+              required
+              placeholder={
+                modo === "instagram"
+                  ? "Ex: hamburgueria, estúdio de tatuagem, petshop"
+                  : "Ex: restaurantes, clínicas de estética, academias"
+              }
+              className="input"
+            />
+          </label>
 
-              <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-700">Estado</span>
-                <select name="uf" defaultValue="SP" className="input">
-                  {UFS.map((uf) => (
-                    <option key={uf} value={uf}>
-                      {uf}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <p className="rounded-md bg-emerald-500/10 px-3 py-2 text-xs text-emerald-700">
-                Traz <strong>nome do dono</strong> (sócio) + telefone e e-mail registrados na Receita
-                (empresas de pequeno porte).
-              </p>
-            </>
-          ) : (
-            <>
-              <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-700">Termo de busca</span>
-                <input name="termoBusca" required placeholder="Ex: restaurantes" className="input" />
-              </label>
-              <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-700">Localização (opcional)</span>
-                <input name="localizacao" placeholder="Ex: São Paulo, SP" className="input" />
-              </label>
-              <p className="rounded-md bg-neutral-100 px-3 py-2 text-xs text-neutral-500">
-                Traz o <strong>número comercial</strong> da loja (público no Google Maps) — nem sempre é
-                o dono.
-              </p>
-            </>
+          {modo === "google_maps" && (
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-neutral-700">Localização (opcional)</span>
+              <input name="localizacao" placeholder="Ex: São Paulo, SP" className="input" />
+            </label>
           )}
+
+          <div
+            className={`rounded-md px-3 py-2 text-xs ${
+              modo === "instagram"
+                ? "bg-fuchsia-500/10 text-fuchsia-700"
+                : "bg-emerald-500/10 text-emerald-700"
+            }`}
+          >
+            {modo === "instagram" ? (
+              <>
+                Traz <strong>perfis do nicho</strong> com seguidores, link da bio e contato quando
+                público. Ideal pra ver presença digital.
+              </>
+            ) : (
+              <>
+                Traz o <strong>negócio</strong> com telefone, <strong>site (ou a falta dele)</strong>
+                , nota e endereço — perfeito pra qualificar e prospectar.
+              </>
+            )}
+          </div>
 
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-medium text-neutral-700">Quantidade</span>
-            <input name="quantidade" type="number" defaultValue={20} min={1} max={500} className="input" />
+            <input name="quantidade" type="number" defaultValue={20} min={1} max={120} className="input" />
             <span className="text-xs text-amber-600">
               ⚡ Cada lead captado usa 1 crédito (limitado ao seu saldo).
             </span>
@@ -157,7 +136,7 @@ export function CaptureForm() {
               Cancelar
             </Button>
             <Button type="submit" disabled={pending}>
-              {pending ? "Captando…" : "Captar leads"}
+              {pending ? "Iniciando…" : "Captar leads"}
             </Button>
           </div>
         </form>

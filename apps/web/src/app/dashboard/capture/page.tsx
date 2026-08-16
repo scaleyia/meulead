@@ -1,10 +1,23 @@
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrg } from "@/lib/org";
+import { sincronizarJobs } from "@/lib/captura";
 import { CaptureForm } from "@/components/CaptureForm";
 import { CaptureJobsTable, type CaptureJob } from "@/components/CaptureJobsTable";
 import { AutoRefresh } from "@/components/AutoRefresh";
 
 export default async function CapturePage() {
   const supabase = await createClient();
+
+  // Importa (e qualifica) os resultados de buscas que já terminaram no Apify.
+  const org = await getActiveOrg();
+  if (org) {
+    try {
+      await sincronizarJobs(org.orgId);
+    } catch {
+      // se a sincronização falhar, a página continua carregando normalmente
+    }
+  }
+
   const { data } = await supabase
     .from("jobs_apify")
     .select("id, origem, termo_busca, localizacao, quantidade, status, criado_em")
@@ -21,7 +34,8 @@ export default async function CapturePage() {
         <div>
           <h1 className="text-2xl font-semibold">Captação de Leads</h1>
           <p className="mt-1 text-neutral-500">
-            Capte o contato do dono por segmento e acompanhe cada busca.
+            Capte leads pelo Google Maps ou Instagram e qualifique o feed (quem tem site e quem
+            não tem).
           </p>
         </div>
         <CaptureForm />

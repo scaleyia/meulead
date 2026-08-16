@@ -20,7 +20,9 @@ export default async function ListDetailPage({ params }: { params: Promise<{ id:
 
   const { data: leads } = await supabase
     .from("leads")
-    .select("id, nome, empresa, telefone, email, origem, criado_em")
+    .select(
+      "id, nome, empresa, telefone, email, origem, website, instagram, seguidores, nota, total_avaliacoes, endereco, criado_em",
+    )
     .eq("lista_id", id)
     .order("criado_em", { ascending: false });
 

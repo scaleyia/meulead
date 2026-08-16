@@ -188,43 +188,64 @@ export type Database = {
       }
       leads: {
         Row: {
+          categoria: string | null
           criado_em: string
           dados_brutos: Json | null
           email: string | null
           empresa: string | null
+          endereco: string | null
           id: string
+          instagram: string | null
           lista_id: string | null
           nome: string | null
+          nota: number | null
           organizacao_id: string
           origem: string
+          seguidores: number | null
           status_crm: string | null
           telefone: string | null
+          total_avaliacoes: number | null
+          website: string | null
         }
         Insert: {
+          categoria?: string | null
           criado_em?: string
           dados_brutos?: Json | null
           email?: string | null
           empresa?: string | null
+          endereco?: string | null
           id?: string
+          instagram?: string | null
           lista_id?: string | null
           nome?: string | null
+          nota?: number | null
           organizacao_id: string
           origem?: string
+          seguidores?: number | null
           status_crm?: string | null
           telefone?: string | null
+          total_avaliacoes?: number | null
+          website?: string | null
         }
         Update: {
+          categoria?: string | null
           criado_em?: string
           dados_brutos?: Json | null
           email?: string | null
           empresa?: string | null
+          endereco?: string | null
           id?: string
+          instagram?: string | null
           lista_id?: string | null
           nome?: string | null
+          nota?: number | null
           organizacao_id?: string
           origem?: string
+          seguidores?: number | null
           status_crm?: string | null
           telefone?: string | null
+          total_avaliacoes?: number | null
+          website?: string | null
         }
         Relationships: []
       }

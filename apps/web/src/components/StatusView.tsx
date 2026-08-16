@@ -13,9 +13,22 @@ export interface StatusItem {
   telefone: string | null;
   email: string | null;
   origem: string | null;
+  website: string | null;
+  instagram: string | null;
+  seguidores: number | null;
+  nota: number | null;
+  endereco: string | null;
   campanha: string | null;
   chip: string | null;
   status: string;
+}
+
+function temSite(l: StatusItem): boolean {
+  return !!(l.website && l.website.trim());
+}
+
+function hrefUrl(url: string): string {
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
 }
 
 export interface CampanhaOption {
@@ -241,6 +254,27 @@ export function StatusView({
                         <p className="mt-2 text-sm tabular-nums text-neutral-700">
                           {formatarTelefone(i.telefone)}
                         </p>
+                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                          {temSite(i) ? (
+                            <span className="rounded-md bg-neutral-100 px-1.5 py-0.5 text-[11px] font-medium text-neutral-600">
+                              Com site
+                            </span>
+                          ) : (
+                            <span className="rounded-md bg-red-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-red-600 ring-1 ring-red-500/20">
+                              SEM SITE
+                            </span>
+                          )}
+                          {i.nota != null && (
+                            <span className="rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-600">
+                              {i.nota.toFixed(1)} ★
+                            </span>
+                          )}
+                          {i.instagram && (
+                            <span className="rounded-md bg-fuchsia-500/10 px-1.5 py-0.5 text-[11px] font-medium text-fuchsia-600">
+                              Instagram
+                            </span>
+                          )}
+                        </div>
                         <div className="mt-3 flex items-center gap-2 border-t border-neutral-100 pt-2 text-[11px] text-neutral-400">
                           <span className="truncate">{i.campanha ?? "Sem campanha"}</span>
                           {i.chip && (
@@ -383,6 +417,53 @@ function LeadDetail({
             acao={lead.email ? () => copiar(lead.email!, "email") : undefined}
             copiado={copiado === "email"}
           />
+          <div className="flex items-center justify-between gap-3">
+            <dt className="shrink-0 text-neutral-400">Site</dt>
+            <dd className="text-right">
+              {temSite(lead) ? (
+                <a
+                  href={hrefUrl(lead.website!)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-600 hover:text-emerald-500"
+                >
+                  {lead.website!.replace(/^https?:\/\//i, "").replace(/^www\./i, "")} ↗
+                </a>
+              ) : (
+                <span className="rounded-md bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-600 ring-1 ring-red-500/20">
+                  SEM SITE
+                </span>
+              )}
+            </dd>
+          </div>
+          {lead.nota != null && (
+            <Linha rotulo="Nota (Google)" valor={`${lead.nota.toFixed(1)} ★`} />
+          )}
+          <div className="flex items-center justify-between gap-3">
+            <dt className="shrink-0 text-neutral-400">Instagram</dt>
+            <dd className="text-right">
+              {lead.instagram ? (
+                <a
+                  href={hrefUrl(lead.instagram)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-fuchsia-600 hover:text-fuchsia-500"
+                >
+                  ver perfil
+                  {lead.seguidores != null && (
+                    <span className="text-xs text-neutral-400">
+                      {" "}
+                      · {lead.seguidores.toLocaleString("pt-BR")}
+                    </span>
+                  )}{" "}
+                  ↗
+                </a>
+              ) : (
+                <span className="text-neutral-500">—</span>
+              )}
+            </dd>
+          </div>
+          {lead.endereco && <Linha rotulo="Endereço" valor={lead.endereco} />}
           <Linha rotulo="Origem" valor={lead.origem ? sourceLabel(lead.origem) : "—"} />
           <Linha rotulo="Campanha" valor={lead.campanha ?? "Sem campanha"} />
           <Linha rotulo="Chip" valor={lead.chip ?? "—"} />
