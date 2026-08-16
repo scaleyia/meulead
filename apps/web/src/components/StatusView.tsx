@@ -17,26 +17,29 @@ export interface CampanhaOption {
   nome: string;
 }
 
-type Coluna = "pendente" | "enviado" | "entregue" | "falhou";
+type Coluna = "nao_disparado" | "pendente" | "enviado" | "entregue" | "falhou";
 
 const COLUNAS: { key: Coluna; label: string }[] = [
+  { key: "nao_disparado", label: "Não disparado" },
   { key: "pendente", label: "Pendente" },
   { key: "enviado", label: "Enviado" },
   { key: "entregue", label: "Entregue" },
   { key: "falhou", label: "Falhou" },
 ];
 
-// 'lido' conta como Entregue.
+// 'lido' conta como Entregue. Lead sem disparo = "Não disparado".
 function normalizar(status: string): Coluna {
   const s = status.toLowerCase();
   if (s === "lido" || s === "entregue") return "entregue";
   if (s === "enviado") return "enviado";
   if (s === "falhou") return "falhou";
-  return "pendente";
+  if (s === "pendente") return "pendente";
+  return "nao_disparado";
 }
 
 const BADGE: Record<Coluna, string> = {
-  pendente: "bg-neutral-100 text-neutral-700 border border-neutral-300",
+  nao_disparado: "bg-neutral-100 text-neutral-500 border border-neutral-200",
+  pendente: "bg-amber-500/10 text-amber-600 border border-amber-500/30",
   enviado: "bg-blue-500/10 text-blue-600 border border-blue-500/30",
   entregue: "bg-emerald-500/10 text-emerald-600 border border-emerald-500/30",
   falhou: "bg-red-500/10 text-red-600 border border-red-500/30",
@@ -69,6 +72,7 @@ export function StatusView({
 
   const porColuna = useMemo(() => {
     const map: Record<Coluna, StatusItem[]> = {
+      nao_disparado: [],
       pendente: [],
       enviado: [],
       entregue: [],
@@ -121,7 +125,7 @@ export function StatusView({
       </div>
 
       {visao === "kanban" ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {COLUNAS.map((col) => (
             <div
               key={col.key}

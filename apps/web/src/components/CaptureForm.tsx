@@ -14,6 +14,7 @@ export function CaptureForm() {
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [modo, setModo] = useState<Modo>("donos");
+  const [cnaeSel, setCnaeSel] = useState(SEGMENTOS[0].cnae);
 
   return (
     <Modal
@@ -32,8 +33,28 @@ export function CaptureForm() {
 
             if (modo === "donos") {
               const cnae = String(fd.get("cnae") ?? "");
-              const segmentoLabel = SEGMENTOS.find((s) => s.cnae === cnae)?.label ?? "Segmento";
               const uf = String(fd.get("uf") ?? "");
+
+              // Nicho personalizado: usa a busca por termo (Google Maps) para
+              // qualquer segmento que não esteja na lista.
+              if (cnae === "outro") {
+                const nicho = String(fd.get("nichoCustom") ?? "").trim();
+                if (!nicho) return setError("Digite o nicho que você quer captar.");
+                start(async () => {
+                  const res = await criarJob({
+                    origem: "google_maps",
+                    termoBusca: nicho,
+                    localizacao: uf,
+                    quantidade,
+                  });
+                  if (!res.ok) return setError(res.error);
+                  close();
+                  router.refresh();
+                });
+                return;
+              }
+
+              const segmentoLabel = SEGMENTOS.find((s) => s.cnae === cnae)?.label ?? "Segmento";
               if (!cnae) return setError("Escolha um segmento.");
               start(async () => {
                 const res = await criarJob({ origem: "cnpj", cnae, segmentoLabel, uf, quantidade });
@@ -75,14 +96,36 @@ export function CaptureForm() {
             <>
               <label className="flex flex-col gap-1.5">
                 <span className="text-sm font-medium text-neutral-700">Segmento</span>
-                <select name="cnae" defaultValue={SEGMENTOS[0].cnae} className="input" autoFocus>
+                <select
+                  name="cnae"
+                  value={cnaeSel}
+                  onChange={(e) => setCnaeSel(e.target.value)}
+                  className="input"
+                  autoFocus
+                >
                   {SEGMENTOS.map((s) => (
                     <option key={s.cnae} value={s.cnae}>
                       {s.label}
                     </option>
                   ))}
+                  <option value="outro">✍️ Outro segmento (digitar)</option>
                 </select>
               </label>
+
+              {cnaeSel === "outro" && (
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-medium text-neutral-700">Qual nicho?</span>
+                  <input
+                    name="nichoCustom"
+                    placeholder="Ex: petshops, dentistas, academias…"
+                    className="input"
+                    autoFocus
+                  />
+                  <span className="text-xs text-neutral-500">
+                    Nichos personalizados são buscados por termo (dados do estabelecimento).
+                  </span>
+                </label>
+              )}
 
               <label className="flex flex-col gap-1.5">
                 <span className="text-sm font-medium text-neutral-700">Estado</span>

@@ -11,9 +11,8 @@ export default function DescubraPage() {
   return (
     <main className="min-h-screen bg-white text-neutral-900">
       <header className="flex items-center justify-between px-6 py-5">
-        <span className="text-lg font-bold">
-          Meu<span className="text-emerald-600">Lead</span>
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.png" alt="MeuLead" className="h-9 w-auto" />
         <nav className="flex items-center gap-4 text-sm">
           <Link href="/planos" className="text-neutral-500 hover:text-neutral-900">
             Planos

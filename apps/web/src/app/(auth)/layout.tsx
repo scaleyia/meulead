@@ -5,7 +5,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="mb-8 text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="MeuLead" className="mx-auto h-auto w-44" />
-          <p className="mt-3 text-sm text-neutral-500">Capte, gerencie e converta seus leads.</p>
         </div>
         <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-6 shadow-xl">
           {children}

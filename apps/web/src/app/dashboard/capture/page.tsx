@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { CaptureForm } from "@/components/CaptureForm";
 import { CaptureJobsTable, type CaptureJob } from "@/components/CaptureJobsTable";
+import { AutoRefresh } from "@/components/AutoRefresh";
 
 export default async function CapturePage() {
   const supabase = await createClient();
@@ -10,9 +11,12 @@ export default async function CapturePage() {
     .order("criado_em", { ascending: false });
 
   const jobs = (data ?? []) as CaptureJob[];
+  const emAndamento = jobs.some((j) => j.status === "pendente" || j.status === "rodando");
 
   return (
     <div>
+      {/* Atualiza sozinho enquanto houver captação em andamento */}
+      <AutoRefresh ativo={emAndamento} />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Captação de Leads</h1>

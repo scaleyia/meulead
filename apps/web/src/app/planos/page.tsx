@@ -10,8 +10,9 @@ export default function PlanosPage() {
   return (
     <main className="min-h-screen bg-white text-neutral-900">
       <header className="flex items-center justify-between px-6 py-5">
-        <Link href="/descubra" className="text-lg font-bold">
-          Meu<span className="text-emerald-600">Lead</span>
+        <Link href="/descubra">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="MeuLead" className="h-9 w-auto" />
         </Link>
         <nav className="flex items-center gap-4 text-sm">
           <Link href="/descubra" className="text-neutral-500 hover:text-neutral-900">
