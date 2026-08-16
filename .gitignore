@@ -1,0 +1,26 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# builds
+.next/
+dist/
+out/
+build/
+.turbo/
+
+# env / segredos
+.env
+.env.local
+.env*.local
+
+# supabase local
+**/supabase/.branches
+**/supabase/.temp
+
+# exports de workflow do n8n — contêm tokens embutidos (Apify/Evolution)
+n8n/*.json
+
+# sistema
+.DS_Store
+*.log

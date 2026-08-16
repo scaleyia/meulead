@@ -1,0 +1,280 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Modal } from "@/components/ui/Modal";
+import { Button } from "@/components/ui/Button";
+import { clsx } from "@/lib/clsx";
+import { criarCampanha } from "@/app/dashboard/campaigns/actions";
+
+type Lista = { id: string; nome: string };
+type Sessao = { id: string; nome: string; status: string | null };
+type ModoEnvio = "auto" | "manual";
+
+export function CampaignForm({
+  listas,
+  sessoes,
+}: {
+  listas: Lista[];
+  sessoes: Sessao[];
+}) {
+  const router = useRouter();
+  const [pending, start] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  return (
+    <Modal
+      title="Nova campanha"
+      description="Prepare um disparo em massa com revezamento entre os chips."
+      trigger={(open) => <Button onClick={open}>+ Nova campanha</Button>}
+    >
+      {(close) => (
+        <CampaignFields
+          listas={listas}
+          sessoes={sessoes}
+          pending={pending}
+          error={error}
+          onCancel={close}
+          onSubmit={(input) => {
+            setError(null);
+            start(async () => {
+              const res = await criarCampanha(input);
+              if (!res.ok) return setError(res.error);
+              close();
+              router.refresh();
+            });
+          }}
+        />
+      )}
+    </Modal>
+  );
+}
+
+function CampaignFields({
+  listas,
+  sessoes,
+  pending,
+  error,
+  onCancel,
+  onSubmit,
+}: {
+  listas: Lista[];
+  sessoes: Sessao[];
+  pending: boolean;
+  error: string | null;
+  onCancel: () => void;
+  onSubmit: (input: {
+    nome: string;
+    listaId: string | null;
+    mensagem: string;
+    sessaoIds: string[];
+    modoEnvio: ModoEnvio;
+    intervaloMin: number;
+    intervaloMax: number;
+    limiteDiario: number;
+  }) => void;
+}) {
+  const [nome, setNome] = useState("");
+  const [listaId, setListaId] = useState("");
+  const [mensagem, setMensagem] = useState("");
+  const [sessaoIds, setSessaoIds] = useState<string[]>([]);
+  const [modoEnvio, setModoEnvio] = useState<ModoEnvio>("auto");
+  const [intervaloMin, setIntervaloMin] = useState(30);
+  const [intervaloMax, setIntervaloMax] = useState(90);
+  const [limiteDiario, setLimiteDiario] = useState(200);
+
+  const toggleSessao = (id: string) =>
+    setSessaoIds((prev) =>
+      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id],
+    );
+
+  return (
+    <form
+      className="flex max-h-[70vh] flex-col gap-4 overflow-y-auto pr-1"
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit({
+          nome,
+          listaId: listaId || null,
+          mensagem,
+          sessaoIds,
+          modoEnvio,
+          intervaloMin,
+          intervaloMax,
+          limiteDiario,
+        });
+      }}
+    >
+      <label className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium text-neutral-300">Nome da campanha</span>
+        <input
+          name="nome"
+          required
+          autoFocus
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          placeholder="Ex: Promoção de Julho"
+          className="input"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium text-neutral-300">Lista de contatos</span>
+        <select
+          value={listaId}
+          onChange={(e) => setListaId(e.target.value)}
+          className="input"
+        >
+          <option value="">— Selecione depois</option>
+          {listas.map((l) => (
+            <option key={l.id} value={l.id}>
+              {l.nome}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <label className="flex flex-col gap-1.5">
+        <span className="text-sm font-medium text-neutral-300">Mensagem</span>
+        <textarea
+          required
+          rows={5}
+          value={mensagem}
+          onChange={(e) => setMensagem(e.target.value)}
+          placeholder="Olá {{nome}}, tudo bem?"
+          className="input resize-y"
+        />
+        <span className="text-xs text-neutral-500">
+          Dica: use {"{{nome}}"} para personalizar com o nome do dono.
+        </span>
+      </label>
+
+      {/* Chips (contingência) — pool que será revezado no disparo. */}
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-medium text-neutral-300">Chips (contingência)</span>
+        {sessoes.length === 0 ? (
+          <p className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
+            Conecte um número em Conectar WhatsApp.
+          </p>
+        ) : (
+          <>
+            <div className="flex flex-col gap-1.5 rounded-lg border border-neutral-800 bg-neutral-950/40 p-3">
+              {sessoes.map((s) => (
+                <label
+                  key={s.id}
+                  className="flex cursor-pointer items-center gap-2.5 text-sm text-neutral-200"
+                >
+                  <input
+                    type="checkbox"
+                    checked={sessaoIds.includes(s.id)}
+                    onChange={() => toggleSessao(s.id)}
+                    className="h-4 w-4 accent-emerald-500"
+                  />
+                  <span>{s.nome}</span>
+                </label>
+              ))}
+            </div>
+            <span className="text-xs text-neutral-500">
+              O sistema reveza os disparos entre os números marcados.
+            </span>
+          </>
+        )}
+      </div>
+
+      {/* Modo de envio */}
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-medium text-neutral-300">Modo de envio</span>
+        <div className="grid grid-cols-2 gap-2">
+          <ModeCard
+            active={modoEnvio === "auto"}
+            onClick={() => setModoEnvio("auto")}
+            title="⚙️ Automático"
+            hint="O sistema escolhe intervalos seguros"
+          />
+          <ModeCard
+            active={modoEnvio === "manual"}
+            onClick={() => setModoEnvio("manual")}
+            title="✋ Manual"
+            hint="Você define os intervalos e o limite"
+          />
+        </div>
+
+        {modoEnvio === "manual" && (
+          <div className="mt-1 grid grid-cols-3 gap-2">
+            <label className="flex flex-col gap-1">
+              <span className="text-xs text-neutral-400">Intervalo mín. (s)</span>
+              <input
+                type="number"
+                min={1}
+                value={intervaloMin}
+                onChange={(e) => setIntervaloMin(Number(e.target.value))}
+                className="input"
+              />
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs text-neutral-400">Intervalo máx. (s)</span>
+              <input
+                type="number"
+                min={1}
+                value={intervaloMax}
+                onChange={(e) => setIntervaloMax(Number(e.target.value))}
+                className="input"
+              />
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs text-neutral-400">Limite por dia</span>
+              <input
+                type="number"
+                min={1}
+                value={limiteDiario}
+                onChange={(e) => setLimiteDiario(Number(e.target.value))}
+                className="input"
+              />
+            </label>
+          </div>
+        )}
+      </div>
+
+      {error && (
+        <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-400">{error}</p>
+      )}
+
+      <div className="mt-2 flex justify-end gap-2">
+        <Button type="button" variant="ghost" onClick={onCancel}>
+          Cancelar
+        </Button>
+        <Button type="submit" disabled={pending}>
+          {pending ? "Criando…" : "Criar campanha"}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+function ModeCard({
+  active,
+  onClick,
+  title,
+  hint,
+}: {
+  active: boolean;
+  onClick: () => void;
+  title: string;
+  hint: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={clsx(
+        "flex flex-col gap-1 rounded-lg border p-3 text-left transition",
+        active
+          ? "border-emerald-500/60 bg-emerald-500/10"
+          : "border-neutral-800 bg-neutral-950/40 hover:border-neutral-700",
+      )}
+    >
+      <span className="text-sm font-medium text-white">{title}</span>
+      <span className="text-xs text-neutral-400">{hint}</span>
+    </button>
+  );
+}
