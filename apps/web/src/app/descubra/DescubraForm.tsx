@@ -132,6 +132,7 @@ export function DescubraForm() {
               segmento: segmentoLabel,
               uf,
               estimativa,
+              hp: String(fd.get("website_url") ?? ""),
             };
             start(async () => {
               const res = await salvarInteressado(input);
@@ -140,6 +141,15 @@ export function DescubraForm() {
             });
           }}
         >
+          {/* honeypot anti-bot (invisível para humanos) */}
+          <input
+            type="text"
+            name="website_url"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            className="hidden"
+          />
           <input name="nome" placeholder="Seu nome" className="input" />
           <input name="empresa" placeholder="Sua empresa" className="input" />
           <input name="email" type="email" required placeholder="E-mail corporativo" className="input" />
@@ -154,6 +164,13 @@ export function DescubraForm() {
           >
             {pending ? "Enviando…" : "🔓 Liberar amostra grátis"}
           </button>
+          <p className="text-center text-[11px] leading-snug text-neutral-400">
+            Ao enviar, você concorda com nossa{" "}
+            <Link href="/privacidade" className="underline hover:text-neutral-600">
+              Política de Privacidade
+            </Link>
+            . Usamos seus dados apenas para enviar sua amostra.
+          </p>
           <button
             type="button"
             onClick={() => setEtapa("escolha")}

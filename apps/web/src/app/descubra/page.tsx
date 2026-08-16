@@ -58,6 +58,20 @@ export default function DescubraPage() {
           </p>
         </div>
       </section>
+
+      <footer className="mx-auto max-w-5xl border-t border-neutral-200 px-6 py-6 text-xs text-neutral-500">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <span>© {new Date().getFullYear()} MeuLead</span>
+          <div className="flex gap-4">
+            <Link href="/privacidade" className="hover:text-neutral-900">
+              Privacidade
+            </Link>
+            <Link href="/termos" className="hover:text-neutral-900">
+              Termos
+            </Link>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }

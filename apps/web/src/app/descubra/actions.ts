@@ -12,10 +12,16 @@ export async function salvarInteressado(input: {
   segmento: string;
   uf: string;
   estimativa: number;
+  hp?: string; // honeypot anti-bot (deve vir vazio)
 }): Promise<ActionResult> {
+  // Anti-spam: se o campo oculto foi preenchido, é bot — finge sucesso e ignora.
+  if (input.hp && input.hp.trim() !== "") return { ok: true };
+
   const email = input.email.trim().toLowerCase();
   if (!email || !email.includes("@")) return { ok: false, error: "Informe um e-mail válido." };
   if (!input.telefone.trim()) return { ok: false, error: "Informe seu telefone." };
+  if (input.telefone.replace(/\D/g, "").length < 8)
+    return { ok: false, error: "Telefone inválido." };
 
   // Página pública → cliente anônimo. A policy de RLS permite INSERT anônimo.
   const supabase = await createClient();

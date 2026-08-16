@@ -50,6 +50,20 @@ export function AuthForm({ mode, action }: { mode: "login" | "signup"; action: A
         {pending ? "Aguarde…" : isSignup ? "Criar conta" : "Entrar"}
       </button>
 
+      {isSignup && (
+        <p className="text-center text-[11px] leading-snug text-neutral-400">
+          Ao criar conta, você concorda com os{" "}
+          <Link href="/termos" className="underline hover:text-neutral-600">
+            Termos
+          </Link>{" "}
+          e a{" "}
+          <Link href="/privacidade" className="underline hover:text-neutral-600">
+            Política de Privacidade
+          </Link>
+          .
+        </p>
+      )}
+
       <p className="text-center text-sm text-neutral-500">
         {isSignup ? (
           <>
