@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrg } from "@/lib/org";
+import { saldoDaOrg } from "@/lib/creditos";
 import { iniciarAdsGoogle, iniciarAdsMeta } from "@/lib/ads";
 
 const COLUNAS_VALIDAS = ["nao_disparado", "pendente", "enviado", "entregue", "falhou"] as const;
@@ -40,15 +41,26 @@ export async function verificarAnuncios(
   const org = await getActiveOrg();
   if (!org) return { ok: false, error: "Sessão expirada." };
 
+  // Anti-abuso: só quem tem crédito pode disparar verificação (consome Apify).
+  const saldo = await saldoDaOrg(org.orgId);
+  if (saldo <= 0) {
+    return { ok: false, error: "Sem créditos para verificar anúncios." };
+  }
+
   const supabase = await createClient();
   const { data: lead } = await supabase
     .from("leads")
-    .select("id, empresa, website")
+    .select("id, empresa, website, ads_run_google, ads_run_meta")
     .eq("id", leadId)
     .eq("organizacao_id", org.orgId)
     .maybeSingle();
 
   if (!lead?.empresa) return { ok: false, error: "Lead sem nome de empresa." };
+
+  // Anti-spam: se já existe verificação em andamento, não dispara outra.
+  if (lead.ads_run_google || lead.ads_run_meta) {
+    return { ok: true };
+  }
 
   const [runGoogle, runMeta] = await Promise.all([
     iniciarAdsGoogle(lead.empresa, lead.website),

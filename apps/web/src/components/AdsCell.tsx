@@ -41,21 +41,36 @@ export function AdsCell({
     );
   }
 
-  const nenhum = !anunciaGoogle && !anunciaMeta;
-
   return (
     <div className="flex flex-wrap items-center gap-1">
-      {anunciaGoogle && (
+      {/* Google Ads: só afirmamos quando ACHAMOS. Não achar é inconclusivo. */}
+      {anunciaGoogle === true ? (
         <span className="rounded-md bg-blue-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-blue-600">
           Google Ads
         </span>
-      )}
-      {anunciaMeta && (
+      ) : anunciaGoogle === false ? (
+        <span
+          className="cursor-help rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700"
+          title="Não encontramos anúncios no Google. Pode ser que o comércio NÃO anuncie — ou que a conta de anúncios esteja registrada com outro nome/razão social (bem comum). Vale checar manualmente."
+        >
+          Google: não localizado ⓘ
+        </span>
+      ) : null}
+
+      {/* Meta Ads: quando a página exata aparece, confirmamos. Senão, inconclusivo. */}
+      {anunciaMeta === true ? (
         <span className="rounded-md bg-fuchsia-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-fuchsia-600">
           Meta Ads
         </span>
-      )}
-      {nenhum && <span className="text-xs text-neutral-400">não anuncia</span>}
+      ) : anunciaMeta === false ? (
+        <span
+          className="cursor-help rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700"
+          title="Não localizamos a página exata anunciando no Meta. Pode ser que não anuncie — ou que o nome da página no Facebook/Instagram seja diferente do nome do comércio. Vale conferir na Biblioteca de Anúncios da Meta."
+        >
+          Meta: não localizado ⓘ
+        </span>
+      ) : null}
+
       <button
         onClick={() =>
           start(async () => {
