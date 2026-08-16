@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { SplashIntro } from "@/components/SplashIntro";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ entrada?: string }>;
+}) {
+  const { entrada } = await searchParams;
   const supabase = await createClient();
 
   const [leads, listas, campanhas, disparados] = await Promise.all([
@@ -27,6 +33,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
+      {entrada === "1" && <SplashIntro />}
       <h1 className="text-2xl font-semibold">Visão geral 👋</h1>
       <p className="mt-1 text-neutral-400">Do lead ao fechamento, tudo num lugar só.</p>
 
