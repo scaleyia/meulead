@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
+  FolderClosed,
   Radar,
   Send,
   KanbanSquare,
@@ -25,7 +26,8 @@ interface NavItem {
 
 const nav: NavItem[] = [
   { href: "/dashboard", label: "Início", icon: LayoutDashboard, ready: true },
-  { href: "/dashboard/lists", label: "Leads", icon: Users, ready: true },
+  { href: "/dashboard/leads", label: "Leads", icon: Users, ready: true },
+  { href: "/dashboard/lists", label: "Listas", icon: FolderClosed, ready: true },
   { href: "/dashboard/capture", label: "Captação", icon: Radar, ready: true },
   { href: "/dashboard/campaigns", label: "Disparos", icon: Send, ready: true },
   { href: "/dashboard/crm", label: "CRM", icon: KanbanSquare, ready: true },

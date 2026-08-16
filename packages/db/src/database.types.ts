@@ -191,6 +191,7 @@ export type Database = {
           categoria: string | null
           criado_em: string
           dados_brutos: Json | null
+          dono_buscado: boolean
           email: string | null
           empresa: string | null
           endereco: string | null
@@ -211,6 +212,7 @@ export type Database = {
           categoria?: string | null
           criado_em?: string
           dados_brutos?: Json | null
+          dono_buscado?: boolean
           email?: string | null
           empresa?: string | null
           endereco?: string | null
@@ -231,6 +233,7 @@ export type Database = {
           categoria?: string | null
           criado_em?: string
           dados_brutos?: Json | null
+          dono_buscado?: boolean
           email?: string | null
           empresa?: string | null
           endereco?: string | null

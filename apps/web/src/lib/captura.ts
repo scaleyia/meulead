@@ -2,6 +2,7 @@ import type { Json } from "@meulead/db";
 import { createClient } from "@/lib/supabase/server";
 import { saldoDaOrg } from "@/lib/creditos";
 import { statusRun, itensDataset } from "@/lib/apify";
+import { buscarDonoPorNome, ufDoEndereco } from "@/lib/cnpj";
 
 // Lead pronto pra inserir (sem organizacao_id/lista_id, que entram no sync).
 interface LeadNovo {
@@ -163,5 +164,44 @@ export async function sincronizarJobs(orgId: string): Promise<void> {
         .eq("status", "rodando");
     }
     // RUNNING / READY: ainda em andamento — deixa pro próximo refresh.
+  }
+}
+
+// Quantos leads do Google Maps ainda faltam enriquecer com o dono.
+export async function donosPendentes(orgId: string): Promise<number> {
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("leads")
+    .select("id", { count: "exact", head: true })
+    .eq("organizacao_id", orgId)
+    .eq("origem", "google_maps")
+    .eq("dono_buscado", false)
+    .is("nome", null);
+  return count ?? 0;
+}
+
+// Enriquece um lote de leads (Google Maps) com o nome do dono via CNPJ.
+// Roda aos poucos a cada refresh da página de captação (Vercel-safe).
+export async function enriquecerDonos(orgId: string, limite = 6): Promise<void> {
+  const supabase = await createClient();
+  const { data: pendentes } = await supabase
+    .from("leads")
+    .select("id, empresa, endereco")
+    .eq("organizacao_id", orgId)
+    .eq("origem", "google_maps")
+    .eq("dono_buscado", false)
+    .is("nome", null)
+    .limit(limite);
+
+  if (!pendentes?.length) return;
+
+  for (const lead of pendentes) {
+    let dono: string | null = null;
+    if (lead.empresa) {
+      const achado = await buscarDonoPorNome(lead.empresa, ufDoEndereco(lead.endereco));
+      dono = achado?.dono ?? null;
+    }
+    // Marca como buscado sempre (com ou sem achado) pra não repetir.
+    await supabase.from("leads").update({ nome: dono, dono_buscado: true }).eq("id", lead.id);
   }
 }
