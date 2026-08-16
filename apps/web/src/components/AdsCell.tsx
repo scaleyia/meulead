@@ -1,20 +1,24 @@
 "use client";
 
 import { useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { verificarAnuncios } from "@/app/dashboard/crm/actions";
 
 // Mostra os selos de anúncios (Google/Meta) e o botão de verificar sob demanda.
+// `planoPago` = recurso liberado (verificação é exclusiva de planos pagos).
 export function AdsCell({
   leadId,
   anunciaGoogle,
   anunciaMeta,
   checando,
+  planoPago,
 }: {
   leadId: string;
   anunciaGoogle: boolean | null;
   anunciaMeta: boolean | null;
   checando: boolean;
+  planoPago: boolean;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -24,6 +28,19 @@ export function AdsCell({
   }
 
   const verificado = anunciaGoogle !== null || anunciaMeta !== null;
+
+  // Plano grátis e ainda sem resultado: mostra cadeado com upgrade.
+  if (!planoPago && !verificado) {
+    return (
+      <Link
+        href="/planos"
+        title="Verificação de anúncios (Google/Meta) é exclusiva dos planos pagos."
+        className="inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-amber-300 bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 transition hover:bg-amber-100"
+      >
+        🔒 plano pago
+      </Link>
+    );
+  }
 
   if (!verificado) {
     return (
@@ -71,18 +88,20 @@ export function AdsCell({
         </span>
       ) : null}
 
-      <button
-        onClick={() =>
-          start(async () => {
-            await verificarAnuncios(leadId);
-            router.refresh();
-          })
-        }
-        className="text-[11px] text-neutral-400 hover:text-neutral-700"
-        title="Verificar de novo"
-      >
-        ↻
-      </button>
+      {planoPago && (
+        <button
+          onClick={() =>
+            start(async () => {
+              await verificarAnuncios(leadId);
+              router.refresh();
+            })
+          }
+          className="text-[11px] text-neutral-400 hover:text-neutral-700"
+          title="Verificar de novo"
+        >
+          ↻
+        </button>
+      )}
     </div>
   );
 }

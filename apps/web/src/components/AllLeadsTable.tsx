@@ -56,9 +56,11 @@ type Filtro = "todos" | "sem_site" | "com_site";
 export function AllLeadsTable({
   leads,
   listas,
+  planoPago,
 }: {
   leads: AllLeadRow[];
   listas: ListaOption[];
+  planoPago: boolean;
 }) {
   const router = useRouter();
   const [q, setQ] = useState("");
@@ -214,6 +216,7 @@ export function AllLeadsTable({
                     anunciaGoogle={l.anunciaGoogle}
                     anunciaMeta={l.anunciaMeta}
                     checando={l.adsChecando}
+                    planoPago={planoPago}
                   />
                 </td>
                 <td className="px-4 py-3">

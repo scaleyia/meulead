@@ -105,9 +105,11 @@ function soDigitos(raw: string | null): string {
 export function StatusView({
   items,
   campanhas,
+  planoPago,
 }: {
   items: StatusItem[];
   campanhas: CampanhaOption[];
+  planoPago: boolean;
 }) {
   const router = useRouter();
   const [visao, setVisao] = useState<"kanban" | "tabela">("kanban");
@@ -343,6 +345,7 @@ export function StatusView({
       {aberto && (
         <LeadDetail
           lead={aberto}
+          planoPago={planoPago}
           onClose={() => setAberto(null)}
           onMover={(coluna) => {
             mover(aberto.id, coluna);
@@ -356,10 +359,12 @@ export function StatusView({
 
 function LeadDetail({
   lead,
+  planoPago,
   onClose,
   onMover,
 }: {
   lead: StatusItem;
+  planoPago: boolean;
   onClose: () => void;
   onMover: (coluna: Coluna) => void;
 }) {
@@ -475,6 +480,7 @@ function LeadDetail({
                 anunciaGoogle={lead.anunciaGoogle}
                 anunciaMeta={lead.anunciaMeta}
                 checando={lead.adsChecando}
+                planoPago={planoPago}
               />
             </dd>
           </div>

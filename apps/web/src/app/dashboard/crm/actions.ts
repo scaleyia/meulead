@@ -41,6 +41,14 @@ export async function verificarAnuncios(
   const org = await getActiveOrg();
   if (!org) return { ok: false, error: "Sessão expirada." };
 
+  // Recurso exclusivo de planos pagos.
+  if (org.plano === "free") {
+    return {
+      ok: false,
+      error: "Verificação de anúncios é um recurso dos planos pagos. Faça upgrade para usar.",
+    };
+  }
+
   // Anti-abuso: só quem tem crédito pode disparar verificação (consome Apify).
   const saldo = await saldoDaOrg(org.orgId);
   if (saldo <= 0) {

@@ -16,7 +16,7 @@ export default async function CrmPage() {
         </p>
       </div>
 
-      {org ? <CrmContent orgId={org.orgId} /> : <EmptyState />}
+      {org ? <CrmContent orgId={org.orgId} planoPago={org.plano !== "free"} /> : <EmptyState />}
     </div>
   );
 }
@@ -33,7 +33,7 @@ function EmptyState() {
   );
 }
 
-async function CrmContent({ orgId }: { orgId: string }) {
+async function CrmContent({ orgId, planoPago }: { orgId: string; planoPago: boolean }) {
   const supabase = await createClient();
 
   // Resolve verificações de anúncios que já terminaram no Apify.
@@ -127,7 +127,7 @@ async function CrmContent({ orgId }: { orgId: string }) {
   return (
     <>
       <AutoRefresh ativo={adsPendentes} />
-      <StatusView items={items} campanhas={campanhas} />
+      <StatusView items={items} campanhas={campanhas} planoPago={planoPago} />
     </>
   );
 }

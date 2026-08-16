@@ -29,12 +29,12 @@ export default async function LeadsPage() {
         </Link>
       </div>
 
-      {org ? <LeadsContent orgId={org.orgId} /> : null}
+      {org ? <LeadsContent orgId={org.orgId} planoPago={org.plano !== "free"} /> : null}
     </div>
   );
 }
 
-async function LeadsContent({ orgId }: { orgId: string }) {
+async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: boolean }) {
   const supabase = await createClient();
 
   // Resolve verificações de anúncios que já terminaram no Apify.
@@ -87,7 +87,7 @@ async function LeadsContent({ orgId }: { orgId: string }) {
   return (
     <>
       <AutoRefresh ativo={adsPendentes} />
-      <AllLeadsTable leads={leads} listas={listas} />
+      <AllLeadsTable leads={leads} listas={listas} planoPago={planoPago} />
     </>
   );
 }
