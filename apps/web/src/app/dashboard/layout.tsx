@@ -13,17 +13,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const saldo = await garantirCreditos(org);
 
   return (
-    <div className="flex min-h-screen bg-white text-neutral-900">
+    <div className="flex h-screen overflow-hidden bg-white text-neutral-900">
       <Sidebar isAdmin={isAdmin(org.email)} />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex items-center justify-between border-b border-neutral-200 bg-white/70 px-6 py-3 backdrop-blur-xl">
-          <div className="flex items-center gap-2 text-sm">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/15 text-xs font-bold text-emerald-600">
-              {org.orgName.charAt(0).toUpperCase()}
-            </span>
-            <span className="font-medium">{org.orgName}</span>
-          </div>
+        <header className="flex shrink-0 items-center justify-end border-b border-neutral-200 bg-white/70 px-6 py-3 backdrop-blur-xl">
           <div className="flex items-center gap-3 text-sm">
             <Link
               href="/dashboard/creditos"
@@ -49,7 +43,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto p-6 lg:p-8">
           <div className="anim-in h-full">{children}</div>
         </main>
       </div>

@@ -45,7 +45,7 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
         <img src="/logo.png" alt="MeuLead" className="h-auto w-full max-w-[180px]" />
       </Link>
 
-      <nav className="flex flex-1 flex-col gap-1">
+      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
         {itens.map((item) => {
           const active =
             item.ready &&
