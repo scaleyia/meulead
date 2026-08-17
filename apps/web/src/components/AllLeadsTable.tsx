@@ -8,6 +8,7 @@ import { deleteLead } from "@/app/dashboard/lists/[id]/actions";
 import { validarWhatsapp } from "@/app/dashboard/leads/actions";
 import { sourceLabel } from "@/lib/sources";
 import { AdsCell } from "@/components/AdsCell";
+import { SiteCell } from "@/components/SiteCell";
 import { InstagramLeadCard } from "@/components/InstagramLeadCard";
 
 export interface AllLeadRow {
@@ -29,6 +30,8 @@ export interface AllLeadRow {
   verificado: boolean | null;
   posts: number | null;
   temWhatsapp: boolean | null;
+  siteScore: number | null;
+  siteAnalisado: boolean;
   lista_id: string | null;
   listaNome: string | null;
   anunciaGoogle: boolean | null;
@@ -54,12 +57,6 @@ function formatarTelefone(raw: string | null): string {
 
 function temSite(l: AllLeadRow): boolean {
   return !!(l.website && l.website.trim());
-}
-function hrefSite(url: string): string {
-  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
-}
-function dominio(url: string): string {
-  return url.replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/\/.*$/, "");
 }
 
 type Filtro = "todos" | "sem_site" | "com_site";
@@ -317,20 +314,12 @@ export function AllLeadsTable({
                   )}
                 </td>
                 <td className="px-4 py-3">
-                  {temSite(l) ? (
-                    <a
-                      href={hrefSite(l.website!)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-md bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-700 hover:bg-neutral-200"
-                    >
-                      {dominio(l.website!)} ↗
-                    </a>
-                  ) : (
-                    <span className="inline-flex rounded-md bg-red-500/10 px-2 py-0.5 text-xs font-semibold text-red-600 ring-1 ring-red-500/20">
-                      SEM SITE
-                    </span>
-                  )}
+                  <SiteCell
+                    leadId={l.id}
+                    website={l.website}
+                    siteScore={l.siteScore}
+                    siteAnalisado={l.siteAnalisado}
+                  />
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-neutral-700">
                   {l.nota != null ? (

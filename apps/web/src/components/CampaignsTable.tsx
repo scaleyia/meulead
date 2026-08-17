@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import { dispararCampanha, excluirCampanha } from "@/app/dashboard/campaigns/actions";
+import { dispararCampanha, excluirCampanha, enviarFollowup } from "@/app/dashboard/campaigns/actions";
 
 type Status = "rascunho" | "agendada" | "enviando" | "concluida" | "pausada";
 
@@ -15,6 +15,8 @@ type Campanha = {
   status: string;
   modo_envio: string | null;
   criado_em: string;
+  followup_mensagem: string | null;
+  followup_enviado: boolean;
   metricas: Metricas;
 };
 
@@ -47,6 +49,17 @@ export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
     setPendingId(c.id);
     start(async () => {
       const res = await dispararCampanha(c.id);
+      setPendingId(null);
+      if (!res.ok) return setError(res.error);
+      router.refresh();
+    });
+  };
+
+  const followup = (c: Campanha) => {
+    setError(null);
+    setPendingId(c.id);
+    start(async () => {
+      const res = await enviarFollowup(c.id);
       setPendingId(null);
       if (!res.ok) return setError(res.error);
       router.refresh();
@@ -132,6 +145,18 @@ export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
                           {busy ? "Disparando…" : "Disparar"}
                         </Button>
                       )}
+                      {c.followup_mensagem &&
+                        !c.followup_enviado &&
+                        (c.status === "enviando" || c.status === "concluida") && (
+                          <Button
+                            variant="ghost"
+                            className="px-3 py-1 text-xs"
+                            disabled={busy}
+                            onClick={() => followup(c)}
+                          >
+                            {busy ? "Enviando…" : "Enviar follow-up"}
+                          </Button>
+                        )}
                       <Button
                         variant="danger"
                         className="px-3 py-1 text-xs"

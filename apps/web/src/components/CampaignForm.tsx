@@ -101,6 +101,8 @@ function CampaignFields({
     intervaloMin: number;
     intervaloMax: number;
     limiteDiario: number;
+    followupMensagem: string | null;
+    followupDias: number | null;
   }) => void;
 }) {
   const [nome, setNome] = useState("");
@@ -111,6 +113,8 @@ function CampaignFields({
   const [intervaloMin, setIntervaloMin] = useState(30);
   const [intervaloMax, setIntervaloMax] = useState(90);
   const [limiteDiario, setLimiteDiario] = useState(200);
+  const [followupMensagem, setFollowupMensagem] = useState("");
+  const [followupDias, setFollowupDias] = useState(3);
 
   const toggleSessao = (id: string) =>
     setSessaoIds((prev) =>
@@ -131,6 +135,8 @@ function CampaignFields({
           intervaloMin,
           intervaloMax,
           limiteDiario,
+          followupMensagem: followupMensagem.trim() || null,
+          followupDias: followupMensagem.trim() ? followupDias : null,
         });
       }}
     >
@@ -191,6 +197,35 @@ function CampaignFields({
           troque [Sua Agência] pelo seu nome.
         </span>
       </label>
+
+      {/* Follow-up (2ª leva) */}
+      <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-3">
+        <span className="text-sm font-medium text-neutral-700">Follow-up (opcional)</span>
+        <p className="mt-0.5 text-xs text-neutral-500">
+          Uma 2ª mensagem para reforçar quem não respondeu. Você dispara com 1 clique depois.
+        </p>
+        <textarea
+          rows={3}
+          value={followupMensagem}
+          onChange={(e) => setFollowupMensagem(e.target.value)}
+          placeholder="Ex: Oi {{nome}}, passando pra saber se você viu minha mensagem 😊"
+          className="input mt-2 resize-y"
+        />
+        {followupMensagem.trim() && (
+          <label className="mt-2 flex items-center gap-2 text-xs text-neutral-600">
+            Sugerir enviar após
+            <input
+              type="number"
+              min={1}
+              max={30}
+              value={followupDias}
+              onChange={(e) => setFollowupDias(Number(e.target.value))}
+              className="input w-20 py-1"
+            />
+            dias
+          </label>
+        )}
+      </div>
 
       {/* Chips (contingência) — pool que será revezado no disparo. */}
       <div className="flex flex-col gap-2">

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrg } from "@/lib/org";
 import { checarNumerosWhatsapp, evolutionConfigurada } from "@/lib/evolution";
+import { analisarSite } from "@/lib/site";
 
 function soDigitos(raw: string | null): string {
   if (!raw) return "";
@@ -66,4 +67,40 @@ export async function validarWhatsapp(
 
   revalidatePath("/dashboard/leads");
   return { ok: true, checados: leads.length, comWhats };
+}
+
+// Analisa a qualidade/SEO do site de um lead (sob demanda).
+export async function analisarSiteLead(
+  leadId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const org = await getActiveOrg();
+  if (!org) return { ok: false, error: "Sessão expirada." };
+
+  const supabase = await createClient();
+  const { data: lead } = await supabase
+    .from("leads")
+    .select("id, website")
+    .eq("id", leadId)
+    .eq("organizacao_id", org.orgId)
+    .maybeSingle();
+
+  if (!lead) return { ok: false, error: "Lead não encontrado." };
+  if (!lead.website || !lead.website.trim()) {
+    return { ok: false, error: "Lead sem site para analisar." };
+  }
+
+  const r = await analisarSite(lead.website);
+  await supabase
+    .from("leads")
+    .update({
+      site_score: r?.score ?? 0,
+      site_carga_ms: r?.cargaMs ?? null,
+      site_analisado: true,
+    })
+    .eq("id", leadId)
+    .eq("organizacao_id", org.orgId);
+
+  revalidatePath("/dashboard/leads");
+  revalidatePath("/dashboard/crm");
+  return { ok: true };
 }

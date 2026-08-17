@@ -9,7 +9,7 @@ export default async function CampaignsPage() {
     await Promise.all([
       supabase
         .from("campanhas")
-        .select("id, nome, status, modo_envio, criado_em")
+        .select("id, nome, status, modo_envio, criado_em, followup_mensagem, followup_enviado")
         .order("criado_em", { ascending: false }),
       // Instagram não tem telefone — só listas disparáveis (Google Maps, import, manual).
       supabase

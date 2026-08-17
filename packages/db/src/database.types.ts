@@ -70,6 +70,9 @@ export type Database = {
         Row: {
           agendada_para: string | null
           criado_em: string
+          followup_dias: number | null
+          followup_enviado: boolean
+          followup_mensagem: string | null
           id: string
           intervalo_max: number
           intervalo_min: number
@@ -84,6 +87,9 @@ export type Database = {
         Insert: {
           agendada_para?: string | null
           criado_em?: string
+          followup_dias?: number | null
+          followup_enviado?: boolean
+          followup_mensagem?: string | null
           id?: string
           intervalo_max?: number
           intervalo_min?: number
@@ -98,6 +104,9 @@ export type Database = {
         Update: {
           agendada_para?: string | null
           criado_em?: string
+          followup_dias?: number | null
+          followup_enviado?: boolean
+          followup_mensagem?: string | null
           id?: string
           intervalo_max?: number
           intervalo_min?: number
@@ -210,6 +219,9 @@ export type Database = {
           origem: string
           posts: number | null
           seguidores: number | null
+          site_analisado: boolean
+          site_carga_ms: number | null
+          site_score: number | null
           status_crm: string | null
           telefone: string | null
           tem_whatsapp: boolean | null
@@ -240,6 +252,9 @@ export type Database = {
           origem?: string
           posts?: number | null
           seguidores?: number | null
+          site_analisado?: boolean
+          site_carga_ms?: number | null
+          site_score?: number | null
           status_crm?: string | null
           telefone?: string | null
           tem_whatsapp?: boolean | null
@@ -270,6 +285,9 @@ export type Database = {
           origem?: string
           posts?: number | null
           seguidores?: number | null
+          site_analisado?: boolean
+          site_carga_ms?: number | null
+          site_score?: number | null
           status_crm?: string | null
           telefone?: string | null
           tem_whatsapp?: boolean | null
