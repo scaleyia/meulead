@@ -83,6 +83,32 @@ export async function desconectarInstancia(instancia: string): Promise<void> {
   }
 }
 
+// Checa quais números têm WhatsApp. Retorna um mapa numero(dígitos) -> boolean.
+export async function checarNumerosWhatsapp(
+  instancia: string,
+  numeros: string[],
+): Promise<Map<string, boolean>> {
+  const mapa = new Map<string, boolean>();
+  if (numeros.length === 0) return mapa;
+  try {
+    const r = await evo(`/chat/whatsappNumbers/${encodeURIComponent(instancia)}`, {
+      method: "POST",
+      body: JSON.stringify({ numbers: numeros }),
+    });
+    if (!r.ok) return mapa;
+    const d = await r.json();
+    const arr: Record<string, unknown>[] = Array.isArray(d) ? d : (d?.onWhatsapp ?? []);
+    for (const item of arr) {
+      const num = String(item.number ?? item.jid ?? "").replace(/\D/g, "");
+      const existe = Boolean(item.exists ?? item.onWhatsapp ?? false);
+      if (num) mapa.set(num, existe);
+    }
+  } catch {
+    // silencioso — quem chamou trata como "não checado"
+  }
+  return mapa;
+}
+
 // Remove a instância por completo.
 export async function excluirInstancia(instancia: string): Promise<void> {
   try {

@@ -48,7 +48,7 @@ async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: bo
     supabase
       .from("leads")
       .select(
-        "id, nome, empresa, telefone, email, origem, website, instagram, seguidores, nota, total_avaliacoes, endereco, categoria, foto_perfil, bio, verificado, posts, lista_id, anuncia_google, anuncia_meta, ads_run_google, ads_run_meta",
+        "id, nome, empresa, telefone, email, origem, website, instagram, seguidores, nota, total_avaliacoes, endereco, categoria, foto_perfil, bio, verificado, posts, tem_whatsapp, lista_id, anuncia_google, anuncia_meta, ads_run_google, ads_run_meta",
       )
       .eq("organizacao_id", orgId)
       .order("criado_em", { ascending: false }),
@@ -80,6 +80,7 @@ async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: bo
     bio: l.bio,
     verificado: l.verificado,
     posts: l.posts,
+    temWhatsapp: l.tem_whatsapp,
     lista_id: l.lista_id,
     listaNome: l.lista_id ? (nomePorLista.get(l.lista_id) ?? null) : null,
     anunciaGoogle: l.anuncia_google,

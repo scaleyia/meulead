@@ -212,6 +212,7 @@ export type Database = {
           seguidores: number | null
           status_crm: string | null
           telefone: string | null
+          tem_whatsapp: boolean | null
           total_avaliacoes: number | null
           verificado: boolean | null
           website: string | null
@@ -241,6 +242,7 @@ export type Database = {
           seguidores?: number | null
           status_crm?: string | null
           telefone?: string | null
+          tem_whatsapp?: boolean | null
           total_avaliacoes?: number | null
           verificado?: boolean | null
           website?: string | null
@@ -270,6 +272,7 @@ export type Database = {
           seguidores?: number | null
           status_crm?: string | null
           telefone?: string | null
+          tem_whatsapp?: boolean | null
           total_avaliacoes?: number | null
           verificado?: boolean | null
           website?: string | null

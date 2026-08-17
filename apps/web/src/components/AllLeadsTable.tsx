@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { deleteLead } from "@/app/dashboard/lists/[id]/actions";
+import { validarWhatsapp } from "@/app/dashboard/leads/actions";
 import { sourceLabel } from "@/lib/sources";
 import { AdsCell } from "@/components/AdsCell";
 import { InstagramLeadCard } from "@/components/InstagramLeadCard";
@@ -26,6 +27,7 @@ export interface AllLeadRow {
   bio: string | null;
   verificado: boolean | null;
   posts: number | null;
+  temWhatsapp: boolean | null;
   lista_id: string | null;
   listaNome: string | null;
   anunciaGoogle: boolean | null;
@@ -76,6 +78,19 @@ export function AllLeadsTable({
   const [fonte, setFonte] = useState<Fonte>("google_maps");
   const [listaId, setListaId] = useState<string>("todas");
   const [pending, start] = useTransition();
+  const [validando, startValidar] = useTransition();
+  const [aviso, setAviso] = useState<string | null>(null);
+
+  function validar() {
+    setAviso(null);
+    startValidar(async () => {
+      const res = await validarWhatsapp(listaId === "todas" ? null : listaId);
+      if (!res.ok) setAviso(res.error ?? "Falha ao validar.");
+      else if ((res.checados ?? 0) === 0) setAviso("Nada novo pra validar (todos já checados).");
+      else setAviso(`Validados ${res.checados} — ${res.comWhats} têm WhatsApp.`);
+      router.refresh();
+    });
+  }
 
   const totGoogle = useMemo(() => leads.filter((l) => l.origem === "google_maps").length, [leads]);
   const totInsta = useMemo(() => leads.filter((l) => l.origem === "instagram").length, [leads]);
@@ -215,10 +230,19 @@ export function AllLeadsTable({
             </button>
           ))}
         </div>
+        {fonte === "google_maps" && (
+          <button
+            onClick={validar}
+            disabled={validando}
+            className="ml-auto rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 transition hover:bg-emerald-100 disabled:opacity-50"
+          >
+            {validando ? "Validando…" : "✓ Validar WhatsApp"}
+          </button>
+        )}
         <button
           onClick={exportarCsv}
           disabled={filtered.length === 0}
-          className="ml-auto rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 disabled:opacity-40"
+          className={`${fonte === "google_maps" ? "" : "ml-auto"} rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 disabled:opacity-40`}
         >
           ⬇ Exportar CSV
         </button>
@@ -226,6 +250,9 @@ export function AllLeadsTable({
           {filtered.length} de {leads.length} leads
         </span>
       </div>
+      {aviso && (
+        <p className="mb-3 rounded-lg bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700">{aviso}</p>
+      )}
 
       {fonte === "instagram" ? (
         filtered.length === 0 ? (
@@ -269,8 +296,18 @@ export function AllLeadsTable({
                   )}
                   {l.endereco && <p className="mt-0.5 text-xs text-neutral-400">{l.endereco}</p>}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 tabular-nums text-neutral-700">
-                  {formatarTelefone(l.telefone)}
+                <td className="whitespace-nowrap px-4 py-3 text-neutral-700">
+                  <span className="tabular-nums">{formatarTelefone(l.telefone)}</span>
+                  {l.temWhatsapp === true && (
+                    <span className="ml-2 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-600">
+                      ✓ zap
+                    </span>
+                  )}
+                  {l.temWhatsapp === false && (
+                    <span className="ml-2 rounded bg-red-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-red-600">
+                      sem zap
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   {temSite(l) ? (

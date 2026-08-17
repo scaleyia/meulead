@@ -30,6 +30,8 @@ async function Conteudo({ orgId }: { orgId: string }) {
       "id, empresa, nome, telefone, website, endereco, origem, nota, total_avaliacoes, seguidores, anuncia_google, anuncia_meta",
     )
     .eq("organizacao_id", orgId)
+    // Instagram não entra: sem telefone e sem os sinais de qualificação (site/nota).
+    .eq("origem", "google_maps")
     .order("criado_em", { ascending: false });
 
   const rows: OportunidadeRow[] = (leads ?? []).map((l) => {
