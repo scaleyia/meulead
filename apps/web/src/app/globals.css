@@ -97,3 +97,61 @@ body {
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.7), transparent);
   animation: shimmer 1.4s infinite;
 }
+
+/* ============ Efeitos da Landing Page (/lp) ============ */
+@keyframes lpFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-18px); }
+}
+@keyframes lpFloatSlow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+@keyframes lpGlow {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.08); }
+}
+@keyframes lpAurora {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes lpMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes lpSpinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes lpBob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+
+.lp-float { animation: lpFloat 5s ease-in-out infinite; }
+.lp-float-slow { animation: lpFloatSlow 7s ease-in-out infinite; }
+.lp-glow { animation: lpGlow 5s ease-in-out infinite; }
+.lp-bob { animation: lpBob 4s ease-in-out infinite; }
+.lp-marquee { animation: lpMarquee 28s linear infinite; }
+.lp-spin-slow { animation: lpSpinSlow 40s linear infinite; }
+
+.lp-aurora {
+  background: linear-gradient(120deg, #064e3b, #059669, #10b981, #064e3b);
+  background-size: 300% 300%;
+  animation: lpAurora 12s ease infinite;
+}
+
+/* Revelação no scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-float, .lp-float-slow, .lp-glow, .lp-bob, .lp-marquee, .lp-spin-slow, .lp-aurora { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
