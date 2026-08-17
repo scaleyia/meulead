@@ -20,7 +20,7 @@ export async function validarWhatsapp(
   error?: string;
   checados?: number;
   comWhats?: number;
-  removidos?: number;
+  semWhats?: number;
 }> {
   const org = await getActiveOrg();
   if (!org) return { ok: false, error: "Sessão expirada." };
@@ -63,48 +63,67 @@ export async function validarWhatsapp(
     return { ok: false, error: "Não consegui validar agora. Verifique a conexão e tente de novo." };
   }
 
+  // Só marca (não exclui). A exclusão é confirmada pelo usuário depois.
   let comWhats = 0;
-  let removidos = 0;
+  let semWhats = 0;
   for (const lead of leads) {
     const num = soDigitos(lead.telefone);
     const tem = mapa.get(num) ?? false;
-    if (tem) {
-      comWhats++;
-      await supabase.from("leads").update({ tem_whatsapp: true }).eq("id", lead.id);
-    } else {
-      // Número sem WhatsApp: remove o lead (não serve pra disparo).
-      const { error } = await supabase
-        .from("leads")
-        .delete()
-        .eq("id", lead.id)
-        .eq("organizacao_id", org.orgId);
-      if (!error) removidos++;
-    }
-  }
-
-  // Estorna 1 crédito por lead removido (foi cobrado na captação).
-  if (removidos > 0) {
-    const { data: o } = await supabase
-      .from("organizacoes")
-      .select("creditos_plano, creditos_extra")
-      .eq("id", org.orgId)
-      .maybeSingle();
-    const novoExtra = (o?.creditos_extra ?? 0) + removidos;
-    await supabase
-      .from("organizacoes")
-      .update({ creditos_extra: novoExtra })
-      .eq("id", org.orgId);
-    await supabase.from("creditos_transacoes").insert({
-      organizacao_id: org.orgId,
-      tipo: "ajuste",
-      quantidade: removidos,
-      saldo_apos: (o?.creditos_plano ?? 0) + novoExtra,
-      descricao: `Estorno: ${removidos} lead(s) sem WhatsApp removido(s)`,
-    });
+    if (tem) comWhats++;
+    else semWhats++;
+    await supabase.from("leads").update({ tem_whatsapp: tem }).eq("id", lead.id);
   }
 
   revalidatePath("/dashboard/leads");
-  return { ok: true, checados: leads.length, comWhats, removidos };
+  return { ok: true, checados: leads.length, comWhats, semWhats };
+}
+
+// Remove os leads SEM WhatsApp e estorna 1 crédito por lead removido.
+// Chamado só depois do usuário confirmar no popup.
+export async function removerSemWhatsapp(
+  listaId: string | null,
+): Promise<{ ok: boolean; error?: string; removidos?: number }> {
+  const org = await getActiveOrg();
+  if (!org) return { ok: false, error: "Sessão expirada." };
+
+  const supabase = await createClient();
+  let q = supabase
+    .from("leads")
+    .select("id")
+    .eq("organizacao_id", org.orgId)
+    .eq("origem", "google_maps")
+    .eq("tem_whatsapp", false);
+  if (listaId) q = q.eq("lista_id", listaId);
+
+  const { data: alvos } = await q;
+  const ids = (alvos ?? []).map((l) => l.id);
+  if (!ids.length) return { ok: true, removidos: 0 };
+
+  const { error } = await supabase.from("leads").delete().in("id", ids);
+  if (error) return { ok: false, error: error.message };
+  const removidos = ids.length;
+
+  // Estorna 1 crédito por lead removido (foi cobrado na captação).
+  const { data: o } = await supabase
+    .from("organizacoes")
+    .select("creditos_plano, creditos_extra")
+    .eq("id", org.orgId)
+    .maybeSingle();
+  const novoExtra = (o?.creditos_extra ?? 0) + removidos;
+  await supabase
+    .from("organizacoes")
+    .update({ creditos_extra: novoExtra })
+    .eq("id", org.orgId);
+  await supabase.from("creditos_transacoes").insert({
+    organizacao_id: org.orgId,
+    tipo: "ajuste",
+    quantidade: removidos,
+    saldo_apos: (o?.creditos_plano ?? 0) + novoExtra,
+    descricao: `Estorno: ${removidos} lead(s) sem WhatsApp removido(s)`,
+  });
+
+  revalidatePath("/dashboard/leads");
+  return { ok: true, removidos };
 }
 
 // Analisa a qualidade/SEO do site de um lead (sob demanda).

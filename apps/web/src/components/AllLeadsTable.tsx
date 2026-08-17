@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MessageCircle, Loader2 } from "lucide-react";
 import { deleteLead } from "@/app/dashboard/lists/[id]/actions";
-import { validarWhatsapp } from "@/app/dashboard/leads/actions";
+import { createPortal } from "react-dom";
+import { validarWhatsapp, removerSemWhatsapp } from "@/app/dashboard/leads/actions";
 import { sourceLabel } from "@/lib/sources";
 import { AdsCell } from "@/components/AdsCell";
 import { SiteCell } from "@/components/SiteCell";
@@ -78,23 +79,33 @@ export function AllLeadsTable({
   const [pending, start] = useTransition();
   const [validando, startValidar] = useTransition();
   const [aviso, setAviso] = useState<string | null>(null);
+  const [confirmar, setConfirmar] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   function validar() {
     setAviso(null);
     startValidar(async () => {
       const res = await validarWhatsapp(listaId === "todas" ? null : listaId);
-      if (!res.ok) setAviso(res.error ?? "Falha ao validar.");
-      else if ((res.checados ?? 0) === 0) setAviso("Nada novo pra validar (todos já checados).");
-      else {
-        const rem = res.removidos ?? 0;
-        setAviso(
-          `Validados ${res.checados} — ${res.comWhats} com WhatsApp` +
-            (rem > 0
-              ? ` · ${rem} sem WhatsApp foram removidos e ${rem} crédito(s) estornado(s).`
-              : "."),
-        );
-      }
       router.refresh();
+      if (!res.ok) return setAviso(res.error ?? "Falha ao validar.");
+      if ((res.checados ?? 0) === 0)
+        return setAviso("Nada novo pra validar (todos já checados).");
+      const sem = res.semWhats ?? 0;
+      setAviso(`Validados ${res.checados} — ${res.comWhats} com WhatsApp, ${sem} sem.`);
+      if (sem > 0) setConfirmar(sem); // abre o popup de exclusão
+    });
+  }
+
+  function confirmarRemocao() {
+    setConfirmar(null);
+    startValidar(async () => {
+      const res = await removerSemWhatsapp(listaId === "todas" ? null : listaId);
+      router.refresh();
+      if (!res.ok) return setAviso(res.error ?? "Falha ao remover.");
+      setAviso(
+        `${res.removidos} lead(s) sem WhatsApp removido(s) · ${res.removidos} crédito(s) estornado(s).`,
+      );
     });
   }
 
@@ -388,6 +399,47 @@ export function AllLeadsTable({
         </table>
       </div>
       )}
+
+      {mounted &&
+        confirmar !== null &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/20 p-4"
+            onClick={() => setConfirmar(null)}
+          >
+            <div
+              className="anim-in w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-6 shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] ring-1 ring-black/5"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-lg font-semibold text-neutral-900">
+                Excluir leads sem WhatsApp?
+              </h2>
+              <p className="mt-2 text-sm text-neutral-600">
+                <strong>{confirmar}</strong> {confirmar === 1 ? "lead não tem" : "leads não têm"}{" "}
+                WhatsApp e não {confirmar === 1 ? "serve" : "servem"} pra disparo. Se excluir,{" "}
+                <strong>
+                  {confirmar} crédito{confirmar === 1 ? "" : "s"}
+                </strong>{" "}
+                {confirmar === 1 ? "volta" : "voltam"} pra sua conta.
+              </p>
+              <div className="mt-6 flex justify-end gap-2">
+                <button
+                  onClick={() => setConfirmar(null)}
+                  className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-500 hover:text-neutral-900"
+                >
+                  Manter
+                </button>
+                <button
+                  onClick={confirmarRemocao}
+                  className="rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-400"
+                >
+                  Excluir e estornar
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
