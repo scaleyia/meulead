@@ -10,7 +10,6 @@ import {
   ACTOR_GOOGLE_MAPS,
   ACTOR_INSTAGRAM,
 } from "@/lib/apify";
-import { resolverMunicipio, separarLocalizacao } from "@/lib/cnpjApify";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -57,22 +56,10 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
       : `${termo}${localizacao ? ` · ${localizacao}` : ""}`;
   const nomeLista = (input.nomeLista ?? "").trim() || auto;
 
-  // Segmento (CNAE) + município p/ o enriquecimento do dono (só Google Maps).
-  let cnae: string | null = null;
-  let uf: string | null = null;
-  let municipio: string | null = null;
-  if (origem === "google_maps") {
-    cnae = (input.cnae ?? "").trim() || null;
-    if (cnae && localizacao) {
-      const { cidade, uf: ufLoc } = separarLocalizacao(localizacao);
-      if (ufLoc) {
-        uf = ufLoc;
-        municipio = await resolverMunicipio(cidade, ufLoc);
-      }
-    }
-  }
-  // Só enriquece o dono se temos segmento + cidade resolvida.
-  const donoProcessado = !(cnae && uf && municipio);
+  // Segmento (CNAE) p/ achar o dono (só Google Maps). A cidade/UF é extraída
+  // dos endereços dos leads no enriquecimento — mais confiável.
+  const cnae = origem === "google_maps" ? (input.cnae ?? "").trim() || null : null;
+  const donoProcessado = !cnae; // sem segmento, não busca o dono
 
   const { data: lista, error: e1 } = await supabase
     .from("listas")
@@ -81,8 +68,6 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
       nome: nomeLista,
       origem,
       cnae,
-      uf,
-      municipio_ibge: municipio,
       dono_processado: donoProcessado,
     })
     .select("id")

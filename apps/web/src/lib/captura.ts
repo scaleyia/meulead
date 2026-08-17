@@ -7,6 +7,8 @@ import {
   resolverDiscovery,
   construirIndice,
   acharDono,
+  cidadeUfDeEnderecos,
+  resolverMunicipio,
 } from "@/lib/cnpjApify";
 import { resolverAdsGoogle, resolverAdsMeta } from "@/lib/ads";
 
@@ -234,7 +236,7 @@ export async function enriquecerDonos(orgId: string): Promise<void> {
       .eq("id", lista.id);
   }
 
-  // (2) Inicia o discovery de UMA lista pendente (com CNAE + município + leads).
+  // (2) Inicia o discovery de UMA lista pendente (com CNAE + leads importados).
   const { data: candidatas } = await supabase
     .from("listas")
     .select("id, cnae, uf, municipio_ibge")
@@ -243,7 +245,6 @@ export async function enriquecerDonos(orgId: string): Promise<void> {
     .eq("dono_processado", false)
     .is("dono_run_id", null)
     .not("cnae", "is", null)
-    .not("municipio_ibge", "is", null)
     .limit(5);
 
   for (const lista of candidatas ?? []) {
@@ -255,20 +256,38 @@ export async function enriquecerDonos(orgId: string): Promise<void> {
       .maybeSingle();
     if (job?.status !== "concluido") continue;
 
-    const { count } = await supabase
+    const { data: leads } = await supabase
       .from("leads")
-      .select("id", { count: "exact", head: true })
-      .eq("lista_id", lista.id)
-      .is("nome", null);
-    if (!count) {
-      // Nada pra enriquecer — encerra essa lista.
+      .select("id, endereco, nome")
+      .eq("lista_id", lista.id);
+    const pendentes = (leads ?? []).filter((l) => !l.nome);
+    if (!pendentes.length) {
       await supabase.from("listas").update({ dono_processado: true }).eq("id", lista.id);
       continue;
     }
 
-    const runId = await iniciarDiscoveryDonos(lista.cnae!, lista.uf!, lista.municipio_ibge!);
+    // Descobre cidade/UF: usa o que já está na lista OU extrai dos endereços.
+    let uf = lista.uf;
+    let municipio = lista.municipio_ibge;
+    if (!uf || !municipio) {
+      const local = cidadeUfDeEnderecos((leads ?? []).map((l) => l.endereco));
+      if (local) {
+        uf = local.uf;
+        municipio = await resolverMunicipio(local.cidade, local.uf);
+      }
+    }
+    if (!uf || !municipio) {
+      // Não deu pra localizar — encerra sem enriquecer.
+      await supabase.from("listas").update({ dono_processado: true }).eq("id", lista.id);
+      continue;
+    }
+
+    const runId = await iniciarDiscoveryDonos(lista.cnae!, uf, municipio);
     if (runId) {
-      await supabase.from("listas").update({ dono_run_id: runId }).eq("id", lista.id);
+      await supabase
+        .from("listas")
+        .update({ dono_run_id: runId, uf, municipio_ibge: municipio })
+        .eq("id", lista.id);
     } else {
       await supabase.from("listas").update({ dono_processado: true }).eq("id", lista.id);
     }

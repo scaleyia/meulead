@@ -40,6 +40,28 @@ export function separarLocalizacao(loc: string): { cidade: string; uf: string | 
   return { cidade: loc.trim(), uf: null };
 }
 
+// Extrai a cidade + UF mais comum de uma lista de endereços do Google Maps.
+// Ex: "R. XV, 3358 - Centro, São José do Rio Preto - SP, 15015-110, Brasil".
+export function cidadeUfDeEnderecos(
+  enderecos: (string | null)[],
+): { cidade: string; uf: string } | null {
+  const contagem = new Map<string, { cidade: string; uf: string; n: number }>();
+  for (const end of enderecos) {
+    if (!end) continue;
+    const m = end.match(/,\s*([^,]+?)\s*-\s*([A-Z]{2}),\s*\d{5}/);
+    if (!m) continue;
+    const cidade = m[1].trim();
+    const uf = m[2].toUpperCase();
+    const chave = `${semAcento(cidade)}|${uf}`;
+    const cur = contagem.get(chave) ?? { cidade, uf, n: 0 };
+    cur.n++;
+    contagem.set(chave, cur);
+  }
+  let melhor: { cidade: string; uf: string; n: number } | null = null;
+  for (const v of contagem.values()) if (!melhor || v.n > melhor.n) melhor = v;
+  return melhor ? { cidade: melhor.cidade, uf: melhor.uf } : null;
+}
+
 // Dispara o discovery (assíncrono). Devolve o run id.
 export async function iniciarDiscoveryDonos(
   cnae: string,
