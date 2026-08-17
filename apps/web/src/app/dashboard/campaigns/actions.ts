@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrg } from "@/lib/org";
+import { prepararDisparo } from "@/lib/disparo";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -18,11 +19,19 @@ export async function criarCampanha(input: {
   intervaloMin: number;
   intervaloMax: number;
   limiteDiario: number;
+  agendadaPara?: string | null;
 }): Promise<ActionResult> {
   const org = await getActiveOrg();
   if (!org) return { ok: false, error: "Sessão expirada." };
   if (!input.nome.trim()) return { ok: false, error: "Dê um nome à campanha." };
   if (!input.mensagem.trim()) return { ok: false, error: "Escreva a mensagem do disparo." };
+
+  // Agendamento (opcional). Se no futuro, a campanha nasce "agendada".
+  const agendadaPara =
+    input.agendadaPara && !Number.isNaN(Date.parse(input.agendadaPara))
+      ? input.agendadaPara
+      : null;
+  const agendadaFutura = agendadaPara ? new Date(agendadaPara).getTime() > Date.now() : false;
 
   // No modo automático o sistema escolhe intervalos/limite seguros.
   const modoEnvio = input.modoEnvio === "manual" ? "manual" : "auto";
@@ -44,7 +53,8 @@ export async function criarCampanha(input: {
       nome: input.nome.trim(),
       lista_id: input.listaId || null,
       mensagem: input.mensagem.trim(),
-      status: "rascunho",
+      status: agendadaFutura ? "agendada" : "rascunho",
+      agendada_para: agendadaPara,
       modo_envio: modoEnvio,
       intervalo_min: config.intervaloMin,
       intervalo_max: config.intervaloMax,
@@ -81,56 +91,8 @@ export async function dispararCampanha(campanhaId: string): Promise<ActionResult
   if (!org) return { ok: false, error: "Sessão expirada." };
 
   const supabase = await createClient();
-
-  const { data: campanha, error: campErr } = await supabase
-    .from("campanhas")
-    .select("id, lista_id")
-    .eq("id", campanhaId)
-    .maybeSingle();
-
-  if (campErr) return { ok: false, error: campErr.message };
-  if (!campanha) return { ok: false, error: "Campanha não encontrada." };
-  if (!campanha.lista_id)
-    return { ok: false, error: "Selecione uma lista antes de disparar." };
-
-  // Pool de chips da campanha — sem chips não há como revezar.
-  const { data: pool, error: poolErr } = await supabase
-    .from("campanha_sessoes")
-    .select("sessao_id")
-    .eq("campanha_id", campanha.id);
-
-  if (poolErr) return { ok: false, error: poolErr.message };
-  const chips = (pool ?? []).map((p) => p.sessao_id);
-  if (chips.length === 0)
-    return { ok: false, error: "Selecione ao menos um chip na campanha." };
-
-  const { data: leads, error: leadsErr } = await supabase
-    .from("leads")
-    .select("id, telefone, nome")
-    .eq("lista_id", campanha.lista_id);
-
-  if (leadsErr) return { ok: false, error: leadsErr.message };
-  if (!leads || leads.length === 0)
-    return { ok: false, error: "A lista está vazia — nenhum contato para disparar." };
-
-  // Revezamento round-robin: cada lead vai para o próximo chip do pool.
-  const alvos = leads.map((lead, i) => ({
-    organizacao_id: org.orgId,
-    campanha_id: campanha.id,
-    lead_id: lead.id,
-    telefone: lead.telefone,
-    sessao_id: chips[i % chips.length],
-    status: "pendente" as const,
-  }));
-
-  const { error: alvosErr } = await supabase.from("campanha_alvos").insert(alvos);
-  if (alvosErr) return { ok: false, error: alvosErr.message };
-
-  const { error: updErr } = await supabase
-    .from("campanhas")
-    .update({ status: "enviando" })
-    .eq("id", campanha.id);
-  if (updErr) return { ok: false, error: updErr.message };
+  const res = await prepararDisparo(supabase, campanhaId, org.orgId);
+  if (!res.ok) return { ok: false, error: res.error ?? "Falha ao disparar." };
 
   revalidatePath("/dashboard/campaigns");
   revalidatePath("/dashboard/crm");

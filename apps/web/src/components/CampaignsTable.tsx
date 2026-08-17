@@ -7,13 +7,26 @@ import { dispararCampanha, excluirCampanha } from "@/app/dashboard/campaigns/act
 
 type Status = "rascunho" | "agendada" | "enviando" | "concluida" | "pausada";
 
+type Metricas = { total: number; enviados: number; entregues: number; falhou: number };
+
 type Campanha = {
   id: string;
   nome: string;
   status: string;
   modo_envio: string | null;
   criado_em: string;
+  agendada_para: string | null;
+  metricas: Metricas;
 };
+
+function formatarDataHora(iso: string) {
+  return new Date(iso).toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 const STATUS_LABEL: Record<Status, string> = {
   rascunho: "Rascunho",
@@ -32,14 +45,6 @@ const STATUS_BADGE: Record<Status, string> = {
 };
 
 const FALLBACK_BADGE = "bg-neutral-100 text-neutral-700 border-neutral-300";
-
-function formatarData(iso: string) {
-  return new Date(iso).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
   const router = useRouter();
@@ -82,8 +87,8 @@ export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
             <tr>
               <th className="px-4 py-3 font-medium">Campanha</th>
               <th className="px-4 py-3 font-medium">Status</th>
+              <th className="px-4 py-3 font-medium">Resultados</th>
               <th className="px-4 py-3 font-medium">Modo</th>
-              <th className="px-4 py-3 font-medium">Criada em</th>
               <th className="px-4 py-3 text-right font-medium">Ações</th>
             </tr>
           </thead>
@@ -101,9 +106,35 @@ export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
                     >
                       {STATUS_LABEL[c.status as Status] ?? c.status}
                     </span>
+                    {c.agendada_para && (
+                      <span className="mt-1 block text-[11px] text-blue-600">
+                        📅 {formatarDataHora(c.agendada_para)}
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    {c.metricas.total === 0 ? (
+                      <span className="text-xs text-neutral-400">—</span>
+                    ) : (
+                      <div className="flex flex-wrap gap-1 text-[11px]">
+                        <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-neutral-600">
+                          {c.metricas.total} alvos
+                        </span>
+                        <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-blue-600">
+                          {c.metricas.enviados} enviados
+                        </span>
+                        <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-emerald-600">
+                          {c.metricas.entregues} entregues
+                        </span>
+                        {c.metricas.falhou > 0 && (
+                          <span className="rounded bg-red-500/10 px-1.5 py-0.5 text-red-600">
+                            {c.metricas.falhou} falhas
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-neutral-700">{modo}</td>
-                  <td className="px-4 py-3 text-neutral-500">{formatarData(c.criado_em)}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
                       {podeDisparar && (

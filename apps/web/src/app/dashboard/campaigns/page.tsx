@@ -5,24 +5,46 @@ import { CampaignsTable } from "@/components/CampaignsTable";
 export default async function CampaignsPage() {
   const supabase = await createClient();
 
-  const [{ data: campanhas }, { data: listas }, { data: sessoes }] = await Promise.all([
-    supabase
-      .from("campanhas")
-      .select("id, nome, status, modo_envio, criado_em")
-      .order("criado_em", { ascending: false }),
-    // Instagram não tem telefone — só listas disparáveis (Google Maps, import, manual).
-    supabase
-      .from("listas")
-      .select("id, nome")
-      .or("origem.is.null,origem.neq.instagram")
-      .order("criado_em", { ascending: false }),
-    supabase
-      .from("sessoes_whatsapp")
-      .select("id, nome, status")
-      .order("criado_em", { ascending: false }),
-  ]);
+  const [{ data: campanhas }, { data: listas }, { data: sessoes }, { data: alvos }] =
+    await Promise.all([
+      supabase
+        .from("campanhas")
+        .select("id, nome, status, modo_envio, criado_em, agendada_para")
+        .order("criado_em", { ascending: false }),
+      // Instagram não tem telefone — só listas disparáveis (Google Maps, import, manual).
+      supabase
+        .from("listas")
+        .select("id, nome")
+        .or("origem.is.null,origem.neq.instagram")
+        .order("criado_em", { ascending: false }),
+      supabase
+        .from("sessoes_whatsapp")
+        .select("id, nome, status")
+        .order("criado_em", { ascending: false }),
+      supabase.from("campanha_alvos").select("campanha_id, status"),
+    ]);
 
-  const rows = campanhas ?? [];
+  // Agrega métricas por campanha.
+  const metricasPorCampanha = new Map<
+    string,
+    { total: number; enviados: number; entregues: number; falhou: number }
+  >();
+  for (const a of alvos ?? []) {
+    const m =
+      metricasPorCampanha.get(a.campanha_id) ??
+      { total: 0, enviados: 0, entregues: 0, falhou: 0 };
+    m.total++;
+    const s = (a.status ?? "").toLowerCase();
+    if (s === "enviado") m.enviados++;
+    else if (s === "entregue" || s === "lido") m.entregues++;
+    else if (s === "falhou") m.falhou++;
+    metricasPorCampanha.set(a.campanha_id, m);
+  }
+
+  const rows = (campanhas ?? []).map((c) => ({
+    ...c,
+    metricas: metricasPorCampanha.get(c.id) ?? { total: 0, enviados: 0, entregues: 0, falhou: 0 },
+  }));
 
   return (
     <div>
