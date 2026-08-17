@@ -69,15 +69,3 @@ const STEPS: TourStep[] = [
 export function DashboardTour() {
   return <Tour steps={STEPS} storageKey="meulead_tour_v1" />;
 }
-
-// Botão pra refazer o tour (dispara o evento que o Tour escuta).
-export function TourButton() {
-  return (
-    <button
-      onClick={() => window.dispatchEvent(new CustomEvent("meulead:start-tour"))}
-      className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-300 bg-white px-3.5 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100"
-    >
-      🎓 Fazer tour
-    </button>
-  );
-}

@@ -15,7 +15,6 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrg } from "@/lib/org";
 import { calcularScore } from "@/lib/score";
-import { TourButton } from "@/components/DashboardTour";
 import { clsx } from "@/lib/clsx";
 
 export default async function DashboardPage() {
@@ -101,15 +100,12 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-bold tracking-tight">Visão geral 👋</h1>
           <p className="mt-1 text-neutral-500">Do lead ao fechamento, tudo num lugar só.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <TourButton />
-          <Link
-            href="/dashboard/capture"
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-emerald-600/20 transition hover:from-emerald-400 hover:to-emerald-500"
-          >
-            <Radar className="h-4 w-4" /> Captar leads
-          </Link>
-        </div>
+        <Link
+          href="/dashboard/capture"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-emerald-600/20 transition hover:from-emerald-400 hover:to-emerald-500"
+        >
+          <Radar className="h-4 w-4" /> Captar leads
+        </Link>
       </div>
 
       {/* KPIs */}
