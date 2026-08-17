@@ -19,19 +19,11 @@ export async function criarCampanha(input: {
   intervaloMin: number;
   intervaloMax: number;
   limiteDiario: number;
-  agendadaPara?: string | null;
 }): Promise<ActionResult> {
   const org = await getActiveOrg();
   if (!org) return { ok: false, error: "Sessão expirada." };
   if (!input.nome.trim()) return { ok: false, error: "Dê um nome à campanha." };
   if (!input.mensagem.trim()) return { ok: false, error: "Escreva a mensagem do disparo." };
-
-  // Agendamento (opcional). Se no futuro, a campanha nasce "agendada".
-  const agendadaPara =
-    input.agendadaPara && !Number.isNaN(Date.parse(input.agendadaPara))
-      ? input.agendadaPara
-      : null;
-  const agendadaFutura = agendadaPara ? new Date(agendadaPara).getTime() > Date.now() : false;
 
   // No modo automático o sistema escolhe intervalos/limite seguros.
   const modoEnvio = input.modoEnvio === "manual" ? "manual" : "auto";
@@ -53,8 +45,7 @@ export async function criarCampanha(input: {
       nome: input.nome.trim(),
       lista_id: input.listaId || null,
       mensagem: input.mensagem.trim(),
-      status: agendadaFutura ? "agendada" : "rascunho",
-      agendada_para: agendadaPara,
+      status: "rascunho",
       modo_envio: modoEnvio,
       intervalo_min: config.intervaloMin,
       intervalo_max: config.intervaloMax,

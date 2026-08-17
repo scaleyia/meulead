@@ -101,7 +101,6 @@ function CampaignFields({
     intervaloMin: number;
     intervaloMax: number;
     limiteDiario: number;
-    agendadaPara: string | null;
   }) => void;
 }) {
   const [nome, setNome] = useState("");
@@ -112,7 +111,6 @@ function CampaignFields({
   const [intervaloMin, setIntervaloMin] = useState(30);
   const [intervaloMax, setIntervaloMax] = useState(90);
   const [limiteDiario, setLimiteDiario] = useState(200);
-  const [agendarPara, setAgendarPara] = useState("");
 
   const toggleSessao = (id: string) =>
     setSessaoIds((prev) =>
@@ -133,7 +131,6 @@ function CampaignFields({
           intervaloMin,
           intervaloMax,
           limiteDiario,
-          agendadaPara: agendarPara ? new Date(agendarPara).toISOString() : null,
         });
       }}
     >
@@ -226,19 +223,6 @@ function CampaignFields({
           </>
         )}
       </div>
-
-      <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-700">Agendar disparo (opcional)</span>
-        <input
-          type="datetime-local"
-          value={agendarPara}
-          onChange={(e) => setAgendarPara(e.target.value)}
-          className="input"
-        />
-        <span className="text-xs text-neutral-500">
-          Deixe vazio para disparar manualmente. Se agendar, o sistema dispara sozinho no horário.
-        </span>
-      </label>
 
       {/* Modo de envio */}
       <div className="flex flex-col gap-2">

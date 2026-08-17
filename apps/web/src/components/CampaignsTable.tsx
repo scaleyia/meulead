@@ -15,18 +15,8 @@ type Campanha = {
   status: string;
   modo_envio: string | null;
   criado_em: string;
-  agendada_para: string | null;
   metricas: Metricas;
 };
-
-function formatarDataHora(iso: string) {
-  return new Date(iso).toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
 
 const STATUS_LABEL: Record<Status, string> = {
   rascunho: "Rascunho",
@@ -106,11 +96,6 @@ export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
                     >
                       {STATUS_LABEL[c.status as Status] ?? c.status}
                     </span>
-                    {c.agendada_para && (
-                      <span className="mt-1 block text-[11px] text-blue-600">
-                        📅 {formatarDataHora(c.agendada_para)}
-                      </span>
-                    )}
                   </td>
                   <td className="px-4 py-3">
                     {c.metricas.total === 0 ? (
