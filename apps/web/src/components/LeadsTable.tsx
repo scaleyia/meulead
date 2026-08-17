@@ -117,11 +117,12 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-neutral-200">
-        <table className="w-full min-w-[820px] text-sm">
+        <table className="w-full min-w-[920px] text-sm">
           <thead className="bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500">
             <tr>
-              <th className="px-4 py-3 font-medium">Empresa / Dono</th>
+              <th className="px-4 py-3 font-medium">Empresa</th>
               <th className="whitespace-nowrap px-4 py-3 font-medium">Telefone</th>
+              <th className="px-4 py-3 font-medium">Dono</th>
               <th className="px-4 py-3 font-medium">Site</th>
               <th className="px-4 py-3 font-medium">Nota</th>
               <th className="px-4 py-3 font-medium">Origem</th>
@@ -133,15 +134,21 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
               <tr key={l.id} className="align-top hover:bg-neutral-100">
                 <td className="px-4 py-3">
                   <p className="font-medium text-neutral-900">{l.empresa ?? l.nome ?? "—"}</p>
-                  {l.nome && l.empresa && (
-                    <p className="mt-0.5 text-xs font-medium text-emerald-700">👤 {l.nome}</p>
-                  )}
                   {l.endereco && (
                     <p className="mt-0.5 text-xs text-neutral-400">{l.endereco}</p>
                   )}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 tabular-nums text-neutral-700">
                   {formatarTelefone(l.telefone)}
+                </td>
+                <td className="px-4 py-3">
+                  {l.nome ? (
+                    <span className="inline-flex items-center gap-1 whitespace-nowrap font-medium text-emerald-700">
+                      👤 {l.nome}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-neutral-400">—</span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   {temSite(l) ? (
@@ -188,7 +195,7 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-neutral-500">
+                <td colSpan={7} className="px-4 py-8 text-center text-neutral-500">
                   Nenhum lead corresponde ao filtro.
                 </td>
               </tr>
