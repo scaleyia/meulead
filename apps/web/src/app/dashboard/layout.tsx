@@ -22,7 +22,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="flex h-screen flex-col overflow-hidden bg-white text-neutral-900">
       {ehFree && (
         <Link
-          href="/planos"
+          href="/dashboard/creditos#assinar"
           className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 bg-gradient-to-r from-amber-500 to-amber-400 px-4 py-1.5 text-center text-xs font-medium text-white transition hover:from-amber-500 hover:to-amber-500"
         >
           <span>
@@ -52,14 +52,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
             >
               ⚡ {saldo.toLocaleString("pt-BR")} créditos
             </Link>
-            <a
-              href="/planos"
-              target="_blank"
+            <Link
+              href="/dashboard/creditos#assinar"
               className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium capitalize text-emerald-700 hover:bg-emerald-500/20"
-              title="Ver planos"
+              title="Ver e assinar planos"
             >
               Plano {org.plano}
-            </a>
+            </Link>
             <span className="text-neutral-500">{org.email}</span>
             <form action={logout}>
               <button className="rounded-md border border-neutral-300 px-3 py-1.5 text-neutral-800 transition hover:bg-neutral-100">

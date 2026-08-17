@@ -116,11 +116,10 @@ export default async function CreditosPage({
           </p>
         </div>
         <Link
-          href="/planos"
-          target="_blank"
+          href="#assinar"
           className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-400"
         >
-          Ver planos
+          Fazer upgrade
         </Link>
       </div>
 
@@ -144,7 +143,9 @@ export default async function CreditosPage({
       />
 
       {/* Assinar / trocar de plano */}
-      <h2 className="mt-8 mb-1 font-medium text-neutral-900">Assinar um plano</h2>
+      <h2 id="assinar" className="mt-8 mb-1 scroll-mt-24 font-medium text-neutral-900">
+        Assinar um plano
+      </h2>
       <p className="mb-3 text-sm text-neutral-500">
         Mensalidade com créditos que renovam todo mês + mais recursos.
       </p>
