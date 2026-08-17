@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
+import { DashboardTour } from "@/components/DashboardTour";
 import { getActiveOrg } from "@/lib/org";
 import { garantirCreditos } from "@/lib/creditos";
 import { isAdmin } from "@/lib/admin";
@@ -47,6 +48,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <div className="anim-in h-full">{children}</div>
         </main>
       </div>
+
+      {/* Tour guiado (auto-inicia na 1ª visita; reinicia pelo botão "Fazer tour") */}
+      <DashboardTour />
     </div>
   );
 }

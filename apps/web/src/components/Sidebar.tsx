@@ -78,6 +78,7 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
             <Link
               key={item.label}
               href={item.href}
+              data-tour={item.href}
               className={clsx(
                 "group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-all duration-150",
                 active
