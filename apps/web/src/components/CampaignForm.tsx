@@ -11,6 +11,35 @@ type Lista = { id: string; nome: string };
 type Sessao = { id: string; nome: string; status: string | null };
 type ModoEnvio = "auto" | "manual";
 
+// Modelos prontos de mensagem. {{nome}} é trocado pelo nome do dono no disparo.
+const TEMPLATES: { rotulo: string; texto: string }[] = [
+  {
+    rotulo: "Apresentação",
+    texto:
+      "Olá {{nome}}, tudo bem? Aqui é da [Sua Agência]. Ajudamos negócios como o seu a atrair mais clientes pela internet. Posso te mandar rapidinho como funciona?",
+  },
+  {
+    rotulo: "Sem site",
+    texto:
+      "Oi {{nome}}! Vi que o seu negócio ainda não tem um site — hoje isso faz muita diferença pra quem pesquisa no Google antes de comprar. Criamos um site profissional pra você. Quer ver alguns exemplos?",
+  },
+  {
+    rotulo: "Anúncios / tráfego",
+    texto:
+      "Olá {{nome}}! Notei que você já investe em anúncios. Consigo te mostrar como melhorar o retorno e pagar menos por cliente. Faz sentido a gente conversar 5 minutinhos?",
+  },
+  {
+    rotulo: "Google Meu Negócio",
+    texto:
+      "Oi {{nome}}, tudo bem? Ajudo empresas a aparecerem no topo do Google Maps da sua região e a receberem mais ligações. Posso te explicar como?",
+  },
+  {
+    rotulo: "Promoção",
+    texto:
+      "Olá {{nome}}! Estamos com uma condição especial neste mês para novos clientes. Quer que eu te envie os detalhes sem compromisso?",
+  },
+];
+
 export function CampaignForm({
   listas,
   sessoes,
@@ -136,6 +165,19 @@ function CampaignFields({
 
       <label className="flex flex-col gap-1.5">
         <span className="text-sm font-medium text-neutral-700">Mensagem</span>
+        <div className="flex flex-wrap gap-1.5">
+          <span className="text-xs text-neutral-400">Modelos:</span>
+          {TEMPLATES.map((t) => (
+            <button
+              key={t.rotulo}
+              type="button"
+              onClick={() => setMensagem(t.texto)}
+              className="rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-xs font-medium text-neutral-600 transition hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-700"
+            >
+              {t.rotulo}
+            </button>
+          ))}
+        </div>
         <textarea
           required
           rows={5}
@@ -145,7 +187,8 @@ function CampaignFields({
           className="input resize-y"
         />
         <span className="text-xs text-neutral-500">
-          Dica: use {"{{nome}}"} para personalizar com o nome do dono.
+          Clique num modelo pra preencher. Use {"{{nome}}"} para personalizar com o nome do dono. E
+          troque [Sua Agência] pelo seu nome.
         </span>
       </label>
 

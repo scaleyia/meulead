@@ -33,7 +33,7 @@ export interface AllLeadRow {
   adsChecando: boolean;
 }
 
-type Fonte = "todos" | "google_maps" | "instagram";
+type Fonte = "google_maps" | "instagram";
 
 export interface ListaOption {
   id: string;
@@ -73,7 +73,7 @@ export function AllLeadsTable({
   const router = useRouter();
   const [q, setQ] = useState("");
   const [filtro, setFiltro] = useState<Filtro>("todos");
-  const [fonte, setFonte] = useState<Fonte>("todos");
+  const [fonte, setFonte] = useState<Fonte>("google_maps");
   const [listaId, setListaId] = useState<string>("todas");
   const [pending, start] = useTransition();
 
@@ -84,7 +84,7 @@ export function AllLeadsTable({
     () =>
       leads.filter((l) => {
         if (listaId !== "todas" && l.lista_id !== listaId) return false;
-        if (fonte !== "todos" && l.origem !== fonte) return false;
+        if (l.origem !== fonte) return false;
         return true;
       }),
     [leads, listaId, fonte],
@@ -137,7 +137,6 @@ export function AllLeadsTable({
         <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200 text-sm">
           {(
             [
-              { key: "todos", label: "Todas as fontes" },
               { key: "google_maps", label: `🗺️ Google Maps (${totGoogle})` },
               { key: "instagram", label: `📸 Instagram (${totInsta})` },
             ] as { key: Fonte; label: string }[]

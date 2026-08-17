@@ -157,22 +157,22 @@ export default async function CreditosPage({
           Nenhuma movimentação ainda. Capte leads para ver o consumo aqui.
         </p>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-neutral-200">
-          <table className="w-full text-left text-sm">
+        <div className="mb-6 overflow-x-auto rounded-xl border border-neutral-200">
+          <table className="w-full min-w-[560px] text-left text-sm">
             <thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
               <tr>
-                <th className="px-4 py-3 font-medium">Quando</th>
-                <th className="px-4 py-3 font-medium">Tipo</th>
+                <th className="whitespace-nowrap px-4 py-3 font-medium">Quando</th>
+                <th className="whitespace-nowrap px-4 py-3 font-medium">Tipo</th>
                 <th className="px-4 py-3 font-medium">Descrição</th>
-                <th className="px-4 py-3 text-right font-medium">Créditos</th>
-                <th className="px-4 py-3 text-right font-medium">Saldo</th>
+                <th className="whitespace-nowrap px-4 py-3 text-right font-medium">Créditos</th>
+                <th className="whitespace-nowrap px-4 py-3 text-right font-medium">Saldo</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-200">
               {transacoes.map((t) => (
                 <tr key={t.id} className="hover:bg-neutral-100">
-                  <td className="px-4 py-3 text-neutral-500">{fmtDataHora(t.criado_em)}</td>
-                  <td className="px-4 py-3 text-neutral-700">{TIPO_LABEL[t.tipo] ?? t.tipo}</td>
+                  <td className="whitespace-nowrap px-4 py-3 text-neutral-500">{fmtDataHora(t.criado_em)}</td>
+                  <td className="whitespace-nowrap px-4 py-3 text-neutral-700">{TIPO_LABEL[t.tipo] ?? t.tipo}</td>
                   <td className="px-4 py-3 text-neutral-500">{t.descricao ?? "—"}</td>
                   <td
                     className={`px-4 py-3 text-right font-medium ${

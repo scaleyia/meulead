@@ -10,7 +10,12 @@ export default async function CampaignsPage() {
       .from("campanhas")
       .select("id, nome, status, modo_envio, criado_em")
       .order("criado_em", { ascending: false }),
-    supabase.from("listas").select("id, nome").order("criado_em", { ascending: false }),
+    // Instagram não tem telefone — só listas disparáveis (Google Maps, import, manual).
+    supabase
+      .from("listas")
+      .select("id, nome")
+      .or("origem.is.null,origem.neq.instagram")
+      .order("criado_em", { ascending: false }),
     supabase
       .from("sessoes_whatsapp")
       .select("id, nome, status")

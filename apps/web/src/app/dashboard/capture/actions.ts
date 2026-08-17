@@ -66,9 +66,10 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
   const run =
     origem === "instagram"
       ? await iniciarRun(ACTOR_INSTAGRAM, {
-          // A API não filtra por país; injetar a localização na busca direciona
-          // os resultados pro Brasil/cidade informada.
-          search: `${termo}${localizacao ? ` ${localizacao}` : " brasil"}`,
+          // Termo em português já traz perfis brasileiros. Anexar "brasil"
+          // poluía a busca (trazia gringos). A localização, quando informada,
+          // é uma cidade — aí ajuda a focar.
+          search: `${termo}${localizacao ? ` ${localizacao}` : ""}`,
           searchType: "user",
           searchLimit: qtd,
           resultsType: "details",

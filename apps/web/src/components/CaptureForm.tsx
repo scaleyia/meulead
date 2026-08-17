@@ -99,8 +99,8 @@ export function CaptureForm() {
             <input name="localizacao" placeholder="Ex: São Paulo, SP" className="input" />
             {modo === "instagram" && (
               <span className="text-xs text-neutral-500">
-                O Instagram não filtra por país. Informar a cidade/estado direciona a busca pro
-                Brasil e evita perfis de fora. Se deixar vazio, focamos em “brasil”.
+                O termo em português já traz perfis brasileiros. Informar a cidade/estado ajuda a
+                focar ainda mais na sua região.
               </span>
             )}
           </label>
