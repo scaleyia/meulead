@@ -124,7 +124,6 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
               <th className="whitespace-nowrap px-4 py-3 font-medium">Telefone</th>
               <th className="px-4 py-3 font-medium">Site</th>
               <th className="px-4 py-3 font-medium">Nota</th>
-              <th className="px-4 py-3 font-medium">Contato</th>
               <th className="px-4 py-3 font-medium">Origem</th>
               <th className="px-4 py-3" />
             </tr>
@@ -173,28 +172,6 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
                     "—"
                   )}
                 </td>
-                <td className="px-4 py-3 text-neutral-700">
-                  {l.instagram ? (
-                    <a
-                      href={hrefSite(l.instagram)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-fuchsia-600 hover:text-fuchsia-500"
-                    >
-                      Instagram
-                      {l.seguidores != null && (
-                        <span className="text-xs text-neutral-400">
-                          {" "}
-                          · {l.seguidores.toLocaleString("pt-BR")}
-                        </span>
-                      )}
-                    </a>
-                  ) : l.email ? (
-                    <span className="break-all text-xs">{l.email}</span>
-                  ) : (
-                    "—"
-                  )}
-                </td>
                 <td className="whitespace-nowrap px-4 py-3 text-neutral-500">
                   {sourceLabel(l.origem)}
                 </td>
@@ -211,7 +188,7 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-neutral-500">
+                <td colSpan={6} className="px-4 py-8 text-center text-neutral-500">
                   Nenhum lead corresponde ao filtro.
                 </td>
               </tr>
