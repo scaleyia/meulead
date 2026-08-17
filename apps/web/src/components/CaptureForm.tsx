@@ -118,7 +118,8 @@ export function CaptureForm() {
               <SegmentoBusca />
               <span className="text-xs text-neutral-500">
                 Escolha o segmento na lista pra o sistema descobrir o <strong>nome do dono</strong>.
-                Precisa da <strong>cidade + estado</strong> acima (ex: “…, SP”).
+                A <strong>cidade é detectada automaticamente</strong> pelos leads — não precisa se
+                preocupar com o formato da localização.
               </span>
             </label>
           )}
