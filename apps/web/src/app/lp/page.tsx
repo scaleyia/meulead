@@ -13,6 +13,15 @@ export const metadata = {
 
 const NICHOS = ["Farmácias","Clínicas","Restaurantes","Academias","Pet shops","Estética","Advogados","Dentistas","Oficinas","Imobiliárias","Barbearias","Contadores"];
 
+// Cards da galeria inclinada (hero)
+const GALERIA = [
+  { e: "CERTA Farmácia de Manipulação", d: "Liliamaura Gonçalves", tags: ["Sem site", "Já anuncia"], hot: "🔥 Quente" },
+  { e: "Alquimia Farmácia", d: null, tags: ["Sem site", "WhatsApp ✓"], hot: "🔥 Quente" },
+  { e: "R.Pharma", d: "Andreia Jurca", tags: ["Site fraco · 42", "Dono ✓"], hot: "🟡 Morno" },
+  { e: "Grindélia Farmácia", d: "Creusa Toledo", tags: ["118 avaliações", "Anuncia"], hot: "🔥 Quente" },
+  { e: "Única Farmácia", d: "Carolini Mazza", tags: ["Sem site", "Dono ✓"], hot: "🔥 Quente" },
+];
+
 const REACOES = [
   { bolha: "Sem site? 🎯", cor: "text-red-500", flip: false, delay: "0s" },
   { bolha: "Achei o dono! 👤", cor: "text-emerald-600", flip: true, delay: "0.6s" },
@@ -46,87 +55,107 @@ const FAQ = [
   { q: "Posso cancelar quando quiser?", a: "Sim, sem fidelidade. Comece grátis e faça upgrade só quando precisar de mais leads." },
 ];
 
-const CTA_PRIMARIA =
-  "inline-flex items-center justify-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-7 py-3.5 text-base font-semibold text-white shadow-[0_14px_44px_-10px_rgba(16,185,129,0.65)] transition hover:scale-[1.03] hover:brightness-110";
+const CTA_PILL =
+  "inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-7 py-4 text-base font-semibold text-white shadow-[0_16px_44px_-10px_rgba(16,185,129,0.7)] transition hover:scale-[1.03] hover:brightness-110";
 
 export default function LpPage() {
   return (
     <main className={`${grotesk.className} min-h-screen overflow-x-hidden bg-white text-neutral-900`}>
       <ScrollProgress />
 
-      {/* brilhos suaves de fundo */}
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="lp-glow absolute left-1/2 top-[-12%] h-[480px] w-[820px] -translate-x-1/2 rounded-full bg-emerald-300/25 blur-[150px]" />
-        <div className="lp-glow absolute right-[-8%] top-[45%] h-[380px] w-[380px] rounded-full bg-teal-300/20 blur-[130px]" style={{ animationDelay: "2s" }} />
+      {/* BARRA DE AVISO no topo */}
+      <div className="w-full bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-500 px-4 py-2 text-center text-sm font-medium text-white">
+        📈 O MeuLead acha os donos de negócio que precisam de você — capte, qualifique e dispare em minutos!
       </div>
+
+      {/* fundo com leve wash verde no topo */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[900px] bg-gradient-to-b from-emerald-50 via-white to-white" />
 
       {/* NAV */}
       <header className="sticky top-0 z-40 border-b border-neutral-200/70 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="MeuLead" className="h-9 w-auto" />
-          <nav className="hidden items-center gap-6 text-sm font-medium text-neutral-600 md:flex">
+          <nav className="hidden items-center gap-7 text-sm font-medium text-neutral-500 md:flex">
+            <a href="#planos" className="hover:text-neutral-900">Planos</a>
             <a href="#como" className="hover:text-neutral-900">Como funciona</a>
             <a href="#recursos" className="hover:text-neutral-900">Recursos</a>
-            <a href="#planos" className="hover:text-neutral-900">Planos</a>
             <a href="#faq" className="hover:text-neutral-900">FAQ</a>
           </nav>
           <div className="flex items-center gap-3 text-sm">
-            <Link href="/login" className="font-medium text-neutral-600 hover:text-neutral-900">Entrar</Link>
-            <Link href="/signup" className="rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2 font-semibold text-white shadow-sm transition hover:brightness-110">
-              Começar grátis
+            <Link href="/login" className="rounded-full border border-neutral-300 px-5 py-2 font-medium text-neutral-800 transition hover:bg-neutral-50">Login</Link>
+            <Link href="/signup" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-2 font-semibold text-white shadow-sm transition hover:brightness-110">
+              Começar agora <span className="grid h-5 w-5 place-items-center rounded-full bg-white/25 text-xs">›</span>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* HERO */}
-      <section className="relative mx-auto grid max-w-6xl items-center gap-10 px-6 pb-10 pt-16 lg:grid-cols-2 lg:pt-24">
+      {/* HERO centralizado */}
+      <section className="mx-auto max-w-4xl px-6 pt-14 text-center sm:pt-20">
         <Reveal>
-          <span className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
-            🎯 Feito pra agências e prestadores de serviço
-          </span>
-          <h1 className="mt-6 text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-            Ache os <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">donos de negócio</span> que precisam de você
+          <h1 className="text-5xl font-bold leading-[1.02] tracking-tight sm:text-7xl">
+            Ache os{" "}
+            <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">donos de negócio</span>{" "}
+            que <span className="text-emerald-600">precisam de você</span> em minutos.
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-neutral-500">
-            Capte empresas por nicho e cidade, descubra <strong className="text-neutral-800">quem não tem site</strong>,
-            quem <strong className="text-neutral-800">já anuncia</strong> e o <strong className="text-neutral-800">nome do dono</strong>.
-            Depois dispare no WhatsApp com segurança.
+          <p className="mx-auto mt-7 max-w-2xl text-lg text-neutral-500 sm:text-xl">
+            O MeuLead faz o trabalho pesado: acha as empresas, mostra <strong className="text-neutral-800">quem não tem site</strong>,
+            quem já anuncia e o <strong className="text-neutral-800">nome do dono</strong>.{" "}
+            <strong className="text-neutral-800">Sem lista fria. Sem garimpo. Sem perder horas.</strong>
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link href="/signup" className={CTA_PRIMARIA}>Começar grátis →</Link>
-            <a href="#como" className="rounded-full border border-neutral-300 px-7 py-3.5 text-base font-medium text-neutral-700 transition hover:bg-neutral-50">
-              Ver como funciona
-            </a>
-          </div>
-          <p className="mt-4 text-sm text-neutral-400">Sem cartão · 10 leads grátis pra testar</p>
-        </Reveal>
-
-        {/* Mascote 3D + card de lead */}
-        <Reveal delay={150} className="relative">
-          <div className="relative mx-auto flex max-w-sm flex-col items-center">
-            <div className="lp-glow absolute inset-0 -z-10 mx-auto h-64 w-64 rounded-full bg-emerald-300/40 blur-3xl" />
-            <Tilt max={16}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/mascote.png" alt="Detetive MeuLead" className="lp-float w-56 drop-shadow-[0_20px_45px_rgba(16,185,129,0.28)] sm:w-64" />
-            </Tilt>
-            <div className="lp-float-slow mt-[-30px] w-full rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl" style={{ animationDelay: "1s" }}>
-              <p className="text-xs text-neutral-400">🔥 Oportunidade quente</p>
-              <p className="mt-1 font-semibold text-neutral-900">CERTA Farmácia de Manipulação</p>
-              <p className="text-xs font-medium text-emerald-600">👤 Liliamaura Gonçalves</p>
-              <div className="mt-2 flex flex-wrap gap-1">
-                {["Sem site", "Já anuncia", "WhatsApp ✓"].map((t) => (
-                  <span key={t} className="rounded bg-neutral-100 px-1.5 py-0.5 text-[10px] text-neutral-600">{t}</span>
+          <div className="mt-9 flex flex-col items-center justify-center gap-6 sm:flex-row">
+            <Link href="/signup" className={CTA_PILL}>
+              Quero meus leads agora
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-white/25">›</span>
+            </Link>
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-2">
+                {["from-emerald-400 to-teal-500","from-amber-400 to-orange-500","from-sky-400 to-indigo-500","from-rose-400 to-red-500","from-fuchsia-400 to-purple-500"].map((g) => (
+                  <span key={g} className={`h-9 w-9 rounded-full border-2 border-white bg-gradient-to-br ${g}`} />
                 ))}
+              </div>
+              <div className="text-left text-xs text-neutral-500">
+                <div className="text-amber-400">★★★★★</div>
+                Usado por <strong className="text-neutral-700">agências</strong> que prospectam de verdade.
               </div>
             </div>
           </div>
         </Reveal>
       </section>
 
+      {/* GALERIA INCLINADA (perspectiva 3D) */}
+      <div className="relative mt-14 h-[340px] overflow-hidden sm:h-[420px]" style={{ perspective: "1400px" }}>
+        <div
+          className="mx-auto flex w-max gap-5 px-6"
+          style={{ transform: "rotateX(42deg) translateY(-10px)", transformStyle: "preserve-3d" }}
+        >
+          {GALERIA.map((c, i) => (
+            <div
+              key={c.e}
+              className="lp-float-slow w-56 shrink-0 rounded-2xl border border-neutral-200 bg-white p-4 text-left shadow-2xl"
+              style={{ animationDelay: `${i * 0.4}s` }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-neutral-400">Oportunidade</span>
+                <span className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${c.hot.includes("Quente") ? "bg-red-500/10 text-red-500" : "bg-amber-500/10 text-amber-600"}`}>{c.hot}</span>
+              </div>
+              <p className="mt-2 text-sm font-semibold text-neutral-900">{c.e}</p>
+              {c.d && <p className="text-xs font-medium text-emerald-600">👤 {c.d}</p>}
+              <div className="mt-2 flex flex-wrap gap-1">
+                {c.tags.map((t) => (
+                  <span key={t} className="rounded bg-neutral-100 px-1.5 py-0.5 text-[10px] text-neutral-600">{t}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* fade pra branco na base */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent" />
+      </div>
+
       {/* MARQUEE */}
-      <div className="relative mt-6 overflow-hidden border-y border-neutral-200 bg-neutral-50 py-4">
+      <div className="relative overflow-hidden border-y border-neutral-200 bg-neutral-50 py-4">
         <div className="lp-marquee flex w-max gap-3">
           {[...NICHOS, ...NICHOS].map((n, i) => (
             <span key={i} className="rounded-full border border-neutral-200 bg-white px-4 py-1.5 text-sm text-neutral-600">{n}</span>
@@ -134,7 +163,7 @@ export default function LpPage() {
         </div>
       </div>
 
-      {/* REAÇÕES */}
+      {/* REAÇÕES do mascote */}
       <section className="mx-auto max-w-6xl px-6 py-16">
         <Reveal>
           <h2 className="text-center text-2xl font-bold tracking-tight sm:text-3xl">Seu detetive de leads, trabalhando por você 🔎</h2>
@@ -222,7 +251,7 @@ export default function LpPage() {
               No MeuLead, tudo junto <strong className="text-emerald-600">a partir de R$ 97/mês</strong>.
             </p>
             <div className="mt-6 text-center">
-              <a href="#planos" className={CTA_PRIMARIA}>Ver planos</a>
+              <a href="#planos" className={CTA_PILL}>Ver planos</a>
             </div>
           </div>
         </Reveal>
@@ -284,7 +313,7 @@ export default function LpPage() {
         </div>
       </section>
 
-      {/* CTA FINAL (bloco escuro, estilo mypostflow) */}
+      {/* CTA FINAL (bloco escuro) */}
       <section className="mx-auto max-w-5xl px-6 py-16">
         <Reveal>
           <div className="relative overflow-hidden rounded-[28px] bg-neutral-950 px-6 py-16 text-center text-white sm:px-16">
@@ -294,8 +323,8 @@ export default function LpPage() {
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Comece a prospectar do jeito certo</h2>
             <p className="mx-auto mt-4 max-w-xl text-neutral-300">Crie sua conta grátis e traga seus primeiros 10 leads agora — sem cartão.</p>
             <div className="mt-8">
-              <Link href="/signup" className="inline-flex items-center rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 px-8 py-4 text-lg font-semibold text-neutral-950 shadow-[0_14px_44px_-8px_rgba(16,185,129,0.6)] transition hover:scale-[1.03] hover:brightness-110">
-                Começar grátis →
+              <Link href="/signup" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 px-8 py-4 text-lg font-semibold text-neutral-950 shadow-[0_16px_44px_-8px_rgba(16,185,129,0.6)] transition hover:scale-[1.03] hover:brightness-110">
+                Começar grátis <span className="grid h-6 w-6 place-items-center rounded-full bg-black/15">›</span>
               </Link>
             </div>
             <p className="mt-4 text-sm text-neutral-500">Acesso imediato · leads em minutos</p>
