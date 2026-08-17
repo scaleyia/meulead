@@ -112,6 +112,34 @@ export function AllLeadsTable({
     });
   }
 
+  function exportarCsv() {
+    const cols = [
+      "Empresa", "Dono", "Telefone", "Email", "Site", "Nota", "Avaliacoes",
+      "Instagram", "Seguidores", "Categoria", "Endereco", "Lista", "Origem",
+      "Anuncia Google", "Anuncia Meta",
+    ];
+    const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const bool = (b: boolean | null) => (b === null ? "" : b ? "sim" : "nao");
+    const linhas = filtered.map((l) =>
+      [
+        l.empresa, l.nome, l.telefone, l.email, l.website, l.nota, l.total_avaliacoes,
+        l.instagram, l.seguidores, l.categoria, l.endereco, l.listaNome, l.origem,
+        bool(l.anunciaGoogle), bool(l.anunciaMeta),
+      ]
+        .map(esc)
+        .join(","),
+    );
+    // BOM p/ o Excel abrir acentos certo.
+    const csv = "﻿" + [cols.join(","), ...linhas].join("\r\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `leads-${fonte}-${filtered.length}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   if (leads.length === 0) {
     return (
       <div className="mt-8 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
@@ -187,7 +215,14 @@ export function AllLeadsTable({
             </button>
           ))}
         </div>
-        <span className="ml-auto text-sm text-neutral-500">
+        <button
+          onClick={exportarCsv}
+          disabled={filtered.length === 0}
+          className="ml-auto rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 disabled:opacity-40"
+        >
+          ⬇ Exportar CSV
+        </button>
+        <span className="text-sm text-neutral-500">
           {filtered.length} de {leads.length} leads
         </span>
       </div>

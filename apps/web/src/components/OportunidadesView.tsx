@@ -1,0 +1,147 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { NIVEL_INFO, type Nivel } from "@/lib/score";
+
+export interface OportunidadeRow {
+  id: string;
+  empresa: string | null;
+  nome: string | null;
+  telefone: string | null;
+  website: string | null;
+  endereco: string | null;
+  origem: string;
+  score: number;
+  nivel: Nivel;
+  motivos: string[];
+}
+
+function formatarTelefone(raw: string | null): string {
+  if (!raw) return "—";
+  const d = raw.replace(/\D/g, "");
+  const nac = d.startsWith("55") ? d.slice(2) : d;
+  if (nac.length === 11) return `+55 (${nac.slice(0, 2)}) ${nac.slice(2, 7)}-${nac.slice(7)}`;
+  if (nac.length === 10) return `+55 (${nac.slice(0, 2)}) ${nac.slice(2, 6)}-${nac.slice(6)}`;
+  return raw;
+}
+function wa(raw: string | null): string {
+  if (!raw) return "";
+  const d = raw.replace(/\D/g, "");
+  return d.startsWith("55") ? d : `55${d}`;
+}
+function temSite(l: OportunidadeRow) {
+  return !!(l.website && l.website.trim());
+}
+
+type Filtro = "todos" | Nivel;
+
+export function OportunidadesView({ leads }: { leads: OportunidadeRow[] }) {
+  const [filtro, setFiltro] = useState<Filtro>("todos");
+
+  const counts = useMemo(() => {
+    const c = { quente: 0, morno: 0, frio: 0 };
+    for (const l of leads) c[l.nivel]++;
+    return c;
+  }, [leads]);
+
+  const lista = useMemo(() => {
+    const arr = filtro === "todos" ? leads : leads.filter((l) => l.nivel === filtro);
+    return [...arr].sort((a, b) => b.score - a.score);
+  }, [leads, filtro]);
+
+  return (
+    <div className="mt-6">
+      <div className="mb-4 inline-flex flex-wrap gap-2 rounded-xl border border-neutral-200 p-1 text-sm">
+        {(
+          [
+            { key: "todos", label: `Todos (${leads.length})` },
+            { key: "quente", label: `🔥 Quentes (${counts.quente})` },
+            { key: "morno", label: `🟡 Mornos (${counts.morno})` },
+            { key: "frio", label: `🔵 Frios (${counts.frio})` },
+          ] as { key: Filtro; label: string }[]
+        ).map((f) => (
+          <button
+            key={f.key}
+            onClick={() => setFiltro(f.key)}
+            className={`rounded-lg px-3 py-1.5 font-medium transition ${
+              filtro === f.key
+                ? "bg-neutral-100 text-neutral-900"
+                : "text-neutral-500 hover:text-neutral-900"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      {lista.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center text-sm text-neutral-500">
+          Nenhuma oportunidade nesse filtro. Capte leads e verifique anúncios para ranquear.
+        </div>
+      ) : (
+        <div className="grid gap-3 lg:grid-cols-2">
+          {lista.map((l) => (
+            <div
+              key={l.id}
+              className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-neutral-900">
+                    {l.empresa ?? l.nome ?? "—"}
+                  </p>
+                  {l.nome && l.empresa && (
+                    <p className="text-xs text-emerald-700">👤 {l.nome}</p>
+                  )}
+                  {l.endereco && <p className="truncate text-xs text-neutral-400">{l.endereco}</p>}
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <span
+                    className={`rounded-lg px-2 py-0.5 text-xs font-semibold ${NIVEL_INFO[l.nivel].classe}`}
+                  >
+                    {NIVEL_INFO[l.nivel].label}
+                  </span>
+                  <span className="text-xs text-neutral-400">score {l.score}</span>
+                </div>
+              </div>
+
+              <div className="mt-3 flex flex-wrap gap-1">
+                {l.motivos.map((m) => (
+                  <span
+                    key={m}
+                    className="rounded-md bg-neutral-100 px-1.5 py-0.5 text-[11px] font-medium text-neutral-600"
+                  >
+                    {m}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-3 flex items-center justify-between gap-2 border-t border-neutral-100 pt-3 text-sm">
+                <span className="tabular-nums text-neutral-700">{formatarTelefone(l.telefone)}</span>
+                <div className="flex items-center gap-3">
+                  {temSite(l) ? (
+                    <span className="text-xs text-neutral-400">tem site</span>
+                  ) : (
+                    <span className="rounded-md bg-red-500/10 px-1.5 py-0.5 text-[11px] font-semibold text-red-600">
+                      SEM SITE
+                    </span>
+                  )}
+                  {wa(l.telefone) && (
+                    <a
+                      href={`https://wa.me/${wa(l.telefone)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-400"
+                    >
+                      WhatsApp
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
