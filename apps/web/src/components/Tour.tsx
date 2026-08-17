@@ -1,27 +1,30 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { usePathname, useRouter } from "next/navigation";
 
 export interface TourStep {
   selector?: string;
   title: string;
   text: string;
+  route?: string; // se definido, o tour navega pra essa tela neste passo
+  cta?: string; // texto do botão final (ex: "Abrir captação")
 }
 
-// Tour guiado (spotlight + tooltip) com Próximo/Voltar/Pular.
-// Auto-inicia uma vez (guarda no localStorage); pode ser reiniciado disparando
-// o evento window "meulead:start-tour".
+// Tour guiado (spotlight + tooltip) que NAVEGA entre telas e leva o usuário à
+// primeira captação. Auto-inicia uma vez (localStorage) e resume entre páginas
+// (sessionStorage). Reinicia via evento window "meulead:start-tour".
 export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: string }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [active, setActive] = useState(false);
   const [i, setI] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
+
+  const SK_A = `${storageKey}:a`;
+  const SK_I = `${storageKey}:i`;
 
   useEffect(() => setMounted(true), []);
 
@@ -30,22 +33,45 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
     setActive(true);
   }, []);
 
-  // Auto-início na primeira visita.
+  // Início automático (1ª visita) OU retomada entre páginas.
   useEffect(() => {
     if (!mounted) return;
     let done = false;
+    let resumeA = false;
+    let resumeI = 0;
     try {
       done = localStorage.getItem(storageKey) === "1";
+      resumeA = sessionStorage.getItem(SK_A) === "1";
+      resumeI = Number(sessionStorage.getItem(SK_I) ?? "0");
     } catch {
-      done = false;
+      /* ignore */
     }
-    if (!done) {
+    if (resumeA) {
+      setI(Number.isFinite(resumeI) ? resumeI : 0);
+      setActive(true);
+    } else if (!done) {
       const t = setTimeout(start, 700);
       return () => clearTimeout(t);
     }
-  }, [mounted, storageKey, start]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted]);
 
-  // Reinício manual (botão "Fazer tour").
+  // Persiste o passo atual (pra sobreviver à navegação).
+  useEffect(() => {
+    try {
+      if (active) {
+        sessionStorage.setItem(SK_A, "1");
+        sessionStorage.setItem(SK_I, String(i));
+      } else {
+        sessionStorage.removeItem(SK_A);
+        sessionStorage.removeItem(SK_I);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [active, i, SK_A, SK_I]);
+
+  // Reinício manual.
   useEffect(() => {
     const h = () => start();
     window.addEventListener("meulead:start-tour", h);
@@ -53,29 +79,47 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
   }, [start]);
 
   const step = steps[i];
+  const naTelaCerta = !step?.route || pathname === step.route;
 
-  const medir = useCallback(() => {
-    if (!active || !step?.selector) {
+  // Navega pra tela do passo, se preciso.
+  useEffect(() => {
+    if (!active || !step) return;
+    if (step.route && pathname !== step.route) {
+      router.push(step.route);
+    }
+  }, [active, i, step, pathname, router]);
+
+  // Mede o alvo (com retry — o elemento pode não estar pronto após navegar).
+  useEffect(() => {
+    if (!active || !naTelaCerta) {
       setRect(null);
       return;
     }
-    const el = document.querySelector(step.selector);
-    setRect(el ? el.getBoundingClientRect() : null);
-  }, [active, step]);
-
-  useLayoutEffect(() => {
-    medir();
-  }, [medir, i]);
-
-  useEffect(() => {
-    if (!active) return;
-    window.addEventListener("resize", medir);
-    window.addEventListener("scroll", medir, true);
-    return () => {
-      window.removeEventListener("resize", medir);
-      window.removeEventListener("scroll", medir, true);
+    if (!step?.selector) {
+      setRect(null);
+      return;
+    }
+    let tries = 0;
+    let timer: ReturnType<typeof setTimeout>;
+    const medir = () => {
+      const el = document.querySelector(step.selector!);
+      if (el) setRect(el.getBoundingClientRect());
+      else if (tries++ < 25) timer = setTimeout(medir, 100);
+      else setRect(null);
     };
-  }, [active, medir]);
+    medir();
+    const onMove = () => {
+      const el = document.querySelector(step.selector!);
+      if (el) setRect(el.getBoundingClientRect());
+    };
+    window.addEventListener("resize", onMove);
+    window.addEventListener("scroll", onMove, true);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", onMove);
+      window.removeEventListener("scroll", onMove, true);
+    };
+  }, [active, naTelaCerta, i, step]);
 
   const fim = useCallback(() => {
     try {
@@ -109,8 +153,8 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
     if (i > 0) setI(i - 1);
   }
 
-  const pad = 8;
   const cardW = 320;
+  const pad = 8;
   let top = 0;
   let left = 0;
   let centered = false;
@@ -121,20 +165,20 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
       left = Math.min(rect.left, window.innerWidth - cardW - 12);
       top = rect.bottom + 12;
     }
-    top = Math.max(12, Math.min(top, window.innerHeight - 240));
+    top = Math.max(12, Math.min(top, window.innerHeight - 250));
     left = Math.max(12, left);
   } else {
     centered = true;
   }
 
+  const ultimo = i === steps.length - 1;
+
   return createPortal(
     <div className="fixed inset-0 z-[100]">
-      {/* Bloqueia cliques na página; dim total quando não há alvo. */}
       <div
         className="absolute inset-0"
         style={{ background: rect ? "transparent" : "rgba(15,23,42,0.55)" }}
       />
-      {/* Spotlight no alvo. */}
       {rect && (
         <div
           className="absolute rounded-xl ring-2 ring-emerald-400 transition-all duration-200"
@@ -148,7 +192,6 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
           }}
         />
       )}
-      {/* Card. */}
       <div
         className="anim-in absolute w-[320px] rounded-2xl border border-neutral-200 bg-white p-5 shadow-2xl"
         style={
@@ -191,7 +234,7 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
               onClick={prox}
               className="rounded-lg bg-emerald-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-emerald-400"
             >
-              {i === steps.length - 1 ? "Concluir 🚀" : "Próximo"}
+              {ultimo ? (step.cta ?? "Concluir 🚀") : "Próximo"}
             </button>
           </div>
         </div>

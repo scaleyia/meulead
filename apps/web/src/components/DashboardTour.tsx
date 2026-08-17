@@ -53,9 +53,16 @@ const STEPS: TourStep[] = [
     text: "1 crédito = 1 lead captado. Compre pacotes avulsos ou assine um plano com créditos que renovam todo mês.",
   },
   {
-    selector: '[data-tour="/dashboard/capture"]',
-    title: "Pronto! 🚀",
-    text: "É só isso. Comece clicando em Captação e trazendo seus primeiros leads. Bora vender!",
+    title: "Agora é a sua vez! 🚀",
+    text: "Vou te levar direto pra tela de Captação para você trazer seus primeiros leads. Bora?",
+    cta: "Vamos lá!",
+  },
+  {
+    route: "/dashboard/capture",
+    selector: '[data-tour="nova-captacao"]',
+    title: "Faça sua 1ª captação",
+    text: "Clique neste botão “+ Nova captação”, escolha a fonte (Google Maps ou Instagram), o nicho e a cidade — e pronto, seus primeiros leads começam a cair. 🎯",
+    cta: "Entendi, vou captar!",
   },
 ];
 

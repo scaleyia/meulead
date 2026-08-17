@@ -18,7 +18,11 @@ export function CaptureForm() {
     <Modal
       title="Nova captação"
       description="Escolha a fonte e o que quer buscar."
-      trigger={(open) => <Button onClick={open}>+ Nova captação</Button>}
+      trigger={(open) => (
+        <Button onClick={open} data-tour="nova-captacao">
+          + Nova captação
+        </Button>
+      )}
     >
       {(close) => (
         <form
