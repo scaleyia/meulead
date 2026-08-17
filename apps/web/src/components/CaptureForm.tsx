@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { criarJob } from "@/app/dashboard/capture/actions";
+import { SegmentoBusca } from "@/components/SegmentoBusca";
 
 type Modo = "google_maps" | "instagram";
 
@@ -36,6 +37,7 @@ export function CaptureForm() {
             const termoBusca = String(fd.get("termoBusca") ?? "").trim();
             if (!termoBusca) return setError("Informe o que você quer buscar.");
             const localizacao = String(fd.get("localizacao") ?? "").trim();
+            const cnae = String(fd.get("cnae") ?? "").trim();
 
             start(async () => {
               const res = await criarJob({
@@ -44,6 +46,7 @@ export function CaptureForm() {
                 localizacao,
                 quantidade,
                 nomeLista,
+                cnae,
               });
               if (!res.ok) return setError(res.error);
               close();
@@ -97,10 +100,8 @@ export function CaptureForm() {
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-700">
-              {modo === "instagram" ? "Localização (recomendado)" : "Localização (opcional)"}
-            </span>
-            <input name="localizacao" placeholder="Ex: São Paulo, SP" className="input" />
+            <span className="text-sm font-medium text-neutral-700">Localização (recomendado)</span>
+            <input name="localizacao" placeholder="Ex: São José do Rio Preto, SP" className="input" />
             {modo === "instagram" && (
               <span className="text-xs text-neutral-500">
                 O termo em português já traz perfis brasileiros. Informar a cidade/estado ajuda a
@@ -108,6 +109,19 @@ export function CaptureForm() {
               </span>
             )}
           </label>
+
+          {modo === "google_maps" && (
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-neutral-700">
+                Segmento — para achar o dono (opcional)
+              </span>
+              <SegmentoBusca />
+              <span className="text-xs text-neutral-500">
+                Escolha o segmento na lista pra o sistema descobrir o <strong>nome do dono</strong>.
+                Precisa da <strong>cidade + estado</strong> acima (ex: “…, SP”).
+              </span>
+            </label>
+          )}
 
           <div
             className={`rounded-md px-3 py-2 text-xs ${

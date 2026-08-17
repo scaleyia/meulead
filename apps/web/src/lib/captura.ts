@@ -2,7 +2,12 @@ import type { Json } from "@meulead/db";
 import { createClient } from "@/lib/supabase/server";
 import { saldoDaOrg } from "@/lib/creditos";
 import { statusRun, itensDataset } from "@/lib/apify";
-import { buscarDonoPorNome, ufDoEndereco } from "@/lib/cnpj";
+import {
+  iniciarDiscoveryDonos,
+  resolverDiscovery,
+  construirIndice,
+  acharDono,
+} from "@/lib/cnpjApify";
 import { resolverAdsGoogle, resolverAdsMeta } from "@/lib/ads";
 
 // Lead pronto pra inserir (sem organizacao_id/lista_id, que entram no sync).
@@ -181,42 +186,93 @@ export async function sincronizarJobs(orgId: string): Promise<void> {
   }
 }
 
-// Quantos leads do Google Maps ainda faltam enriquecer com o dono.
+// Quantas listas ainda estão buscando o dono (discovery pendente/rodando).
 export async function donosPendentes(orgId: string): Promise<number> {
   const supabase = await createClient();
   const { count } = await supabase
-    .from("leads")
+    .from("listas")
     .select("id", { count: "exact", head: true })
     .eq("organizacao_id", orgId)
     .eq("origem", "google_maps")
-    .eq("dono_buscado", false)
-    .is("nome", null);
+    .eq("dono_processado", false);
   return count ?? 0;
 }
 
-// Enriquece um lote de leads (Google Maps) com o nome do dono via CNPJ.
-// Roda aos poucos a cada refresh da página de captação (Vercel-safe).
-export async function enriquecerDonos(orgId: string, limite = 6): Promise<void> {
+// Enriquece o dono por LISTA, via discovery da Receita (CNAE + município).
+// (1) resolve discoveries que terminaram e casa os leads; (2) inicia o discovery
+// de uma lista pendente (cujo Google Maps já concluiu). Roda a cada refresh.
+export async function enriquecerDonos(orgId: string): Promise<void> {
   const supabase = await createClient();
-  const { data: pendentes } = await supabase
-    .from("leads")
-    .select("id, empresa, endereco")
+
+  // (1) Resolve discoveries em andamento.
+  const { data: rodando } = await supabase
+    .from("listas")
+    .select("id, dono_run_id")
+    .eq("organizacao_id", orgId)
+    .not("dono_run_id", "is", null)
+    .limit(3);
+
+  for (const lista of rodando ?? []) {
+    if (!lista.dono_run_id) continue;
+    const r = await resolverDiscovery(lista.dono_run_id);
+    if (!r.done) continue;
+    if (r.itens.length) {
+      const indice = construirIndice(r.itens);
+      const { data: leads } = await supabase
+        .from("leads")
+        .select("id, telefone, empresa")
+        .eq("lista_id", lista.id)
+        .is("nome", null);
+      for (const lead of leads ?? []) {
+        const dono = acharDono(indice, lead.telefone, lead.empresa);
+        if (dono) await supabase.from("leads").update({ nome: dono }).eq("id", lead.id);
+      }
+    }
+    await supabase
+      .from("listas")
+      .update({ dono_run_id: null, dono_processado: true })
+      .eq("id", lista.id);
+  }
+
+  // (2) Inicia o discovery de UMA lista pendente (com CNAE + município + leads).
+  const { data: candidatas } = await supabase
+    .from("listas")
+    .select("id, cnae, uf, municipio_ibge")
     .eq("organizacao_id", orgId)
     .eq("origem", "google_maps")
-    .eq("dono_buscado", false)
-    .is("nome", null)
-    .limit(limite);
+    .eq("dono_processado", false)
+    .is("dono_run_id", null)
+    .not("cnae", "is", null)
+    .not("municipio_ibge", "is", null)
+    .limit(5);
 
-  if (!pendentes?.length) return;
+  for (const lista of candidatas ?? []) {
+    // Só depois do Google Maps concluir (senão não há leads pra casar).
+    const { data: job } = await supabase
+      .from("jobs_apify")
+      .select("status")
+      .eq("lista_id", lista.id)
+      .maybeSingle();
+    if (job?.status !== "concluido") continue;
 
-  for (const lead of pendentes) {
-    let dono: string | null = null;
-    if (lead.empresa) {
-      const achado = await buscarDonoPorNome(lead.empresa, ufDoEndereco(lead.endereco));
-      dono = achado?.dono ?? null;
+    const { count } = await supabase
+      .from("leads")
+      .select("id", { count: "exact", head: true })
+      .eq("lista_id", lista.id)
+      .is("nome", null);
+    if (!count) {
+      // Nada pra enriquecer — encerra essa lista.
+      await supabase.from("listas").update({ dono_processado: true }).eq("id", lista.id);
+      continue;
     }
-    // Marca como buscado sempre (com ou sem achado) pra não repetir.
-    await supabase.from("leads").update({ nome: dono, dono_buscado: true }).eq("id", lead.id);
+
+    const runId = await iniciarDiscoveryDonos(lista.cnae!, lista.uf!, lista.municipio_ibge!);
+    if (runId) {
+      await supabase.from("listas").update({ dono_run_id: runId }).eq("id", lista.id);
+    } else {
+      await supabase.from("listas").update({ dono_processado: true }).eq("id", lista.id);
+    }
+    break; // uma por vez
   }
 }
 

@@ -299,25 +299,40 @@ export type Database = {
       }
       listas: {
         Row: {
+          cnae: string | null
           criado_em: string
+          dono_processado: boolean
+          dono_run_id: string | null
           id: string
+          municipio_ibge: string | null
           nome: string
           organizacao_id: string
           origem: string | null
+          uf: string | null
         }
         Insert: {
+          cnae?: string | null
           criado_em?: string
+          dono_processado?: boolean
+          dono_run_id?: string | null
           id?: string
+          municipio_ibge?: string | null
           nome: string
           organizacao_id: string
           origem?: string | null
+          uf?: string | null
         }
         Update: {
+          cnae?: string | null
           criado_em?: string
+          dono_processado?: boolean
+          dono_run_id?: string | null
           id?: string
+          municipio_ibge?: string | null
           nome?: string
           organizacao_id?: string
           origem?: string | null
+          uf?: string | null
         }
         Relationships: []
       }

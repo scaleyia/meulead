@@ -10,6 +10,7 @@ import {
   ACTOR_GOOGLE_MAPS,
   ACTOR_INSTAGRAM,
 } from "@/lib/apify";
+import { resolverMunicipio, separarLocalizacao } from "@/lib/cnpjApify";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -19,6 +20,7 @@ interface JobInput {
   nomeLista?: string; // nome escolhido pelo usuário (opcional)
   termoBusca: string; // termo/nicho
   localizacao?: string; // só google_maps
+  cnae?: string; // segmento p/ achar o dono (só google_maps)
 }
 
 export async function criarJob(input: JobInput): Promise<ActionResult> {
@@ -55,9 +57,34 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
       : `${termo}${localizacao ? ` · ${localizacao}` : ""}`;
   const nomeLista = (input.nomeLista ?? "").trim() || auto;
 
+  // Segmento (CNAE) + município p/ o enriquecimento do dono (só Google Maps).
+  let cnae: string | null = null;
+  let uf: string | null = null;
+  let municipio: string | null = null;
+  if (origem === "google_maps") {
+    cnae = (input.cnae ?? "").trim() || null;
+    if (cnae && localizacao) {
+      const { cidade, uf: ufLoc } = separarLocalizacao(localizacao);
+      if (ufLoc) {
+        uf = ufLoc;
+        municipio = await resolverMunicipio(cidade, ufLoc);
+      }
+    }
+  }
+  // Só enriquece o dono se temos segmento + cidade resolvida.
+  const donoProcessado = !(cnae && uf && municipio);
+
   const { data: lista, error: e1 } = await supabase
     .from("listas")
-    .insert({ organizacao_id: org.orgId, nome: nomeLista, origem })
+    .insert({
+      organizacao_id: org.orgId,
+      nome: nomeLista,
+      origem,
+      cnae,
+      uf,
+      municipio_ibge: municipio,
+      dono_processado: donoProcessado,
+    })
     .select("id")
     .single();
   if (e1) return { ok: false, error: e1.message };
