@@ -15,7 +15,13 @@ function soDigitos(raw: string | null): string {
 // Valida quais leads têm WhatsApp (antes de disparar — economiza chip).
 export async function validarWhatsapp(
   listaId: string | null,
-): Promise<{ ok: boolean; error?: string; checados?: number; comWhats?: number }> {
+): Promise<{
+  ok: boolean;
+  error?: string;
+  checados?: number;
+  comWhats?: number;
+  removidos?: number;
+}> {
   const org = await getActiveOrg();
   if (!org) return { ok: false, error: "Sessão expirada." };
   if (!evolutionConfigurada) {
@@ -58,15 +64,47 @@ export async function validarWhatsapp(
   }
 
   let comWhats = 0;
+  let removidos = 0;
   for (const lead of leads) {
     const num = soDigitos(lead.telefone);
     const tem = mapa.get(num) ?? false;
-    if (tem) comWhats++;
-    await supabase.from("leads").update({ tem_whatsapp: tem }).eq("id", lead.id);
+    if (tem) {
+      comWhats++;
+      await supabase.from("leads").update({ tem_whatsapp: true }).eq("id", lead.id);
+    } else {
+      // Número sem WhatsApp: remove o lead (não serve pra disparo).
+      const { error } = await supabase
+        .from("leads")
+        .delete()
+        .eq("id", lead.id)
+        .eq("organizacao_id", org.orgId);
+      if (!error) removidos++;
+    }
+  }
+
+  // Estorna 1 crédito por lead removido (foi cobrado na captação).
+  if (removidos > 0) {
+    const { data: o } = await supabase
+      .from("organizacoes")
+      .select("creditos_plano, creditos_extra")
+      .eq("id", org.orgId)
+      .maybeSingle();
+    const novoExtra = (o?.creditos_extra ?? 0) + removidos;
+    await supabase
+      .from("organizacoes")
+      .update({ creditos_extra: novoExtra })
+      .eq("id", org.orgId);
+    await supabase.from("creditos_transacoes").insert({
+      organizacao_id: org.orgId,
+      tipo: "ajuste",
+      quantidade: removidos,
+      saldo_apos: (o?.creditos_plano ?? 0) + novoExtra,
+      descricao: `Estorno: ${removidos} lead(s) sem WhatsApp removido(s)`,
+    });
   }
 
   revalidatePath("/dashboard/leads");
-  return { ok: true, checados: leads.length, comWhats };
+  return { ok: true, checados: leads.length, comWhats, removidos };
 }
 
 // Analisa a qualidade/SEO do site de um lead (sob demanda).

@@ -85,7 +85,15 @@ export function AllLeadsTable({
       const res = await validarWhatsapp(listaId === "todas" ? null : listaId);
       if (!res.ok) setAviso(res.error ?? "Falha ao validar.");
       else if ((res.checados ?? 0) === 0) setAviso("Nada novo pra validar (todos já checados).");
-      else setAviso(`Validados ${res.checados} — ${res.comWhats} têm WhatsApp.`);
+      else {
+        const rem = res.removidos ?? 0;
+        setAviso(
+          `Validados ${res.checados} — ${res.comWhats} com WhatsApp` +
+            (rem > 0
+              ? ` · ${rem} sem WhatsApp foram removidos e ${rem} crédito(s) estornado(s).`
+              : "."),
+        );
+      }
       router.refresh();
     });
   }
