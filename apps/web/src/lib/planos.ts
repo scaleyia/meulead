@@ -28,9 +28,9 @@ export const PLANOS: Plano[] = [
     limites: { chips: 1, disparosDia: 20 },
     recursos: [
       "10 créditos por mês (10 leads)",
+      "Captação Google Maps e Instagram",
       "1 número de WhatsApp",
       "CRM de status dos disparos",
-      "Captação Google Maps",
     ],
   },
   {
@@ -43,9 +43,9 @@ export const PLANOS: Plano[] = [
     limites: { chips: 1, disparosDia: 200 },
     recursos: [
       "300 créditos por mês (300 leads)",
-      "1 número de WhatsApp",
-      "Captação de donos (CNPJ)",
-      "Aquecimento de chip",
+      "Qualificação: quem tem e quem não tem site",
+      "Verificação de anúncios (Google e Meta)",
+      "1 número de WhatsApp + aquecimento",
       "Recarga extra a R$ 0,45/crédito",
     ],
   },

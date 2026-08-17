@@ -76,8 +76,9 @@ export default function PlanosPage() {
         </div>
 
         <p className="mt-8 text-sm text-neutral-500">
-          Pagamento e upgrade automático entram em breve. Por ora, comece grátis e fale com a gente
-          para subir de plano.
+          Comece grátis e faça upgrade quando quiser — a assinatura é na hora, com pagamento seguro
+          via Stripe. Os créditos e recursos liberam automaticamente assim que o pagamento é
+          confirmado.
         </p>
       </section>
     </main>
