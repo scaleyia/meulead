@@ -51,7 +51,7 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
   const localizacao = (input.localizacao ?? "").trim();
   const auto =
     origem === "instagram"
-      ? `Instagram · ${termo}`
+      ? `Instagram · ${termo}${localizacao ? ` · ${localizacao}` : ""}`
       : `${termo}${localizacao ? ` · ${localizacao}` : ""}`;
   const nomeLista = (input.nomeLista ?? "").trim() || auto;
 
@@ -66,7 +66,9 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
   const run =
     origem === "instagram"
       ? await iniciarRun(ACTOR_INSTAGRAM, {
-          search: termo,
+          // A API não filtra por país; injetar a localização na busca direciona
+          // os resultados pro Brasil/cidade informada.
+          search: `${termo}${localizacao ? ` ${localizacao}` : " brasil"}`,
           searchType: "user",
           searchLimit: qtd,
           resultsType: "details",

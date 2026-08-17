@@ -18,6 +18,10 @@ interface LeadNovo {
   total_avaliacoes: number | null;
   endereco: string | null;
   categoria: string | null;
+  foto_perfil: string | null;
+  bio: string | null;
+  verificado: boolean | null;
+  posts: number | null;
   origem: string;
   dados_brutos: Json;
 }
@@ -65,6 +69,10 @@ function mapearGoogleMaps(itens: Record<string, unknown>[]): LeadNovo[] {
         total_avaliacoes: num(it.reviewsCount),
         endereco,
         categoria: str(it.categoryName),
+        foto_perfil: null,
+        bio: null,
+        verificado: null,
+        posts: null,
         origem: "google_maps",
         dados_brutos: it as Json,
       };
@@ -78,18 +86,23 @@ function mapearInstagram(itens: Record<string, unknown>[]): LeadNovo[] {
     .map((it): LeadNovo => {
       const username = str(it.username);
       const bio = str(it.biography);
+      const fb = (it.facebookPage ?? {}) as Record<string, unknown>;
       return {
         empresa: str(it.fullName) ?? username,
         nome: str(it.fullName),
-        telefone: str(it.businessPhoneNumber) ?? telefoneDeTexto(bio),
-        email: str(it.businessEmail) ?? emailDeTexto(bio),
+        telefone: telefoneDeTexto(bio),
+        email: emailDeTexto(bio),
         website: str(it.externalUrl),
-        instagram: username ? `https://instagram.com/${username}` : str(it.url),
+        instagram: str(it.url) ?? (username ? `https://instagram.com/${username}` : null),
         seguidores: num(it.followersCount),
         nota: null,
         total_avaliacoes: null,
-        endereco: str(it.addressStreet) ?? str(it.city),
-        categoria: str(it.businessCategoryName),
+        endereco: null,
+        categoria: str(it.businessCategoryName) ?? str(fb.category),
+        foto_perfil: str(it.profilePicUrlHD) ?? str(it.profilePicUrl),
+        bio,
+        verificado: typeof it.verified === "boolean" ? it.verified : null,
+        posts: num(it.postsCount),
         origem: "instagram",
         dados_brutos: it as Json,
       };

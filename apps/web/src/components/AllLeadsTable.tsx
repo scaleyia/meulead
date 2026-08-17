@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { deleteLead } from "@/app/dashboard/lists/[id]/actions";
 import { sourceLabel } from "@/lib/sources";
 import { AdsCell } from "@/components/AdsCell";
+import { InstagramLeadCard } from "@/components/InstagramLeadCard";
 
 export interface AllLeadRow {
   id: string;
@@ -20,12 +21,19 @@ export interface AllLeadRow {
   nota: number | null;
   total_avaliacoes: number | null;
   endereco: string | null;
+  categoria: string | null;
+  fotoPerfil: string | null;
+  bio: string | null;
+  verificado: boolean | null;
+  posts: number | null;
   lista_id: string | null;
   listaNome: string | null;
   anunciaGoogle: boolean | null;
   anunciaMeta: boolean | null;
   adsChecando: boolean;
 }
+
+type Fonte = "todos" | "google_maps" | "instagram";
 
 export interface ListaOption {
   id: string;
@@ -65,12 +73,21 @@ export function AllLeadsTable({
   const router = useRouter();
   const [q, setQ] = useState("");
   const [filtro, setFiltro] = useState<Filtro>("todos");
+  const [fonte, setFonte] = useState<Fonte>("todos");
   const [listaId, setListaId] = useState<string>("todas");
   const [pending, start] = useTransition();
 
+  const totGoogle = useMemo(() => leads.filter((l) => l.origem === "google_maps").length, [leads]);
+  const totInsta = useMemo(() => leads.filter((l) => l.origem === "instagram").length, [leads]);
+
   const base = useMemo(
-    () => (listaId === "todas" ? leads : leads.filter((l) => l.lista_id === listaId)),
-    [leads, listaId],
+    () =>
+      leads.filter((l) => {
+        if (listaId !== "todas" && l.lista_id !== listaId) return false;
+        if (fonte !== "todos" && l.origem !== fonte) return false;
+        return true;
+      }),
+    [leads, listaId, fonte],
   );
 
   const semSiteCount = useMemo(() => base.filter((l) => !temSite(l)).length, [base]);
@@ -116,6 +133,28 @@ export function AllLeadsTable({
           placeholder="Buscar por nome, empresa, telefone, e-mail ou site…"
           className="input max-w-xs"
         />
+        {/* Filtro por FONTE da captação */}
+        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200 text-sm">
+          {(
+            [
+              { key: "todos", label: "Todas as fontes" },
+              { key: "google_maps", label: `🗺️ Google Maps (${totGoogle})` },
+              { key: "instagram", label: `📸 Instagram (${totInsta})` },
+            ] as { key: Fonte; label: string }[]
+          ).map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setFonte(f.key)}
+              className={`px-3 py-2 font-medium transition ${
+                fonte === f.key
+                  ? "bg-neutral-100 text-neutral-900"
+                  : "text-neutral-500 hover:text-neutral-900"
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
         <select
           value={listaId}
           onChange={(e) => setListaId(e.target.value)}
@@ -154,6 +193,24 @@ export function AllLeadsTable({
         </span>
       </div>
 
+      {fonte === "instagram" ? (
+        filtered.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center text-sm text-neutral-500">
+            Nenhum perfil do Instagram nesse filtro.
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((l) => (
+              <InstagramLeadCard
+                key={l.id}
+                lead={l}
+                onExcluir={() => remove(l.id, l.lista_id)}
+                excluindo={pending}
+              />
+            ))}
+          </div>
+        )
+      ) : (
       <div className="overflow-x-auto rounded-xl border border-neutral-200">
         <table className="w-full min-w-[1040px] text-sm">
           <thead className="bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500">
@@ -255,6 +312,7 @@ export function AllLeadsTable({
           </tbody>
         </table>
       </div>
+      )}
     </div>
   );
 }

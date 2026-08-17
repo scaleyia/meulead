@@ -192,6 +192,7 @@ export type Database = {
           ads_run_meta: string | null
           anuncia_google: boolean | null
           anuncia_meta: boolean | null
+          bio: string | null
           categoria: string | null
           criado_em: string
           dados_brutos: Json | null
@@ -199,6 +200,7 @@ export type Database = {
           email: string | null
           empresa: string | null
           endereco: string | null
+          foto_perfil: string | null
           id: string
           instagram: string | null
           lista_id: string | null
@@ -206,10 +208,12 @@ export type Database = {
           nota: number | null
           organizacao_id: string
           origem: string
+          posts: number | null
           seguidores: number | null
           status_crm: string | null
           telefone: string | null
           total_avaliacoes: number | null
+          verificado: boolean | null
           website: string | null
         }
         Insert: {
@@ -217,6 +221,7 @@ export type Database = {
           ads_run_meta?: string | null
           anuncia_google?: boolean | null
           anuncia_meta?: boolean | null
+          bio?: string | null
           categoria?: string | null
           criado_em?: string
           dados_brutos?: Json | null
@@ -224,6 +229,7 @@ export type Database = {
           email?: string | null
           empresa?: string | null
           endereco?: string | null
+          foto_perfil?: string | null
           id?: string
           instagram?: string | null
           lista_id?: string | null
@@ -231,10 +237,12 @@ export type Database = {
           nota?: number | null
           organizacao_id: string
           origem?: string
+          posts?: number | null
           seguidores?: number | null
           status_crm?: string | null
           telefone?: string | null
           total_avaliacoes?: number | null
+          verificado?: boolean | null
           website?: string | null
         }
         Update: {
@@ -242,6 +250,7 @@ export type Database = {
           ads_run_meta?: string | null
           anuncia_google?: boolean | null
           anuncia_meta?: boolean | null
+          bio?: string | null
           categoria?: string | null
           criado_em?: string
           dados_brutos?: Json | null
@@ -249,6 +258,7 @@ export type Database = {
           email?: string | null
           empresa?: string | null
           endereco?: string | null
+          foto_perfil?: string | null
           id?: string
           instagram?: string | null
           lista_id?: string | null
@@ -256,10 +266,12 @@ export type Database = {
           nota?: number | null
           organizacao_id?: string
           origem?: string
+          posts?: number | null
           seguidores?: number | null
           status_crm?: string | null
           telefone?: string | null
           total_avaliacoes?: number | null
+          verificado?: boolean | null
           website?: string | null
         }
         Relationships: []

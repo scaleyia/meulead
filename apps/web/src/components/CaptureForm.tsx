@@ -92,12 +92,18 @@ export function CaptureForm() {
             />
           </label>
 
-          {modo === "google_maps" && (
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-neutral-700">Localização (opcional)</span>
-              <input name="localizacao" placeholder="Ex: São Paulo, SP" className="input" />
-            </label>
-          )}
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-neutral-700">
+              {modo === "instagram" ? "Localização (recomendado)" : "Localização (opcional)"}
+            </span>
+            <input name="localizacao" placeholder="Ex: São Paulo, SP" className="input" />
+            {modo === "instagram" && (
+              <span className="text-xs text-neutral-500">
+                O Instagram não filtra por país. Informar a cidade/estado direciona a busca pro
+                Brasil e evita perfis de fora. Se deixar vazio, focamos em “brasil”.
+              </span>
+            )}
+          </label>
 
           <div
             className={`rounded-md px-3 py-2 text-xs ${
