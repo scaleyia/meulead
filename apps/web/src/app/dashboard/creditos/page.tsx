@@ -5,7 +5,9 @@ import { getActiveOrg } from "@/lib/org";
 import { planoPorId, formatarPreco } from "@/lib/planos";
 import { isAdmin } from "@/lib/admin";
 import { PACOTES_RECARGA, processarSessaoCheckout } from "@/lib/stripe";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { RecargaManual } from "@/components/RecargaManual";
+import { RecargaUsuario } from "@/components/RecargaUsuario";
 import { ComprarCreditos } from "@/components/ComprarCreditos";
 import { AssinarPlano } from "@/components/AssinarPlano";
 
@@ -71,6 +73,34 @@ export default async function CreditosPage({
     .order("criado_em", { ascending: false })
     .limit(30);
 
+  // Lista de usuários (só para o admin dar créditos manualmente).
+  const ehAdmin = isAdmin(org.email);
+  let usuarios: { orgId: string; label: string }[] = [];
+  if (ehAdmin) {
+    const adminClient = createAdminClient();
+    const [{ data: orgs }, { data: membros }, usersRes] = await Promise.all([
+      adminClient.from("organizacoes").select("id, nome, plano, creditos_plano, creditos_extra"),
+      adminClient.from("membros").select("organizacao_id, usuario_id"),
+      adminClient.auth.admin.listUsers(),
+    ]);
+    const emailPorUser = new Map(
+      (usersRes.data?.users ?? []).map((u) => [u.id, u.email ?? "—"]),
+    );
+    const emailPorOrg = new Map<string, string>();
+    for (const m of membros ?? []) {
+      if (!emailPorOrg.has(m.organizacao_id)) {
+        emailPorOrg.set(m.organizacao_id, emailPorUser.get(m.usuario_id) ?? "—");
+      }
+    }
+    usuarios = (orgs ?? []).map((o) => {
+      const saldo = (o.creditos_plano ?? 0) + (o.creditos_extra ?? 0);
+      return {
+        orgId: o.id,
+        label: `${emailPorOrg.get(o.id) ?? o.nome} · ⚡${saldo} · ${o.plano}`,
+      };
+    });
+  }
+
   return (
     <div>
       <h1 className="text-2xl font-semibold">Créditos</h1>
@@ -123,13 +153,21 @@ export default async function CreditosPage({
         </Link>
       </div>
 
-      {isAdmin(org.email) && (
+      {ehAdmin && (
         <div className="mt-4 rounded-xl border border-dashed border-neutral-300 bg-neutral-50 p-5">
-          <p className="text-sm font-medium text-neutral-900">Recarga manual (admin)</p>
-          <p className="mt-0.5 text-xs text-neutral-500">
-            Enquanto o pagamento automático (Stripe) não entra, adicione créditos na mão.
+          <p className="text-sm font-medium text-neutral-900">Painel do admin</p>
+
+          <p className="mt-3 text-xs font-medium text-neutral-600">
+            Dar créditos a um usuário
           </p>
-          <div className="mt-3">
+          <div className="mt-2">
+            <RecargaUsuario usuarios={usuarios} />
+          </div>
+
+          <p className="mt-4 text-xs font-medium text-neutral-600">
+            Recarregar a minha própria conta
+          </p>
+          <div className="mt-2">
             <RecargaManual />
           </div>
         </div>

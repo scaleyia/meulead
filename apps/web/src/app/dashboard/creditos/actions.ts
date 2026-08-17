@@ -5,6 +5,7 @@ import { getActiveOrg } from "@/lib/org";
 import { isAdmin } from "@/lib/admin";
 import { adicionarCreditosExtra } from "@/lib/creditos";
 import { planoPorId } from "@/lib/planos";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { stripe, stripeConfigurado, PRECOS_ASSINATURA, PACOTES_RECARGA } from "@/lib/stripe";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
@@ -72,6 +73,41 @@ export async function recarregarManual(quantidade: number): Promise<ActionResult
   if (!Number.isFinite(qtd) || qtd <= 0) return { ok: false, error: "Quantidade inválida." };
 
   await adicionarCreditosExtra(org.orgId, qtd, "Recarga manual (admin)");
+  revalidatePath("/dashboard/creditos");
+  return { ok: true };
+}
+
+// Recarga manual do admin para OUTRO usuário/organização (service-role).
+export async function recarregarUsuario(
+  orgId: string,
+  quantidade: number,
+): Promise<ActionResult> {
+  const org = await getActiveOrg();
+  if (!org) return { ok: false, error: "Sessão expirada." };
+  if (!isAdmin(org.email)) return { ok: false, error: "Apenas o admin pode fazer isso." };
+  if (!orgId) return { ok: false, error: "Escolha um usuário." };
+
+  const qtd = Math.trunc(quantidade);
+  if (!Number.isFinite(qtd) || qtd <= 0) return { ok: false, error: "Quantidade inválida." };
+
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("organizacoes")
+    .select("creditos_plano, creditos_extra")
+    .eq("id", orgId)
+    .maybeSingle();
+  if (!data) return { ok: false, error: "Organização não encontrada." };
+
+  const novoExtra = (data.creditos_extra ?? 0) + qtd;
+  await admin.from("organizacoes").update({ creditos_extra: novoExtra }).eq("id", orgId);
+  await admin.from("creditos_transacoes").insert({
+    organizacao_id: orgId,
+    tipo: "recarga",
+    quantidade: qtd,
+    saldo_apos: (data.creditos_plano ?? 0) + novoExtra,
+    descricao: `Recarga concedida pelo admin (${org.email})`,
+  });
+
   revalidatePath("/dashboard/creditos");
   return { ok: true };
 }
