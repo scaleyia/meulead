@@ -27,11 +27,13 @@ export default async function ListDetailPage({ params }: { params: Promise<{ id:
 
   const { data: list } = await supabase
     .from("listas")
-    .select("id, nome, origem")
+    .select("id, nome, origem, dono_processado")
     .eq("id", id)
     .maybeSingle();
 
   if (!list) notFound();
+
+  const buscandoDonos = list.origem === "google_maps" && !list.dono_processado;
 
   const { data: leads } = await supabase
     .from("leads")
@@ -43,7 +45,7 @@ export default async function ListDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div>
-      <AutoRefresh ativo={donosFaltando > 0} />
+      <AutoRefresh ativo={buscandoDonos || donosFaltando > 0} />
       <Link href="/dashboard/lists" className="text-sm text-neutral-500 hover:text-neutral-800">
         ← Listas
       </Link>
@@ -60,6 +62,13 @@ export default async function ListDetailPage({ params }: { params: Promise<{ id:
           <AddLeadDialog listId={id} />
         </div>
       </div>
+
+      {buscandoDonos && (
+        <div className="mt-4 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+          <span className="h-3 w-3 shrink-0 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+          Buscando o nome dos donos… isto roda em segundo plano e atualiza sozinho (~1-2 min).
+        </div>
+      )}
 
       <div className="mt-6">
         <LeadsTable listId={id} leads={leads ?? []} />

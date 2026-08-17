@@ -24,10 +24,27 @@ export default async function CapturePage() {
 
   const { data } = await supabase
     .from("jobs_apify")
-    .select("id, origem, termo_busca, localizacao, quantidade, status, criado_em")
+    .select("id, origem, termo_busca, localizacao, quantidade, status, criado_em, lista_id")
     .order("criado_em", { ascending: false });
 
-  const jobs = (data ?? []) as CaptureJob[];
+  // Listas do Google Maps ainda buscando o dono (p/ mostrar no status do job).
+  const { data: listasBuscando } = await supabase
+    .from("listas")
+    .select("id")
+    .eq("origem", "google_maps")
+    .eq("dono_processado", false);
+  const buscandoSet = new Set((listasBuscando ?? []).map((l) => l.id));
+
+  const jobs: CaptureJob[] = (data ?? []).map((j) => ({
+    id: j.id,
+    origem: j.origem,
+    termo_busca: j.termo_busca,
+    localizacao: j.localizacao,
+    quantidade: j.quantidade,
+    status: j.status,
+    criado_em: j.criado_em,
+    buscandoDonos: j.lista_id ? buscandoSet.has(j.lista_id) : false,
+  }));
   const emAndamento =
     donosFaltando > 0 || jobs.some((j) => j.status === "pendente" || j.status === "rodando");
 

@@ -98,6 +98,12 @@ async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: bo
   return (
     <>
       <AutoRefresh ativo={adsPendentes || donosFaltando > 0} />
+      {donosFaltando > 0 && (
+        <div className="mt-4 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+          <span className="h-3 w-3 shrink-0 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+          Buscando o nome dos donos das captações recentes… atualiza sozinho (~1-2 min).
+        </div>
+      )}
       <AllLeadsTable leads={leads} listas={listas} planoPago={planoPago} />
     </>
   );

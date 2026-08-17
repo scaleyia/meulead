@@ -10,6 +10,7 @@ export type CaptureJob = {
   quantidade: number | null;
   status: string;
   criado_em: string;
+  buscandoDonos?: boolean;
 };
 
 const STATUS_STYLES: Record<string, string> = {
@@ -72,7 +73,14 @@ export function CaptureJobsTable({ jobs }: { jobs: CaptureJob[] }) {
               <td className="px-4 py-3 text-neutral-500">{job.localizacao ?? "—"}</td>
               <td className="px-4 py-3 text-neutral-500">{job.quantidade ?? "—"}</td>
               <td className="px-4 py-3">
-                <StatusBadge status={job.status} />
+                {job.status === "concluido" && job.buscandoDonos ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+                    <span className="h-2.5 w-2.5 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+                    Buscando donos…
+                  </span>
+                ) : (
+                  <StatusBadge status={job.status} />
+                )}
               </td>
               <td className="px-4 py-3 text-neutral-500">{formatDate(job.criado_em)}</td>
             </tr>
