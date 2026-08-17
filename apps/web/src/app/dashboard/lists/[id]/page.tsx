@@ -1,14 +1,29 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getActiveOrg } from "@/lib/org";
+import { enriquecerDonos, donosPendentes } from "@/lib/captura";
 import { LeadsTable } from "@/components/LeadsTable";
 import { AddLeadDialog } from "@/components/AddLeadDialog";
 import { ImportCsvDialog } from "@/components/ImportCsvDialog";
+import { AutoRefresh } from "@/components/AutoRefresh";
 import { sourceLabel } from "@/lib/sources";
 
 export default async function ListDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
+
+  // Enriquece o dono em segundo plano (roda também aqui).
+  const org = await getActiveOrg();
+  let donosFaltando = 0;
+  if (org) {
+    try {
+      await enriquecerDonos(org.orgId);
+      donosFaltando = await donosPendentes(org.orgId);
+    } catch {
+      /* segue carregando */
+    }
+  }
 
   const { data: list } = await supabase
     .from("listas")
@@ -28,6 +43,7 @@ export default async function ListDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div>
+      <AutoRefresh ativo={donosFaltando > 0} />
       <Link href="/dashboard/lists" className="text-sm text-neutral-500 hover:text-neutral-800">
         ← Listas
       </Link>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrg } from "@/lib/org";
-import { resolverAnuncios } from "@/lib/captura";
+import { resolverAnuncios, enriquecerDonos, donosPendentes } from "@/lib/captura";
 import { AutoRefresh } from "@/components/AutoRefresh";
 import {
   AllLeadsTable,
@@ -37,9 +37,12 @@ export default async function LeadsPage() {
 async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: boolean }) {
   const supabase = await createClient();
 
-  // Resolve verificações de anúncios que já terminaram no Apify.
+  // Resolve anúncios e enriquece o dono (roda também aqui, não só na Captação).
+  let donosFaltando = 0;
   try {
     await resolverAnuncios(orgId);
+    await enriquecerDonos(orgId);
+    donosFaltando = await donosPendentes(orgId);
   } catch {
     // segue carregando normalmente
   }
@@ -94,7 +97,7 @@ async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: bo
 
   return (
     <>
-      <AutoRefresh ativo={adsPendentes} />
+      <AutoRefresh ativo={adsPendentes || donosFaltando > 0} />
       <AllLeadsTable leads={leads} listas={listas} planoPago={planoPago} />
     </>
   );
