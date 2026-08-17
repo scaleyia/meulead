@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { MessageCircle, Loader2 } from "lucide-react";
 import { deleteLead } from "@/app/dashboard/lists/[id]/actions";
 import { validarWhatsapp } from "@/app/dashboard/leads/actions";
 import { sourceLabel } from "@/lib/sources";
@@ -234,9 +235,15 @@ export function AllLeadsTable({
           <button
             onClick={validar}
             disabled={validando}
-            className="ml-auto rounded-lg border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 transition hover:bg-emerald-100 disabled:opacity-50"
+            title="Verifica quais números têm WhatsApp antes de disparar (economiza chip)"
+            className="ml-auto inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1ebe5b] disabled:opacity-60"
           >
-            {validando ? "Validando…" : "✓ Validar WhatsApp"}
+            {validando ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <MessageCircle className="h-4 w-4 fill-white" />
+            )}
+            {validando ? "Validando…" : "Validar WhatsApp"}
           </button>
         )}
         <button
