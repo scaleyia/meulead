@@ -25,7 +25,7 @@ export default async function DashboardPage() {
     supabase
       .from("leads")
       .select(
-        "website, tem_whatsapp, anuncia_google, anuncia_meta, nota, total_avaliacoes, telefone, seguidores, origem",
+        "website, tem_whatsapp, anuncia_google, anuncia_meta, nota, total_avaliacoes, telefone, seguidores, origem, site_score, nome",
       ),
     supabase.from("listas").select("*", { count: "exact", head: true }),
     supabase.from("campanhas").select("*", { count: "exact", head: true }),
@@ -41,11 +41,14 @@ export default async function DashboardPage() {
     (l) =>
       calcularScore({
         website: l.website,
+        siteScore: l.site_score,
         anunciaGoogle: l.anuncia_google,
         anunciaMeta: l.anuncia_meta,
         nota: l.nota,
         totalAvaliacoes: l.total_avaliacoes,
         telefone: l.telefone,
+        temWhatsapp: l.tem_whatsapp,
+        temDono: !!l.nome,
         seguidores: l.seguidores,
       }).nivel === "quente",
   ).length;

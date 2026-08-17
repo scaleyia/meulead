@@ -1,13 +1,17 @@
 // Score de oportunidade: quão "quente" é o lead pra uma agência vender serviço.
-// Lógica: quem TEM verba (já anuncia) e TEM necessidade (sem site) é ouro.
+// Lógica: quem TEM verba/porte (anuncia, muitas avaliações) e TEM necessidade
+// (sem site OU site fraco) e é CONTATÁVEL (WhatsApp/dono) é ouro.
 
 export interface SinaisLead {
   website: string | null;
+  siteScore: number | null; // 0-100 (análise de site); null = não analisado
   anunciaGoogle: boolean | null;
   anunciaMeta: boolean | null;
   nota: number | null;
   totalAvaliacoes: number | null;
   telefone: string | null;
+  temWhatsapp: boolean | null;
+  temDono: boolean; // nome do dono identificado
   seguidores: number | null;
 }
 
@@ -23,36 +27,53 @@ export function calcularScore(l: SinaisLead): Score {
   let v = 0;
   const motivos: string[] = [];
 
+  // --- NECESSIDADE (o gancho de venda) ---
   const semSite = !(l.website && l.website.trim());
   if (semSite) {
-    v += 30;
+    v += 35;
     motivos.push("Sem site");
+  } else if (l.siteScore != null && l.siteScore < 60) {
+    v += 25;
+    motivos.push("Site fraco");
   }
+
+  // --- VERBA / PORTE (mostra que tem dinheiro e movimento) ---
   if (l.anunciaGoogle || l.anunciaMeta) {
-    v += 40;
+    v += 30;
     motivos.push("Já anuncia (tem verba)");
   }
-
   const av = l.totalAvaliacoes ?? 0;
-  if (av >= 50) {
-    v += 15;
+  if (av >= 200) {
+    v += 20;
+    motivos.push(`${av} avaliações (grande)`);
+  } else if (av >= 50) {
+    v += 12;
     motivos.push(`${av} avaliações`);
   } else if (av >= 10) {
+    v += 6;
+  }
+  if ((l.nota ?? 0) >= 4.5) v += 5;
+
+  // --- CONTATÁVEL (facilita fechar) ---
+  if (l.temWhatsapp === true) {
     v += 8;
+    motivos.push("WhatsApp ✓");
+  } else if (l.telefone) {
+    v += 5;
+  }
+  if (l.temDono) {
+    v += 7;
+    motivos.push("Dono identificado");
   }
 
-  if ((l.nota ?? 0) >= 4.5) v += 5;
-  if (l.telefone) {
-    v += 10;
-    motivos.push("Tem telefone");
-  }
+  // --- BÔNUS ---
   if ((l.seguidores ?? 0) >= 5000) {
-    v += 10;
+    v += 8;
     motivos.push("Presença no Instagram");
   }
 
   v = Math.min(100, v);
-  const nivel: Nivel = v >= 70 ? "quente" : v >= 40 ? "morno" : "frio";
+  const nivel: Nivel = v >= 65 ? "quente" : v >= 35 ? "morno" : "frio";
   return { valor: v, nivel, motivos };
 }
 
