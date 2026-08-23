@@ -35,19 +35,23 @@ export async function proxy(request: NextRequest) {
   const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/signup");
   const isProtected = pathname.startsWith("/dashboard");
 
-  // Não logado tentando entrar em área privada → manda pro login.
-  if (!user && isProtected) {
+  // Redirect que PRESERVA os cookies de sessão atualizados (senão o refresh
+  // token rotacionado se perde e a sessão "some" no servidor → tela de erro).
+  const redirecionar = (destino: string) => {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
+    url.pathname = destino;
+    const redir = NextResponse.redirect(url);
+    for (const c of response.cookies.getAll()) {
+      redir.cookies.set(c.name, c.value, c);
+    }
+    return redir;
+  };
+
+  // Não logado tentando entrar em área privada → manda pro login.
+  if (!user && isProtected) return redirecionar("/login");
 
   // Já logado abrindo login/signup → manda pro dashboard.
-  if (user && isAuthRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
-  }
+  if (user && isAuthRoute) return redirecionar("/dashboard");
 
   return response;
 }
