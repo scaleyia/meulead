@@ -2,22 +2,18 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { usePathname, useRouter } from "next/navigation";
 
 export interface TourStep {
   selector?: string;
   title: string;
   text: string;
-  route?: string; // se definido, o tour navega pra essa tela neste passo
-  cta?: string; // texto do botão final (ex: "Abrir captação")
+  cta?: string; // texto do botão no último passo
 }
 
-// Tour guiado (spotlight + tooltip) que NAVEGA entre telas e leva o usuário à
-// primeira captação. Auto-inicia uma vez (localStorage) e resume entre páginas
-// (sessionStorage). Reinicia via evento window "meulead:start-tour".
+// Tour guiado (spotlight + tooltip). Destaca elementos da tela atual — NÃO
+// navega entre páginas (isso causava loop). Auto-inicia uma vez (localStorage)
+// e resume dentro da sessão (sessionStorage). Reinicia via "meulead:start-tour".
 export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: string }) {
-  const router = useRouter();
-  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [active, setActive] = useState(false);
   const [i, setI] = useState(0);
@@ -33,7 +29,7 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
     setActive(true);
   }, []);
 
-  // Início automático (1ª visita) OU retomada entre páginas.
+  // Início automático (1ª visita) ou retomada na sessão.
   useEffect(() => {
     if (!mounted) return;
     let done = false;
@@ -47,7 +43,9 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
       /* ignore */
     }
     if (resumeA) {
-      setI(Number.isFinite(resumeI) ? resumeI : 0);
+      // Clampa (protege contra índice velho salvo por versões anteriores).
+      const idx = Number.isFinite(resumeI) ? Math.min(Math.max(0, resumeI), steps.length - 1) : 0;
+      setI(idx);
       setActive(true);
     } else if (!done) {
       const t = setTimeout(start, 700);
@@ -56,7 +54,7 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted]);
 
-  // Persiste o passo atual (pra sobreviver à navegação).
+  // Persiste o passo atual.
   useEffect(() => {
     try {
       if (active) {
@@ -79,23 +77,10 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
   }, [start]);
 
   const step = steps[i];
-  const naTelaCerta = !step?.route || pathname === step.route;
 
-  // Navega pra tela do passo, se preciso.
+  // Mede o alvo (com retry — o elemento pode não estar pronto).
   useEffect(() => {
-    if (!active || !step) return;
-    if (step.route && pathname !== step.route) {
-      router.push(step.route);
-    }
-  }, [active, i, step, pathname, router]);
-
-  // Mede o alvo (com retry — o elemento pode não estar pronto após navegar).
-  useEffect(() => {
-    if (!active || !naTelaCerta) {
-      setRect(null);
-      return;
-    }
-    if (!step?.selector) {
+    if (!active || !step?.selector) {
       setRect(null);
       return;
     }
@@ -119,7 +104,7 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
       window.removeEventListener("resize", onMove);
       window.removeEventListener("scroll", onMove, true);
     };
-  }, [active, naTelaCerta, i, step]);
+  }, [active, i, step]);
 
   const fim = useCallback(() => {
     try {
@@ -194,11 +179,7 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
       )}
       <div
         className="anim-in absolute w-[320px] rounded-2xl border border-neutral-200 bg-white p-5 shadow-2xl"
-        style={
-          centered
-            ? { top: "50%", left: "50%", transform: "translate(-50%,-50%)" }
-            : { top, left }
-        }
+        style={centered ? { top: "50%", left: "50%", transform: "translate(-50%,-50%)" } : { top, left }}
       >
         <div className="flex items-center justify-between">
           <span className="text-xs font-medium text-emerald-600">
@@ -215,18 +196,13 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
             {steps.map((_, k) => (
               <span
                 key={k}
-                className={`h-1.5 rounded-full transition-all ${
-                  k === i ? "w-4 bg-emerald-500" : "w-1.5 bg-neutral-200"
-                }`}
+                className={`h-1.5 rounded-full transition-all ${k === i ? "w-4 bg-emerald-500" : "w-1.5 bg-neutral-200"}`}
               />
             ))}
           </div>
           <div className="flex gap-2">
             {i > 0 && (
-              <button
-                onClick={ant}
-                className="rounded-lg px-3 py-1.5 text-sm text-neutral-500 hover:text-neutral-900"
-              >
+              <button onClick={ant} className="rounded-lg px-3 py-1.5 text-sm text-neutral-500 hover:text-neutral-900">
                 Voltar
               </button>
             )}
