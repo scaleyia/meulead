@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { DashboardTour } from "@/components/DashboardTour";
 import { getActiveOrg } from "@/lib/org";
@@ -9,7 +8,31 @@ import { logout } from "../(auth)/actions";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const org = await getActiveOrg();
-  if (!org) redirect("/login");
+
+  // O proxy já garante que só usuário logado chega aqui. Se mesmo assim a org
+  // vier nula (ex: sem organização vinculada), NÃO redireciona pro /login —
+  // isso causaria loop com o proxy. Mostra um aviso com opção de sair.
+  if (!org) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white px-6 text-center text-neutral-700">
+        <h1 className="text-xl font-semibold">Não encontramos sua organização</h1>
+        <p className="max-w-md text-sm text-neutral-500">
+          Sua conta está autenticada, mas não achamos os dados da organização. Recarregue a página
+          ou saia e entre novamente.
+        </p>
+        <div className="flex gap-3">
+          <a href="/dashboard" className="rounded-lg border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50">
+            Recarregar
+          </a>
+          <form action={logout}>
+            <button className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white">
+              Sair
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   const saldo = await garantirCreditos(org);
   const ehFree = org.plano === "free";
