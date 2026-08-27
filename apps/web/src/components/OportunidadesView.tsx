@@ -150,7 +150,7 @@ export function OportunidadesView({
                     {l.empresa ?? l.nome ?? "—"}
                   </p>
                   {l.nome && l.empresa && (
-                    <p className="text-xs font-medium text-emerald-700 dark:text-emerald-300">👤 {l.nome}</p>
+                    <p className="text-xs font-medium text-blue-700 dark:text-blue-300">👤 {l.nome}</p>
                   )}
                   {l.endereco && <p className="truncate text-xs text-neutral-400 dark:text-neutral-500">{l.endereco}</p>}
                 </div>
@@ -188,7 +188,7 @@ export function OportunidadesView({
                 <span className="tabular-nums text-neutral-700 dark:text-neutral-200">
                   {formatarTelefone(l.telefone)}
                   {l.temWhatsapp === true && (
-                    <span className="ml-2 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                    <span className="ml-2 rounded bg-blue-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 dark:text-blue-400">
                       ✓ zap
                     </span>
                   )}
@@ -208,7 +208,7 @@ export function OportunidadesView({
                       href={`https://wa.me/${wa(l.telefone)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-400"
+                      className="rounded-lg bg-blue-500 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-blue-400"
                     >
                       WhatsApp
                     </a>

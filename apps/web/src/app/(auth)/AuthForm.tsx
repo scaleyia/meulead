@@ -45,7 +45,7 @@ export function AuthForm({ mode, action }: { mode: "login" | "signup"; action: A
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 rounded-lg bg-emerald-500 px-4 py-2.5 font-medium text-white transition hover:bg-emerald-400 disabled:opacity-60"
+        className="mt-2 rounded-lg bg-blue-500 px-4 py-2.5 font-medium text-white transition hover:bg-blue-400 disabled:opacity-60"
       >
         {pending ? "Aguarde…" : isSignup ? "Criar conta" : "Entrar"}
       </button>
@@ -68,14 +68,14 @@ export function AuthForm({ mode, action }: { mode: "login" | "signup"; action: A
         {isSignup ? (
           <>
             Já tem conta?{" "}
-            <Link href="/login" className="text-emerald-600 hover:underline">
+            <Link href="/login" className="text-blue-600 hover:underline">
               Entrar
             </Link>
           </>
         ) : (
           <>
             Não tem conta?{" "}
-            <Link href="/signup" className="text-emerald-600 hover:underline">
+            <Link href="/signup" className="text-blue-600 hover:underline">
               Criar agora
             </Link>
           </>

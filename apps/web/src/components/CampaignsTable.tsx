@@ -32,7 +32,7 @@ const STATUS_BADGE: Record<Status, string> = {
   rascunho: "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-700",
   agendada: "bg-blue-500/10 text-blue-600 border-blue-500/30",
   enviando: "bg-amber-500/10 text-amber-600 border-amber-500/30",
-  concluida: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+  concluida: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30",
   pausada: "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-700",
 };
 
@@ -121,7 +121,7 @@ export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
                         <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-blue-600">
                           {c.metricas.enviados} enviados
                         </span>
-                        <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-emerald-600 dark:text-emerald-400">
+                        <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-blue-600 dark:text-blue-400">
                           {c.metricas.entregues} entregues
                         </span>
                         {c.metricas.falhou > 0 && (

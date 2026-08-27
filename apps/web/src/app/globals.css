@@ -73,8 +73,8 @@ body {
   border-color: #cbd5e1;
 }
 .input:focus {
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgb(16 185 129 / 0.15);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 0.15);
 }
 .input::placeholder {
   color: #94a3b8;
@@ -184,7 +184,7 @@ body {
 .lp-spin-slow { animation: lpSpinSlow 40s linear infinite; }
 
 .lp-aurora {
-  background: linear-gradient(120deg, #064e3b, #059669, #10b981, #064e3b);
+  background: linear-gradient(120deg, #1e3a8a, #2563eb, #3b82f6, #1e3a8a);
   background-size: 300% 300%;
   animation: lpAurora 12s ease infinite;
 }

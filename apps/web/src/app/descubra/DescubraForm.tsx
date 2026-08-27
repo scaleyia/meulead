@@ -44,7 +44,7 @@ export function DescubraForm() {
 
   if (etapa === "obrigado") {
     return (
-      <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-8 text-center">
+      <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-8 text-center">
         <p className="text-5xl">🎉</p>
         <h2 className="mt-4 text-xl font-semibold text-neutral-900">Recebemos seus dados!</h2>
         <p className="mt-2 text-neutral-700">
@@ -53,7 +53,7 @@ export function DescubraForm() {
         </p>
         <Link
           href="/signup"
-          className="mt-6 inline-flex rounded-lg bg-emerald-500 px-5 py-2.5 font-medium text-white transition hover:bg-emerald-400"
+          className="mt-6 inline-flex rounded-lg bg-blue-500 px-5 py-2.5 font-medium text-white transition hover:bg-blue-400"
         >
           Criar conta grátis
         </Link>
@@ -65,14 +65,14 @@ export function DescubraForm() {
     return (
       <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-8">
         <div className="flex flex-col items-center text-center">
-          <div className="h-12 w-12 animate-spin rounded-full border-2 border-neutral-300 border-t-emerald-400" />
+          <div className="h-12 w-12 animate-spin rounded-full border-2 border-neutral-300 border-t-blue-400" />
           <p className="mt-5 text-sm font-medium text-neutral-900">Procurando donos…</p>
           <p className="mt-1 h-5 text-sm text-neutral-500 transition-all">
             {passosBusca[msgIdx]}
           </p>
           <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100">
             <div
-              className="h-full rounded-full bg-emerald-500 transition-all duration-150 ease-out"
+              className="h-full rounded-full bg-blue-500 transition-all duration-150 ease-out"
               style={{ width: `${progresso}%` }}
             />
           </div>
@@ -86,7 +86,7 @@ export function DescubraForm() {
       <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-6 sm:p-8">
         <div className="text-center">
           <p className="text-sm text-neutral-500">Encontramos aproximadamente</p>
-          <p className="my-2 text-5xl font-bold text-emerald-600">
+          <p className="my-2 text-5xl font-bold text-blue-600">
             {estimativa.toLocaleString("pt-BR")}
           </p>
           <p className="text-sm text-neutral-700">
@@ -160,7 +160,7 @@ export function DescubraForm() {
           <button
             type="submit"
             disabled={pending}
-            className="mt-1 rounded-lg bg-emerald-500 px-5 py-3 font-semibold text-white transition hover:bg-emerald-400 disabled:opacity-60"
+            className="mt-1 rounded-lg bg-blue-500 px-5 py-3 font-semibold text-white transition hover:bg-blue-400 disabled:opacity-60"
           >
             {pending ? "Enviando…" : "🔓 Liberar amostra grátis"}
           </button>
@@ -209,7 +209,7 @@ export function DescubraForm() {
         </label>
         <button
           onClick={() => setEtapa("procurando")}
-          className="mt-2 rounded-lg bg-emerald-500 px-5 py-3 font-semibold text-white transition hover:bg-emerald-400"
+          className="mt-2 rounded-lg bg-blue-500 px-5 py-3 font-semibold text-white transition hover:bg-blue-400"
         >
           Descobrir quantos donos existem →
         </button>

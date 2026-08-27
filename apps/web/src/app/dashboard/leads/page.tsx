@@ -23,7 +23,7 @@ export default async function LeadsPage() {
         </div>
         <Link
           href="/dashboard/capture"
-          className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-400"
+          className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-400"
         >
           + Nova captação
         </Link>

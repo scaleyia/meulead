@@ -16,7 +16,7 @@ export type CaptureJob = {
 const STATUS_STYLES: Record<string, string> = {
   pendente: "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-700",
   rodando: "bg-blue-500/10 text-blue-600 border-blue-500/30",
-  concluido: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+  concluido: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30",
   erro: "bg-red-500/10 text-red-600 border-red-500/30",
 };
 

@@ -60,7 +60,7 @@ export function SiteCell({
                 ? "bg-red-500/10 text-red-600"
                 : siteScore < 80
                   ? "bg-amber-500/10 text-amber-600"
-                  : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                  : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
             }`}
           >
             {siteScore < 60 ? "Site fraco" : siteScore < 80 ? "Site médio" : "Site bom"} · {siteScore}

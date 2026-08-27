@@ -73,7 +73,7 @@ export default async function DashboardPage() {
     icon: LucideIcon;
     cor: string;
   }[] = [
-    { label: "Leads captados", value: nLeads.toLocaleString("pt-BR"), href: "/dashboard/leads", icon: Users, cor: "emerald" },
+    { label: "Leads captados", value: nLeads.toLocaleString("pt-BR"), href: "/dashboard/leads", icon: Users, cor: "blue" },
     { label: "Sem site (oportunidade)", value: semSite.toLocaleString("pt-BR"), sub: `${pctSemSite}% dos do Maps`, href: "/dashboard/leads", icon: Globe, cor: "red" },
     { label: "Leads quentes", value: quentes.toLocaleString("pt-BR"), sub: "prontos p/ vender", href: "/dashboard/oportunidades", icon: Target, cor: "amber" },
     { label: "Com WhatsApp", value: comWhats.toLocaleString("pt-BR"), sub: "validados", href: "/dashboard/leads", icon: MessageCircle, cor: "green" },
@@ -105,7 +105,7 @@ export default async function DashboardPage() {
         </div>
         <Link
           href="/dashboard/capture"
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-emerald-600/20 transition hover:from-emerald-400 hover:to-emerald-500"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/20 transition hover:from-blue-400 hover:to-blue-500"
         >
           <Radar className="h-4 w-4" /> Captar leads
         </Link>
@@ -124,12 +124,11 @@ export default async function DashboardPage() {
               <span
                 className={clsx(
                   "grid h-9 w-9 place-items-center rounded-xl",
-                  s.cor === "emerald" && "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-                  s.cor === "blue" && "bg-blue-50 dark:bg-blue-500/10 text-blue-600",
+                  s.cor === "blue" && "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400",
                   s.cor === "violet" && "bg-violet-50 text-violet-600",
                   s.cor === "amber" && "bg-amber-50 dark:bg-amber-500/10 text-amber-600",
                   s.cor === "red" && "bg-red-50 dark:bg-red-500/10 text-red-600",
-                  s.cor === "green" && "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+                  s.cor === "green" && "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400",
                 )}
               >
                 <s.icon className="h-[18px] w-[18px]" />
@@ -152,7 +151,7 @@ export default async function DashboardPage() {
 
         <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-500"
             style={{ width: `${(feitos / passos.length) * 100}%` }}
           />
         </div>
@@ -164,23 +163,23 @@ export default async function DashboardPage() {
               href={p.href}
               className={clsx(
                 "group rounded-2xl border bg-white dark:bg-neutral-900 p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
-                p.feito ? "border-emerald-200" : "border-neutral-200 dark:border-neutral-800 hover:border-emerald-200",
+                p.feito ? "border-blue-200" : "border-neutral-200 dark:border-neutral-800 hover:border-blue-200",
               )}
             >
               <div className="flex items-center justify-between">
                 <span
                   className={clsx(
                     "grid h-9 w-9 place-items-center rounded-full text-sm font-bold",
-                    p.feito ? "bg-emerald-500 text-white" : "bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400",
+                    p.feito ? "bg-blue-500 text-white" : "bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400",
                   )}
                 >
                   {p.feito ? <Check className="h-4 w-4" /> : i + 1}
                 </span>
                 <p.icon
-                  className={clsx("h-5 w-5", p.feito ? "text-emerald-500" : "text-neutral-300")}
+                  className={clsx("h-5 w-5", p.feito ? "text-blue-500" : "text-neutral-300")}
                 />
               </div>
-              <h3 className="mt-3 flex items-center gap-1 font-semibold text-neutral-900 dark:text-neutral-100 group-hover:text-emerald-600">
+              <h3 className="mt-3 flex items-center gap-1 font-semibold text-neutral-900 dark:text-neutral-100 group-hover:text-blue-600">
                 {p.titulo}
                 <ArrowRight className="h-3.5 w-3.5 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
               </h3>

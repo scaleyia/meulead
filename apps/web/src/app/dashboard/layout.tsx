@@ -77,7 +77,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             </Link>
             <Link
               href="/dashboard/creditos#assinar"
-              className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium capitalize text-emerald-700 hover:bg-emerald-500/20"
+              className="rounded-full border border-blue-500/30 bg-blue-500/10 px-2.5 py-0.5 text-xs font-medium capitalize text-blue-700 hover:bg-blue-500/20"
               title="Ver e assinar planos"
             >
               Plano {org.plano}

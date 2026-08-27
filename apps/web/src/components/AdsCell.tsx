@@ -140,7 +140,7 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
         <div className="mt-6 flex flex-col gap-2">
           <Link
             href="/planos"
-            className="rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-400"
+            className="rounded-lg bg-blue-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-400"
           >
             Ver planos e fazer upgrade
           </Link>

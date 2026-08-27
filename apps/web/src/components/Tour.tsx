@@ -166,7 +166,7 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
       />
       {rect && (
         <div
-          className="absolute rounded-xl ring-2 ring-emerald-400 transition-all duration-200"
+          className="absolute rounded-xl ring-2 ring-blue-400 transition-all duration-200"
           style={{
             top: rect.top - pad,
             left: rect.left - pad,
@@ -182,7 +182,7 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
         style={centered ? { top: "50%", left: "50%", transform: "translate(-50%,-50%)" } : { top, left }}
       >
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+          <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
             Passo {i + 1} de {steps.length}
           </span>
           <button onClick={fim} className="text-xs text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200">
@@ -196,7 +196,7 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
             {steps.map((_, k) => (
               <span
                 key={k}
-                className={`h-1.5 rounded-full transition-all ${k === i ? "w-4 bg-emerald-500" : "w-1.5 bg-neutral-200"}`}
+                className={`h-1.5 rounded-full transition-all ${k === i ? "w-4 bg-blue-500" : "w-1.5 bg-neutral-200"}`}
               />
             ))}
           </div>
@@ -208,7 +208,7 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
             )}
             <button
               onClick={prox}
-              className="rounded-lg bg-emerald-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-emerald-400"
+              className="rounded-lg bg-blue-500 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-blue-400"
             >
               {ultimo ? (step.cta ?? "Concluir 🚀") : "Próximo"}
             </button>

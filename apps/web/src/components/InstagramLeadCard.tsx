@@ -90,7 +90,7 @@ export function InstagramLeadCard({
           </span>
         )}
         {lead.telefone && (
-          <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-300">
+          <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:text-blue-300">
             📞 {lead.telefone}
           </span>
         )}

@@ -43,7 +43,7 @@ export function ComprarCreditos({ packs }: { packs: Pack[] }) {
             <p className="mt-2 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
               {p.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 })}
             </p>
-            <span className="mt-2 inline-block text-xs text-emerald-600 dark:text-emerald-400">
+            <span className="mt-2 inline-block text-xs text-blue-600 dark:text-blue-400">
               {pendingId === p.id ? "Abrindo checkout…" : "Comprar →"}
             </span>
           </button>

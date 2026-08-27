@@ -25,7 +25,7 @@ export default async function InteressadosPage() {
         <h1 className="text-2xl font-semibold">Interessados</h1>
         <p className="mt-1 text-neutral-500 dark:text-neutral-400">
           Leads capturados na landing pública (
-          <a href="/descubra" target="_blank" className="text-emerald-600 dark:text-emerald-400 hover:underline">
+          <a href="/descubra" target="_blank" className="text-blue-600 dark:text-blue-400 hover:underline">
             /descubra
           </a>
           ) — seus próprios prospects de venda.

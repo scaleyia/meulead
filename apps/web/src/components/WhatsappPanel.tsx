@@ -55,8 +55,8 @@ const STATUS_META: Record<Status, { label: string; badge: string; dot: string }>
   },
   conectado: {
     label: "Conectado",
-    badge: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
-    dot: "bg-emerald-400",
+    badge: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/30",
+    dot: "bg-blue-400",
   },
 };
 
@@ -255,7 +255,7 @@ function AquecimentoModal({ sessao }: { sessao: Sessao }) {
             <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Ativar aquecimento</span>
             <input
               type="checkbox"
-              className="h-4 w-4 accent-emerald-400"
+              className="h-4 w-4 accent-blue-400"
               checked={ativo}
               onChange={(e) => setAtivo(e.target.checked)}
             />
@@ -271,7 +271,7 @@ function AquecimentoModal({ sessao }: { sessao: Sessao }) {
                 >
                   <input
                     type="checkbox"
-                    className="mt-0.5 h-4 w-4 accent-emerald-400"
+                    className="mt-0.5 h-4 w-4 accent-blue-400"
                     checked={marcadas.includes(t.key)}
                     onChange={() => toggleTecnica(t.key)}
                   />
@@ -378,7 +378,7 @@ function QrContent({ sessaoId, close }: { sessaoId: string; close: () => void })
     return (
       <div className="py-10 text-center">
         <p className="text-5xl">✅</p>
-        <p className="mt-3 font-medium text-emerald-600 dark:text-emerald-400">Número conectado!</p>
+        <p className="mt-3 font-medium text-blue-600 dark:text-blue-400">Número conectado!</p>
       </div>
     );
   }

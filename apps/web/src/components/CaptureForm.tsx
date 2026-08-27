@@ -128,7 +128,7 @@ export function CaptureForm() {
             className={`rounded-md px-3 py-2 text-xs ${
               modo === "instagram"
                 ? "bg-fuchsia-500/10 text-fuchsia-700"
-                : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                : "bg-blue-500/10 text-blue-700 dark:text-blue-300"
             }`}
           >
             {modo === "instagram" ? (
@@ -187,7 +187,7 @@ function ModoCard({
       onClick={onClick}
       className={`rounded-lg border p-3 text-left transition ${
         ativo
-          ? "border-emerald-500/50 bg-emerald-500/10"
+          ? "border-blue-500/50 bg-blue-500/10"
           : "border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 hover:border-neutral-300"
       }`}
     >

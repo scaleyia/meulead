@@ -28,6 +28,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Some com o indicador "N" do Next.js no canto (só aparece em dev).
+  devIndicators: false,
   // Compila os pacotes do monorepo (TS puro) no build de produção (Vercel).
   transpilePackages: ["@meulead/db", "@meulead/shared"],
   async headers() {

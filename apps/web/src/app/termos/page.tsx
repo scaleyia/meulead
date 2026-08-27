@@ -9,7 +9,7 @@ export default function TermosPage() {
     <main className="min-h-screen bg-white text-neutral-800">
       <header className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
         <Link href="/descubra" className="text-lg font-bold text-neutral-900">
-          Meu<span className="text-emerald-600">Lead</span>
+          Meu<span className="text-blue-600">Lead</span>
         </Link>
         <Link href="/privacidade" className="text-sm text-neutral-500 hover:text-neutral-900">
           Política de Privacidade
@@ -65,11 +65,11 @@ export default function TermosPage() {
 
         <p className="mt-10 text-neutral-600">
           Dúvidas:{" "}
-          <a className="text-emerald-600" href="mailto:contato@scaley.com.br">
+          <a className="text-blue-600" href="mailto:contato@scaley.com.br">
             contato@scaley.com.br
           </a>
           . Veja também nossa{" "}
-          <Link className="text-emerald-600" href="/privacidade">
+          <Link className="text-blue-600" href="/privacidade">
             Política de Privacidade
           </Link>
           .

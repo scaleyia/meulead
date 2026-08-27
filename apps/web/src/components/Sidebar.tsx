@@ -58,9 +58,9 @@ export function Sidebar({
 
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-neutral-200 bg-white/70 p-4 backdrop-blur-xl dark:border-neutral-800 dark:bg-neutral-900/70">
-      <Link href="/dashboard" className="mb-6 block px-2 transition-transform hover:scale-[1.02]">
+      <Link href="/dashboard" className="mb-6 flex justify-center transition-transform hover:scale-[1.03]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.png" alt="MeuLead" className="h-auto w-full max-w-[180px]" />
+        <img src="/logo.png" alt="MeuLead" className="h-20 w-20 rounded-2xl" />
       </Link>
 
       <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
@@ -96,7 +96,7 @@ export function Sidebar({
               className={clsx(
                 "group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-all duration-150",
                 active
-                  ? "bg-emerald-50 font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-500/15 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/20"
+                  ? "bg-blue-50 font-semibold text-blue-700 shadow-sm ring-1 ring-blue-500/15 dark:bg-blue-500/10 dark:text-blue-300 dark:ring-blue-400/20"
                   : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100",
               )}
             >
@@ -104,7 +104,7 @@ export function Sidebar({
                 className={clsx(
                   "h-[18px] w-[18px] shrink-0 transition-colors",
                   active
-                    ? "text-emerald-600 dark:text-emerald-400"
+                    ? "text-blue-600 dark:text-blue-400"
                     : "text-neutral-400 group-hover:text-neutral-600 dark:text-neutral-500 dark:group-hover:text-neutral-300",
                 )}
                 strokeWidth={active ? 2.25 : 1.75}
@@ -147,7 +147,7 @@ function SidebarFooter({ userEmail, plano }: { userEmail: string; plano: string 
       {/* Fazer upgrade */}
       <Link
         href="/dashboard/creditos#assinar"
-        className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm shadow-emerald-600/25 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-blue-500 to-blue-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-600/25 transition-all hover:from-blue-400 hover:to-blue-500 active:scale-[0.98]"
       >
         <ArrowUpCircle className="h-[18px] w-[18px]" strokeWidth={2} />
         Fazer upgrade

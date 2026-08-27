@@ -107,7 +107,7 @@ export default async function CreditosPage({
       <p className="mt-1 text-neutral-500 dark:text-neutral-400">1 crédito = 1 lead captado. Import manual/CSV não gasta.</p>
 
       {pagamentoOk && (
-        <p className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-700 dark:text-emerald-300">
+        <p className="mt-4 rounded-lg border border-blue-500/30 bg-blue-500/10 px-4 py-2.5 text-sm text-blue-700 dark:text-blue-300">
           ✅ Pagamento confirmado! Seus créditos já foram liberados.
         </p>
       )}
@@ -147,7 +147,7 @@ export default async function CreditosPage({
         </div>
         <Link
           href="#assinar"
-          className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-400"
+          className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
         >
           Fazer upgrade
         </Link>
@@ -215,7 +215,7 @@ export default async function CreditosPage({
                   <td className="px-4 py-3 text-neutral-500 dark:text-neutral-400">{t.descricao ?? "—"}</td>
                   <td
                     className={`px-4 py-3 text-right font-medium ${
-                      t.quantidade < 0 ? "text-red-600" : "text-emerald-600 dark:text-emerald-400"
+                      t.quantidade < 0 ? "text-red-600" : "text-blue-600 dark:text-blue-400"
                     }`}
                   >
                     {t.quantidade > 0 ? "+" : ""}

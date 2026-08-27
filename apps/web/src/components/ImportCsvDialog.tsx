@@ -77,7 +77,7 @@ export function ImportCsvDialog({ listId }: { listId: string }) {
           </label>
 
           {rows && (
-            <p className="rounded-md bg-emerald-500/10 px-3 py-2 text-sm text-emerald-600 dark:text-emerald-400">
+            <p className="rounded-md bg-blue-500/10 px-3 py-2 text-sm text-blue-600 dark:text-blue-400">
               ✓ {rows.length} leads prontos para importar.
             </p>
           )}

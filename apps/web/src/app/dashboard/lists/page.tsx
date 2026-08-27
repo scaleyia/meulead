@@ -47,7 +47,7 @@ export default async function ListsPage() {
               <Link href={`/dashboard/lists/${l.id}`} className="block">
                 <h3 className="font-medium text-neutral-900 dark:text-neutral-100">{l.nome}</h3>
                 <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{sourceLabel(l.origem)}</p>
-                <p className="mt-4 text-2xl font-bold text-emerald-600 dark:text-emerald-400">{l.leadCount}</p>
+                <p className="mt-4 text-2xl font-bold text-blue-600 dark:text-blue-400">{l.leadCount}</p>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400">leads</p>
               </Link>
               <div className="absolute right-3 top-3 opacity-0 transition group-hover:opacity-100">

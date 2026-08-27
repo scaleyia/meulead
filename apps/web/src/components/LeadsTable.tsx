@@ -143,7 +143,7 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
                 </td>
                 <td className="px-4 py-3">
                   {l.nome ? (
-                    <span className="inline-flex items-center gap-1 whitespace-nowrap font-medium text-emerald-700 dark:text-emerald-300">
+                    <span className="inline-flex items-center gap-1 whitespace-nowrap font-medium text-blue-700 dark:text-blue-300">
                       👤 {l.nome}
                     </span>
                   ) : (

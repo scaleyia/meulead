@@ -25,11 +25,11 @@ export default function DescubraPage() {
 
       <section className="mx-auto grid max-w-5xl gap-10 px-6 py-10 lg:grid-cols-2 lg:items-center lg:py-16">
         <div>
-          <span className="inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700">
+          <span className="inline-flex rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-700">
             Grátis · sem cartão
           </span>
           <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl">
-            Descubra quantos <span className="text-emerald-600">donos de empresa</span> existem na sua
+            Descubra quantos <span className="text-blue-600">donos de empresa</span> existem na sua
             região
           </h1>
           <p className="mt-4 text-lg text-neutral-700">
@@ -43,7 +43,7 @@ export default function DescubraPage() {
               "CRM que mostra o status de cada disparo",
             ].map((t) => (
               <li key={t} className="flex items-center gap-2">
-                <span className="text-emerald-600">✓</span>
+                <span className="text-blue-600">✓</span>
                 {t}
               </li>
             ))}

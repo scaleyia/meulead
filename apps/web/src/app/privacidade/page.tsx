@@ -9,7 +9,7 @@ export default function PrivacidadePage() {
     <main className="min-h-screen bg-white text-neutral-800">
       <header className="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
         <Link href="/descubra" className="text-lg font-bold text-neutral-900">
-          Meu<span className="text-emerald-600">Lead</span>
+          Meu<span className="text-blue-600">Lead</span>
         </Link>
         <Link href="/termos" className="text-sm text-neutral-500 hover:text-neutral-900">
           Termos de Uso
@@ -27,7 +27,7 @@ export default function PrivacidadePage() {
 
         <Sec titulo="1. Controlador e Encarregado (DPO)">
           Controlador: ScaleyAi / MeuLead. Contato do Encarregado de Dados (DPO):{" "}
-          <a className="text-emerald-600" href="mailto:contato@scaley.com.br">
+          <a className="text-blue-600" href="mailto:contato@scaley.com.br">
             contato@scaley.com.br
           </a>
           . Use este canal para exercer seus direitos ou tirar dúvidas sobre privacidade.
@@ -80,7 +80,7 @@ export default function PrivacidadePage() {
           Você pode, a qualquer tempo: confirmar a existência de tratamento; acessar, corrigir,
           anonimizar ou <strong>excluir</strong> seus dados; solicitar portabilidade; e{" "}
           <strong>se opor</strong> ao tratamento ou revogar consentimento. Basta escrever para{" "}
-          <a className="text-emerald-600" href="mailto:contato@scaley.com.br">
+          <a className="text-blue-600" href="mailto:contato@scaley.com.br">
             contato@scaley.com.br
           </a>
           . Responderemos nos prazos da LGPD.

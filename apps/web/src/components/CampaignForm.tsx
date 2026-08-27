@@ -178,7 +178,7 @@ function CampaignFields({
               key={t.rotulo}
               type="button"
               onClick={() => setMensagem(t.texto)}
-              className="rounded-full border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 px-2.5 py-0.5 text-xs font-medium text-neutral-600 dark:text-neutral-300 transition hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-700"
+              className="rounded-full border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 px-2.5 py-0.5 text-xs font-medium text-neutral-600 dark:text-neutral-300 transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700"
             >
               {t.rotulo}
             </button>
@@ -246,7 +246,7 @@ function CampaignFields({
                     type="checkbox"
                     checked={sessaoIds.includes(s.id)}
                     onChange={() => toggleSessao(s.id)}
-                    className="h-4 w-4 accent-emerald-500"
+                    className="h-4 w-4 accent-blue-500"
                   />
                   <span>{s.nome}</span>
                 </label>
@@ -347,7 +347,7 @@ function ModeCard({
       className={clsx(
         "flex flex-col gap-1 rounded-lg border p-3 text-left transition",
         active
-          ? "border-emerald-500/60 bg-emerald-500/10"
+          ? "border-blue-500/60 bg-blue-500/10"
           : "border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-800 hover:border-neutral-300",
       )}
     >
