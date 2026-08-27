@@ -9,7 +9,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { RecargaManual } from "@/components/RecargaManual";
 import { RecargaUsuario } from "@/components/RecargaUsuario";
 import { ComprarCreditos } from "@/components/ComprarCreditos";
-import { AssinarPlano } from "@/components/AssinarPlano";
+import { UpgradeDialog } from "@/components/UpgradeDialog";
 
 function fmt(n: number) {
   return n.toLocaleString("pt-BR");
@@ -145,12 +145,12 @@ export default async function CreditosPage({
             Precisa de mais? Recarga a {formatarPreco(plano.recargaPreco)}/crédito.
           </p>
         </div>
-        <Link
-          href="#assinar"
+        <UpgradeDialog
+          planoAtual={org.plano}
           className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-400"
         >
           Fazer upgrade
-        </Link>
+        </UpgradeDialog>
       </div>
 
       {ehAdmin && (
@@ -179,15 +179,6 @@ export default async function CreditosPage({
       <ComprarCreditos
         packs={PACOTES_RECARGA.map((p) => ({ id: p.id, creditos: p.creditos, preco: p.preco }))}
       />
-
-      {/* Assinar / trocar de plano */}
-      <h2 id="assinar" className="mt-8 mb-1 scroll-mt-24 font-medium text-neutral-900 dark:text-neutral-100">
-        Assinar um plano
-      </h2>
-      <p className="mb-3 text-sm text-neutral-500 dark:text-neutral-400">
-        Mensalidade com créditos que renovam todo mês + mais recursos.
-      </p>
-      <AssinarPlano planoAtual={org.plano} />
 
       {/* Histórico */}
       <h2 className="mt-8 mb-3 font-medium text-neutral-900 dark:text-neutral-100">Histórico</h2>

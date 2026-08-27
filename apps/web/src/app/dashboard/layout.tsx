@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Zap, Sparkles } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
+import { UpgradeDialog } from "@/components/UpgradeDialog";
 import { DashboardTour } from "@/components/DashboardTour";
 import { getActiveOrg } from "@/lib/org";
 import { garantirCreditos } from "@/lib/creditos";
@@ -44,9 +46,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
       {ehFree && (
-        <Link
-          href="/dashboard/creditos#assinar"
-          className="group flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 bg-gradient-to-r from-amber-500 to-amber-400 px-4 py-1.5 text-center text-xs font-medium text-white transition hover:from-amber-500 hover:to-amber-500"
+        <UpgradeDialog
+          planoAtual={org.plano}
+          className="group flex w-full flex-wrap items-center justify-center gap-x-2 gap-y-0.5 bg-gradient-to-r from-amber-500 to-amber-400 px-4 py-1.5 text-center text-xs font-medium text-white transition hover:from-amber-500 hover:to-amber-500"
         >
           <span>
             ⚡ Plano Free — restam <strong>{saldo.toLocaleString("pt-BR")}</strong>{" "}
@@ -59,7 +61,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <span className="ml-1 inline-flex items-center rounded-full bg-white/20 px-2.5 py-0.5 font-semibold transition group-hover:bg-white/30">
             Fazer upgrade →
           </span>
-        </Link>
+        </UpgradeDialog>
       )}
 
       <div className="flex min-h-0 flex-1">
@@ -67,22 +69,24 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex shrink-0 items-center justify-end border-b border-neutral-200 bg-white/70 px-6 py-3 backdrop-blur-xl dark:border-neutral-800 dark:bg-neutral-900/70">
-          <div className="flex items-center gap-3 text-sm">
+          <div className="flex items-center gap-2.5 text-sm">
             <Link
               href="/dashboard/creditos"
-              className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-600 hover:bg-amber-500/20"
               title="Ver créditos"
+              className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/25 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-600 shadow-sm transition hover:bg-amber-100 dark:border-amber-500/20 dark:bg-amber-500/10 dark:hover:bg-amber-500/20"
             >
-              ⚡ {saldo.toLocaleString("pt-BR")} créditos
+              <Zap className="h-3.5 w-3.5 fill-amber-400 text-amber-500" strokeWidth={2} />
+              {saldo.toLocaleString("pt-BR")}
+              <span className="font-medium text-amber-600/70">créditos</span>
             </Link>
-            <Link
-              href="/dashboard/creditos#assinar"
-              className="rounded-full border border-blue-500/30 bg-blue-500/10 px-2.5 py-0.5 text-xs font-medium capitalize text-blue-700 hover:bg-blue-500/20"
-              title="Ver e assinar planos"
+            <UpgradeDialog
+              planoAtual={org.plano}
+              className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/25 bg-blue-50 px-3 py-1.5 text-xs font-semibold capitalize text-blue-700 shadow-sm transition hover:bg-blue-100 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300 dark:hover:bg-blue-500/20"
             >
+              <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
               Plano {org.plano}
-            </Link>
-            <span className="text-neutral-500 dark:text-neutral-400">{org.email}</span>
+            </UpgradeDialog>
+            <span className="hidden text-neutral-500 sm:inline dark:text-neutral-400">{org.email}</span>
             <form action={logout}>
               <button className="rounded-md border border-neutral-300 px-3 py-1.5 text-neutral-800 transition hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-800">
                 Sair
