@@ -87,7 +87,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
               <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
               Plano {org.plano}
             </UpgradeDialog>
-            <span className="hidden text-neutral-500 sm:inline dark:text-neutral-400">{org.email}</span>
             <form action={logout}>
               <button className="rounded-md border border-neutral-300 px-3 py-1.5 text-neutral-800 transition hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-800">
                 Sair

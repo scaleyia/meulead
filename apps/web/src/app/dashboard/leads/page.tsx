@@ -29,7 +29,7 @@ export default async function LeadsPage() {
         </Link>
       </div>
 
-      {org ? <LeadsContent orgId={org.orgId} planoPago={org.plano !== "free"} /> : null}
+      {org ? <LeadsContent orgId={org.orgId} plano={org.plano} /> : null}
     </div>
   );
 }
