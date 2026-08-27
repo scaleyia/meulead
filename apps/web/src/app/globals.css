@@ -12,6 +12,12 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html,
+body {
+  /* Mata o "rubber-band" do macOS: rolar além do topo não revela mais o fundo branco atrás da barra fixa. */
+  overscroll-behavior-y: none;
+}
+
 body {
   background: #ffffff;
   color: var(--foreground);
