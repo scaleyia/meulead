@@ -9,6 +9,7 @@ export interface ActiveOrg {
   creditosPlano: number;
   creditosExtra: number;
   creditosRenovamEm: string;
+  planoExpiraEm: string | null; // vencimento do plano anual (null = não expira)
 }
 
 // Retorna a org ativa do usuário logado (a primeira da qual é membro).
@@ -31,7 +32,7 @@ export const getActiveOrg = cache(async (): Promise<ActiveOrg | null> => {
 
   const { data: org } = await supabase
     .from("organizacoes")
-    .select("nome, plano, creditos_plano, creditos_extra, creditos_renovam_em")
+    .select("nome, plano, creditos_plano, creditos_extra, creditos_renovam_em, plano_expira_em")
     .eq("id", membership.organizacao_id)
     .maybeSingle();
 
@@ -43,5 +44,6 @@ export const getActiveOrg = cache(async (): Promise<ActiveOrg | null> => {
     creditosPlano: org?.creditos_plano ?? 0,
     creditosExtra: org?.creditos_extra ?? 0,
     creditosRenovamEm: org?.creditos_renovam_em ?? new Date().toISOString(),
+    planoExpiraEm: org?.plano_expira_em ?? null,
   };
 });

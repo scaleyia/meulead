@@ -34,7 +34,8 @@ export default async function LeadsPage() {
   );
 }
 
-async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: boolean }) {
+async function LeadsContent({ orgId, plano }: { orgId: string; plano: string }) {
+  const planoPago = plano !== "free";
   const supabase = await createClient();
 
   // Resolve anúncios e enriquece o dono (roda também aqui, não só na Captação).
@@ -111,7 +112,7 @@ async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: bo
           Buscando o nome dos donos das captações recentes… atualiza sozinho (~1-2 min).
         </div>
       )}
-      <AllLeadsTable leads={leads} listas={listas} planoPago={planoPago} />
+      <AllLeadsTable leads={leads} listas={listas} planoPago={planoPago} plano={plano} />
     </>
   );
 }

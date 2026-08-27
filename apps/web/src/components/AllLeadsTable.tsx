@@ -9,6 +9,7 @@ import { createPortal } from "react-dom";
 import { validarWhatsapp, removerSemWhatsapp, enviarParaCrm } from "@/app/dashboard/leads/actions";
 import { sourceLabel } from "@/lib/sources";
 import { AdsCell } from "@/components/AdsCell";
+import { UpgradeDialog } from "@/components/UpgradeDialog";
 import { SiteCell } from "@/components/SiteCell";
 import { InstagramLeadCard } from "@/components/InstagramLeadCard";
 
@@ -67,10 +68,12 @@ export function AllLeadsTable({
   leads,
   listas,
   planoPago,
+  plano,
 }: {
   leads: AllLeadRow[];
   listas: ListaOption[];
   planoPago: boolean;
+  plano: string;
 }) {
   const router = useRouter();
   const [q, setQ] = useState("");
@@ -280,13 +283,25 @@ export function AllLeadsTable({
             {validando ? "Validando…" : "Validar WhatsApp"}
           </button>
         )}
-        <button
-          onClick={exportarCsv}
-          disabled={filtered.length === 0}
-          className={`${fonte === "google_maps" ? "" : "ml-auto"} rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-200 transition hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40`}
-        >
-          ⬇ Exportar CSV
-        </button>
+        {planoPago ? (
+          <button
+            onClick={exportarCsv}
+            disabled={filtered.length === 0}
+            className={`${fonte === "google_maps" ? "" : "ml-auto"} rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-200 transition hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40`}
+          >
+            ⬇ Exportar CSV
+          </button>
+        ) : (
+          <UpgradeDialog
+            planoAtual={plano}
+            className={`${fonte === "google_maps" ? "" : "ml-auto"} inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-sm font-medium text-neutral-500 dark:text-neutral-400 transition hover:bg-neutral-100 dark:hover:bg-neutral-800`}
+          >
+            🔒 Exportar CSV
+            <span className="rounded-full bg-blue-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 dark:text-blue-400">
+              Starter+
+            </span>
+          </UpgradeDialog>
+        )}
         <span className="text-sm text-neutral-500 dark:text-neutral-400">
           {filtered.length} de {leads.length} leads
         </span>

@@ -55,6 +55,7 @@ export async function processarSessaoCheckout(sessionId: string): Promise<boolea
   const tipo = meta.tipo; // 'recarga' | 'assinatura'
   const creditos = Number(meta.creditos ?? 0);
   const plano = meta.plano ?? null;
+  const ciclo = meta.ciclo; // 'mensal' | 'anual' (só em assinatura)
   if (!orgId || !tipo) return false;
 
   const supabase = createAdminClient();
@@ -91,12 +92,23 @@ export async function processarSessaoCheckout(sessionId: string): Promise<boolea
   } else if (tipo === "assinatura") {
     const proxima = new Date();
     proxima.setMonth(proxima.getMonth() + 1);
+
+    // Anual = pagamento único → vence em 12 meses e volta pro Free.
+    // Mensal = assinatura recorrente → não expira do nosso lado (null).
+    let planoExpiraEm: string | null = null;
+    if (ciclo === "anual") {
+      const venc = new Date();
+      venc.setFullYear(venc.getFullYear() + 1);
+      planoExpiraEm = venc.toISOString();
+    }
+
     await supabase
       .from("organizacoes")
       .update({
         plano: plano ?? undefined,
         creditos_plano: creditos,
         creditos_renovam_em: proxima.toISOString(),
+        plano_expira_em: planoExpiraEm,
         stripe_customer_id: (session.customer as string) ?? null,
       })
       .eq("id", orgId);
