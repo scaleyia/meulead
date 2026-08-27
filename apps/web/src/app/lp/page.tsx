@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Space_Grotesk } from "next/font/google";
-import { PLANOS, formatarPreco } from "@/lib/planos";
+import { Space_Grotesk, Plus_Jakarta_Sans } from "next/font/google";
 import { Reveal, ScrollProgress, Tilt } from "@/components/lp/Effects";
+import LpPlanos from "./LpPlanos";
 
 const grotesk = Space_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 export const metadata = {
   title: "MeuLead — Ache os donos de negócio que precisam de você",
@@ -258,36 +259,14 @@ export default function LpPage() {
       </section>
 
       {/* PLANOS */}
-      <section id="planos" className="mx-auto max-w-6xl px-6 py-20">
+      <section id="planos" className={`${jakarta.className} mx-auto max-w-6xl px-6 py-20`}>
         <Reveal>
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Planos que crescem com você</h2>
-            <p className="mt-3 text-neutral-500">Comece grátis. Suba quando quiser mais leads.</p>
+            <p className="mt-3 text-neutral-500">Comece grátis. No plano anual você economiza {Math.round(0.35 * 100)}% — 12x ou à vista no Pix.</p>
           </div>
         </Reveal>
-        <div className="mt-12 grid gap-5 lg:grid-cols-4">
-          {PLANOS.map((p, i) => (
-            <Reveal key={p.id} delay={i * 90}>
-              <div className={`relative flex h-full flex-col rounded-2xl border p-6 transition hover:-translate-y-1 ${p.destaque ? "border-emerald-400/60 bg-emerald-50/60 shadow-lg shadow-emerald-500/10" : "border-neutral-200 bg-white shadow-sm"}`}>
-                {p.destaque && <span className="absolute -top-3 left-6 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-3 py-0.5 text-xs font-semibold text-white">Mais popular</span>}
-                <h3 className="font-semibold text-neutral-900">{p.nome}</h3>
-                <p className="text-xs text-neutral-500">{p.resumo}</p>
-                <div className="mt-4">
-                  <span className="text-3xl font-bold text-neutral-900">{formatarPreco(p.preco)}</span>
-                  {p.preco > 0 && <span className="text-sm text-neutral-500">/mês</span>}
-                </div>
-                <ul className="mt-5 flex-1 space-y-2 text-sm text-neutral-600">
-                  {p.recursos.map((r) => (
-                    <li key={r} className="flex items-start gap-2"><span className="mt-0.5 text-emerald-500">✓</span><span>{r}</span></li>
-                  ))}
-                </ul>
-                <Link href="/signup" className={`mt-6 rounded-full px-4 py-2.5 text-center text-sm font-semibold transition ${p.destaque ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:brightness-110" : "border border-neutral-300 text-neutral-800 hover:bg-neutral-50"}`}>
-                  {p.preco === 0 ? "Começar grátis" : "Assinar"}
-                </Link>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <LpPlanos />
       </section>
 
       {/* FAQ */}

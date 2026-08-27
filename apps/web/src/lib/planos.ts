@@ -98,3 +98,33 @@ export function formatarPreco(preco: number): string {
     minimumFractionDigits: 0,
   });
 }
+
+// Formata em BRL com centavos (ex.: "R$ 63,08") — usado no parcelamento anual.
+export function formatarBRL(valor: number): string {
+  return valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+// Desconto do plano anual sobre 12x o preço mensal.
+export const DESCONTO_ANUAL = 0.35;
+
+export interface PrecoAnual {
+  aVista: number; // à vista no Pix (ano cheio já com desconto)
+  parcela: number; // valor de cada uma das 12 parcelas
+  economia: number; // quanto economiza no ano vs. pagar mensal
+}
+
+// Deriva o preço anual do mensal — nada chumbado, muda tudo pelo `preco`.
+export function precoAnual(precoMensal: number): PrecoAnual {
+  const cheio = precoMensal * 12;
+  const aVista = Math.round(cheio * (1 - DESCONTO_ANUAL));
+  return {
+    aVista,
+    parcela: aVista / 12,
+    economia: cheio - aVista,
+  };
+}
