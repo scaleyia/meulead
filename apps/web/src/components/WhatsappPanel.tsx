@@ -45,7 +45,7 @@ const TECNICAS: { key: string; label: string }[] = [
 const STATUS_META: Record<Status, { label: string; badge: string; dot: string }> = {
   desconectado: {
     label: "Desconectado",
-    badge: "bg-neutral-100 text-neutral-700 border-neutral-300",
+    badge: "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-700",
     dot: "bg-neutral-400",
   },
   conectando: {
@@ -55,7 +55,7 @@ const STATUS_META: Record<Status, { label: string; badge: string; dot: string }>
   },
   conectado: {
     label: "Conectado",
-    badge: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30",
+    badge: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30",
     dot: "bg-emerald-400",
   },
 };
@@ -77,15 +77,15 @@ export function WhatsappPanel({ sessoes }: { sessoes: Sessao[] }) {
   return (
     <div className="mt-6">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-medium text-neutral-900">Números</h2>
+        <h2 className="font-medium text-neutral-900 dark:text-neutral-100">Números</h2>
         <NovaSessao />
       </div>
 
       {sessoes.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
+        <div className="rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-12 text-center">
           <p className="text-4xl">📱</p>
-          <h3 className="mt-3 font-medium text-neutral-900">Nenhum número conectado</h3>
-          <p className="mt-1 text-sm text-neutral-500">
+          <h3 className="mt-3 font-medium text-neutral-900 dark:text-neutral-100">Nenhum número conectado</h3>
+          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
             Adicione um número para começar a disparar suas campanhas.
           </p>
           <div className="mt-5 flex justify-center">
@@ -100,12 +100,12 @@ export function WhatsappPanel({ sessoes }: { sessoes: Sessao[] }) {
             return (
               <div
                 key={s.id}
-                className="rounded-xl border border-neutral-200 bg-neutral-50 p-5"
+                className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-5"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-medium text-neutral-900">{s.nome}</h3>
-                    <p className="text-xs text-neutral-500">
+                    <h3 className="font-medium text-neutral-900 dark:text-neutral-100">{s.nome}</h3>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
                       {s.numero || "Ainda não conectado"}
                     </p>
                   </div>
@@ -251,8 +251,8 @@ function AquecimentoModal({ sessao }: { sessao: Sessao }) {
             });
           }}
         >
-          <label className="flex items-center justify-between rounded-lg border border-neutral-200 bg-neutral-100 px-3 py-2.5">
-            <span className="text-sm font-medium text-neutral-900">Ativar aquecimento</span>
+          <label className="flex items-center justify-between rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-800 px-3 py-2.5">
+            <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Ativar aquecimento</span>
             <input
               type="checkbox"
               className="h-4 w-4 accent-emerald-400"
@@ -262,12 +262,12 @@ function AquecimentoModal({ sessao }: { sessao: Sessao }) {
           </label>
 
           <div className={ativo ? "" : "pointer-events-none opacity-40"}>
-            <p className="mb-2 text-xs font-medium text-neutral-500">Técnicas</p>
+            <p className="mb-2 text-xs font-medium text-neutral-500 dark:text-neutral-400">Técnicas</p>
             <div className="flex flex-col gap-2">
               {TECNICAS.map((t) => (
                 <label
                   key={t.key}
-                  className="flex items-start gap-2.5 rounded-lg border border-neutral-200 bg-neutral-100 px-3 py-2 text-sm text-neutral-800"
+                  className="flex items-start gap-2.5 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-800 px-3 py-2 text-sm text-neutral-800 dark:text-neutral-100"
                 >
                   <input
                     type="checkbox"
@@ -281,7 +281,7 @@ function AquecimentoModal({ sessao }: { sessao: Sessao }) {
             </div>
 
             <div className="mt-4">
-              <label className="mb-1 block text-xs font-medium text-neutral-500">
+              <label className="mb-1 block text-xs font-medium text-neutral-500 dark:text-neutral-400">
                 Meta de envios por dia
               </label>
               <input
@@ -294,7 +294,7 @@ function AquecimentoModal({ sessao }: { sessao: Sessao }) {
             </div>
           </div>
 
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
             As técnicas são executadas automaticamente pelo n8n.
           </p>
 
@@ -378,32 +378,32 @@ function QrContent({ sessaoId, close }: { sessaoId: string; close: () => void })
     return (
       <div className="py-10 text-center">
         <p className="text-5xl">✅</p>
-        <p className="mt-3 font-medium text-emerald-600">Número conectado!</p>
+        <p className="mt-3 font-medium text-emerald-600 dark:text-emerald-400">Número conectado!</p>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col items-center gap-3">
-      {carregando && <p className="py-10 text-sm text-neutral-500">Gerando QR code…</p>}
+      {carregando && <p className="py-10 text-sm text-neutral-500 dark:text-neutral-400">Gerando QR code…</p>}
       {erro && (
         <p className="rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-600">{erro}</p>
       )}
       {qr && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={qr} alt="QR code do WhatsApp" className="h-56 w-56 rounded-lg bg-white p-2" />
+        <img src={qr} alt="QR code do WhatsApp" className="h-56 w-56 rounded-lg bg-white dark:bg-neutral-900 p-2" />
       )}
       {qr && (
-        <p className="text-center text-xs text-neutral-500">
+        <p className="text-center text-xs text-neutral-500 dark:text-neutral-400">
           Abra o WhatsApp → <strong>Aparelhos conectados</strong> → Conectar um aparelho → escaneie.
         </p>
       )}
       {pairing && (
-        <p className="text-xs text-neutral-500">
-          ou use o código: <span className="font-mono text-neutral-700">{pairing}</span>
+        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          ou use o código: <span className="font-mono text-neutral-700 dark:text-neutral-200">{pairing}</span>
         </p>
       )}
-      {qr && <p className="text-xs text-neutral-400">Aguardando leitura…</p>}
+      {qr && <p className="text-xs text-neutral-400 dark:text-neutral-500">Aguardando leitura…</p>}
     </div>
   );
 }

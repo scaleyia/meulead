@@ -71,20 +71,20 @@ export function CaptureForm() {
           </div>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-700">Nome da lista</span>
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Nome da lista</span>
             <input
               name="nomeLista"
               placeholder="Ex: Restaurantes SP — campanha agosto"
               maxLength={80}
               className="input"
             />
-            <span className="text-xs text-neutral-500">
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
               Dê um nome pra reconhecer no CRM. Se deixar vazio, geramos automaticamente.
             </span>
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-700">
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
               {modo === "instagram" ? "Nicho / palavra-chave" : "O que buscar"}
             </span>
             <input
@@ -100,10 +100,10 @@ export function CaptureForm() {
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-700">Localização (recomendado)</span>
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Localização (recomendado)</span>
             <input name="localizacao" placeholder="Ex: São José do Rio Preto, SP" className="input" />
             {modo === "instagram" && (
-              <span className="text-xs text-neutral-500">
+              <span className="text-xs text-neutral-500 dark:text-neutral-400">
                 O termo em português já traz perfis brasileiros. Informar a cidade/estado ajuda a
                 focar ainda mais na sua região.
               </span>
@@ -112,11 +112,11 @@ export function CaptureForm() {
 
           {modo === "google_maps" && (
             <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-neutral-700">
+              <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
                 Segmento — para achar o dono (opcional)
               </span>
               <SegmentoBusca />
-              <span className="text-xs text-neutral-500">
+              <span className="text-xs text-neutral-500 dark:text-neutral-400">
                 Escolha o segmento na lista pra o sistema descobrir o <strong>nome do dono</strong>.
                 A <strong>cidade é detectada automaticamente</strong> pelos leads — não precisa se
                 preocupar com o formato da localização.
@@ -128,7 +128,7 @@ export function CaptureForm() {
             className={`rounded-md px-3 py-2 text-xs ${
               modo === "instagram"
                 ? "bg-fuchsia-500/10 text-fuchsia-700"
-                : "bg-emerald-500/10 text-emerald-700"
+                : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
             }`}
           >
             {modo === "instagram" ? (
@@ -145,7 +145,7 @@ export function CaptureForm() {
           </div>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-700">Quantidade</span>
+            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Quantidade</span>
             <input name="quantidade" type="number" defaultValue={20} min={1} max={120} className="input" />
             <span className="text-xs text-amber-600">
               ⚡ Cada lead captado usa 1 crédito (limitado ao seu saldo).
@@ -188,11 +188,11 @@ function ModoCard({
       className={`rounded-lg border p-3 text-left transition ${
         ativo
           ? "border-emerald-500/50 bg-emerald-500/10"
-          : "border-neutral-200 bg-neutral-50 hover:border-neutral-300"
+          : "border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 hover:border-neutral-300"
       }`}
     >
-      <p className="text-sm font-medium text-neutral-900">{titulo}</p>
-      <p className="mt-0.5 text-xs text-neutral-500">{sub}</p>
+      <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{titulo}</p>
+      <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">{sub}</p>
     </button>
   );
 }

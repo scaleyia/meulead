@@ -48,7 +48,7 @@ export function SegmentoBusca() {
       />
 
       {open && resultados.length > 0 && (
-        <ul className="absolute z-30 mt-1 max-h-64 w-full overflow-auto rounded-xl border border-neutral-200 bg-white py-1 shadow-lg">
+        <ul className="absolute z-30 mt-1 max-h-64 w-full overflow-auto rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 py-1 shadow-lg">
           {resultados.map((c) => (
             <li key={c.cnae}>
               <button
@@ -59,9 +59,9 @@ export function SegmentoBusca() {
                   setQ(bonito(c.label));
                   setOpen(false);
                 }}
-                className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm transition hover:bg-neutral-100"
+                className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm transition hover:bg-neutral-100 dark:hover:bg-neutral-800"
               >
-                <span className="truncate text-neutral-800">{bonito(c.label)}</span>
+                <span className="truncate text-neutral-800 dark:text-neutral-100">{bonito(c.label)}</span>
               </button>
             </li>
           ))}

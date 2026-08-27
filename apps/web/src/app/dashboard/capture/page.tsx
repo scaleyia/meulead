@@ -55,7 +55,7 @@ export default async function CapturePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Captação de Leads</h1>
-          <p className="mt-1 text-neutral-500">
+          <p className="mt-1 text-neutral-500 dark:text-neutral-400">
             Capte leads pelo Google Maps ou Instagram e qualifique o feed (quem tem site e quem
             não tem).
           </p>
@@ -63,10 +63,10 @@ export default async function CapturePage() {
         <CaptureForm />
       </div>
       {jobs.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
+        <div className="mt-10 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-12 text-center">
           <p className="text-4xl">🎯</p>
-          <h2 className="mt-3 font-medium text-neutral-900">Nenhuma captação ainda</h2>
-          <p className="mt-1 text-sm text-neutral-500">
+          <h2 className="mt-3 font-medium text-neutral-900 dark:text-neutral-100">Nenhuma captação ainda</h2>
+          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
             Registre sua primeira captação para começar a coletar leads.
           </p>
           <div className="mt-5 flex justify-center">

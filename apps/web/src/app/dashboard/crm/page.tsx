@@ -11,7 +11,7 @@ export default async function CrmPage() {
     <div>
       <div>
         <h1 className="text-2xl font-semibold">Status dos disparos</h1>
-        <p className="mt-1 text-neutral-500">
+        <p className="mt-1 text-neutral-500 dark:text-neutral-400">
           Todos os seus leads e onde cada um está no disparo — atualiza sozinho.
         </p>
       </div>
@@ -23,10 +23,10 @@ export default async function CrmPage() {
 
 function EmptyState() {
   return (
-    <div className="mt-10 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
+    <div className="mt-10 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-12 text-center">
       <p className="text-4xl">📡</p>
-      <h2 className="mt-3 font-medium text-neutral-900">Nenhum lead ainda</h2>
-      <p className="mt-1 text-sm text-neutral-500">
+      <h2 className="mt-3 font-medium text-neutral-900 dark:text-neutral-100">Nenhum lead ainda</h2>
+      <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
         Capte leads na <strong>Captação</strong> — eles aparecem aqui automaticamente.
       </p>
     </div>

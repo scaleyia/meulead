@@ -101,7 +101,7 @@ export function OportunidadesView({
             </option>
           ))}
         </select>
-        <div className="inline-flex flex-wrap gap-1 rounded-xl border border-neutral-200 p-1 text-sm">
+        <div className="inline-flex flex-wrap gap-1 rounded-xl border border-neutral-200 dark:border-neutral-800 p-1 text-sm">
           {(
             [
               { key: "todos", label: `Todos (${base.length})` },
@@ -115,8 +115,8 @@ export function OportunidadesView({
               onClick={() => setFiltro(f.key)}
               className={`rounded-lg px-3 py-1.5 font-medium transition ${
                 filtro === f.key
-                  ? "bg-neutral-100 text-neutral-900"
-                  : "text-neutral-500 hover:text-neutral-900"
+                  ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                  : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
               }`}
             >
               {f.label}
@@ -126,14 +126,14 @@ export function OportunidadesView({
       </div>
 
       {counts.quente > 0 && filtro === "todos" && (
-        <p className="mb-3 text-sm text-neutral-500">
-          🔥 <strong className="text-neutral-800">{counts.quente}</strong> leads quentes prontos pra
+        <p className="mb-3 text-sm text-neutral-500 dark:text-neutral-400">
+          🔥 <strong className="text-neutral-800 dark:text-neutral-100">{counts.quente}</strong> leads quentes prontos pra
           abordar.
         </p>
       )}
 
       {lista.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center text-sm text-neutral-500">
+        <div className="rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-12 text-center text-sm text-neutral-500 dark:text-neutral-400">
           Nenhuma oportunidade nesse filtro. Capte leads (e valide WhatsApp / analise sites) para
           ranquear melhor.
         </div>
@@ -142,17 +142,17 @@ export function OportunidadesView({
           {lista.map((l) => (
             <div
               key={l.id}
-              className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm transition hover:shadow"
+              className="flex flex-col rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 shadow-sm transition hover:shadow"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <p className="truncate font-semibold text-neutral-900">
+                  <p className="truncate font-semibold text-neutral-900 dark:text-neutral-100">
                     {l.empresa ?? l.nome ?? "—"}
                   </p>
                   {l.nome && l.empresa && (
-                    <p className="text-xs font-medium text-emerald-700">👤 {l.nome}</p>
+                    <p className="text-xs font-medium text-emerald-700 dark:text-emerald-300">👤 {l.nome}</p>
                   )}
-                  {l.endereco && <p className="truncate text-xs text-neutral-400">{l.endereco}</p>}
+                  {l.endereco && <p className="truncate text-xs text-neutral-400 dark:text-neutral-500">{l.endereco}</p>}
                 </div>
                 <div className="flex flex-col items-end gap-1">
                   <span
@@ -160,8 +160,8 @@ export function OportunidadesView({
                   >
                     {NIVEL_INFO[l.nivel].label}
                   </span>
-                  <span className="text-[11px] text-neutral-400">
-                    score <strong className="text-neutral-600">{l.score}</strong>
+                  <span className="text-[11px] text-neutral-400 dark:text-neutral-500">
+                    score <strong className="text-neutral-600 dark:text-neutral-300">{l.score}</strong>
                   </span>
                 </div>
               </div>
@@ -171,7 +171,7 @@ export function OportunidadesView({
                 {l.motivos.map((m) => (
                   <span
                     key={m}
-                    className="rounded-md bg-neutral-100 px-1.5 py-0.5 text-[11px] font-medium text-neutral-600"
+                    className="rounded-md bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[11px] font-medium text-neutral-600 dark:text-neutral-300"
                   >
                     {m}
                   </span>
@@ -184,11 +184,11 @@ export function OportunidadesView({
               </div>
 
               {/* Rodapé: contato + ações */}
-              <div className="mt-3 flex items-center justify-between gap-2 border-t border-neutral-100 pt-3 text-sm">
-                <span className="tabular-nums text-neutral-700">
+              <div className="mt-3 flex items-center justify-between gap-2 border-t border-neutral-100 dark:border-neutral-800 pt-3 text-sm">
+                <span className="tabular-nums text-neutral-700 dark:text-neutral-200">
                   {formatarTelefone(l.telefone)}
                   {l.temWhatsapp === true && (
-                    <span className="ml-2 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-600">
+                    <span className="ml-2 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
                       ✓ zap
                     </span>
                   )}

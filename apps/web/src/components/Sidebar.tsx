@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -13,6 +14,11 @@ import {
   MessageCircle,
   Coins,
   Magnet,
+  ArrowUpCircle,
+  Languages,
+  Moon,
+  Sun,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 import { clsx } from "@/lib/clsx";
@@ -38,12 +44,20 @@ const nav: NavItem[] = [
   { href: "/dashboard/interessados", label: "Interessados", icon: Magnet, ready: true, adminOnly: true },
 ];
 
-export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
+export function Sidebar({
+  isAdmin = false,
+  userEmail = "",
+  plano = "free",
+}: {
+  isAdmin?: boolean;
+  userEmail?: string;
+  plano?: string;
+}) {
   const pathname = usePathname();
   const itens = nav.filter((i) => !i.adminOnly || isAdmin);
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-neutral-200 bg-white/70 p-4 backdrop-blur-xl">
+    <aside className="flex w-60 shrink-0 flex-col border-r border-neutral-200 bg-white/70 p-4 backdrop-blur-xl dark:border-neutral-800 dark:bg-neutral-900/70">
       <Link href="/dashboard" className="mb-6 block px-2 transition-transform hover:scale-[1.02]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.png" alt="MeuLead" className="h-auto w-full max-w-[180px]" />
@@ -62,12 +76,12 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
             return (
               <span
                 key={item.label}
-                className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm text-neutral-400"
+                className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm text-neutral-400 dark:text-neutral-500"
                 title="Em breve"
               >
                 <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} />
                 {item.label}
-                <span className="ml-auto text-[10px] uppercase tracking-wide text-neutral-400">
+                <span className="ml-auto text-[10px] uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
                   breve
                 </span>
               </span>
@@ -82,14 +96,16 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
               className={clsx(
                 "group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-all duration-150",
                 active
-                  ? "bg-emerald-50 font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-500/15"
-                  : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
+                  ? "bg-emerald-50 font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-500/15 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/20"
+                  : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100",
               )}
             >
               <Icon
                 className={clsx(
                   "h-[18px] w-[18px] shrink-0 transition-colors",
-                  active ? "text-emerald-600" : "text-neutral-400 group-hover:text-neutral-600",
+                  active
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-neutral-400 group-hover:text-neutral-600 dark:text-neutral-500 dark:group-hover:text-neutral-300",
                 )}
                 strokeWidth={active ? 2.25 : 1.75}
               />
@@ -98,6 +114,105 @@ export function Sidebar({ isAdmin = false }: { isAdmin?: boolean }) {
           );
         })}
       </nav>
+
+      <SidebarFooter userEmail={userEmail} plano={plano} />
     </aside>
+  );
+}
+
+function SidebarFooter({ userEmail, plano }: { userEmail: string; plano: string }) {
+  // Tema: lê a classe já aplicada pelo script anti-flash no <html>.
+  const [dark, setDark] = useState(false);
+  // Idioma: por enquanto só visual (i18n em construção).
+  const [lang, setLang] = useState<"pt" | "en">("pt");
+
+  useEffect(() => {
+    setDark(document.documentElement.classList.contains("dark"));
+  }, []);
+
+  function toggleTheme() {
+    const root = document.documentElement;
+    const next = !root.classList.contains("dark");
+    root.classList.toggle("dark", next);
+    try {
+      localStorage.setItem("theme", next ? "dark" : "light");
+    } catch {}
+    setDark(next);
+  }
+
+  const inicial = (userEmail.trim()[0] || "?").toUpperCase();
+
+  return (
+    <div className="mt-4 flex flex-col gap-3 border-t border-neutral-200 pt-4 dark:border-neutral-800">
+      {/* Fazer upgrade */}
+      <Link
+        href="/dashboard/creditos#assinar"
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 px-3 py-2.5 text-sm font-semibold text-white shadow-sm shadow-emerald-600/25 transition-all hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.98]"
+      >
+        <ArrowUpCircle className="h-[18px] w-[18px]" strokeWidth={2} />
+        Fazer upgrade
+      </Link>
+
+      {/* Idioma (visual) */}
+      <div className="flex items-center gap-2 px-1 text-sm">
+        <Languages className="h-4 w-4 shrink-0 text-neutral-400 dark:text-neutral-500" strokeWidth={1.75} />
+        <button
+          type="button"
+          onClick={() => setLang("pt")}
+          className={clsx(
+            "transition-colors",
+            lang === "pt"
+              ? "font-semibold text-neutral-900 dark:text-neutral-100"
+              : "text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300",
+          )}
+        >
+          Português
+        </button>
+        <span className="text-neutral-300 dark:text-neutral-600">·</span>
+        <button
+          type="button"
+          onClick={() => setLang("en")}
+          title="Em breve"
+          className={clsx(
+            "transition-colors",
+            lang === "en"
+              ? "font-semibold text-neutral-900 dark:text-neutral-100"
+              : "text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300",
+          )}
+        >
+          English
+        </button>
+      </div>
+
+      {/* Lua (dark mode) + engrenagem + avatar */}
+      <div className="flex items-center justify-between px-1">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          aria-label={dark ? "Modo claro" : "Modo escuro"}
+          title={dark ? "Modo claro" : "Modo escuro"}
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+        >
+          {dark ? <Sun className="h-5 w-5" strokeWidth={1.75} /> : <Moon className="h-5 w-5" strokeWidth={1.75} />}
+        </button>
+
+        <div className="flex items-center gap-1">
+          <Link
+            href="/dashboard/creditos"
+            aria-label="Configurações"
+            title="Configurações"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+          >
+            <Settings className="h-5 w-5" strokeWidth={1.75} />
+          </Link>
+          <div
+            title={`${userEmail}${plano ? ` · plano ${plano}` : ""}`}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-700 text-sm font-semibold text-white dark:bg-neutral-600"
+          >
+            {inicial}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

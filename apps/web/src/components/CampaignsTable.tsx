@@ -29,14 +29,14 @@ const STATUS_LABEL: Record<Status, string> = {
 };
 
 const STATUS_BADGE: Record<Status, string> = {
-  rascunho: "bg-neutral-100 text-neutral-700 border-neutral-300",
+  rascunho: "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-700",
   agendada: "bg-blue-500/10 text-blue-600 border-blue-500/30",
   enviando: "bg-amber-500/10 text-amber-600 border-amber-500/30",
-  concluida: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
-  pausada: "bg-neutral-100 text-neutral-700 border-neutral-300",
+  concluida: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+  pausada: "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-700",
 };
 
-const FALLBACK_BADGE = "bg-neutral-100 text-neutral-700 border-neutral-300";
+const FALLBACK_BADGE = "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-700";
 
 export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
   const router = useRouter();
@@ -84,9 +84,9 @@ export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
         <p className="mb-4 rounded-md bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-neutral-200">
+      <div className="overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800">
         <table className="w-full text-left text-sm">
-          <thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
+          <thead className="bg-neutral-50 dark:bg-neutral-900 text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
             <tr>
               <th className="px-4 py-3 font-medium">Campanha</th>
               <th className="px-4 py-3 font-medium">Status</th>
@@ -95,14 +95,14 @@ export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
               <th className="px-4 py-3 text-right font-medium">Ações</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-200">
+          <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
             {campanhas.map((c) => {
               const podeDisparar = c.status === "rascunho" || c.status === "pausada";
               const busy = pendingId === c.id;
               const modo = c.modo_envio === "manual" ? "Manual" : "Auto";
               return (
-                <tr key={c.id} className="bg-neutral-100 hover:bg-neutral-100">
-                  <td className="px-4 py-3 font-medium text-neutral-900">{c.nome}</td>
+                <tr key={c.id} className="bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800">
+                  <td className="px-4 py-3 font-medium text-neutral-900 dark:text-neutral-100">{c.nome}</td>
                   <td className="px-4 py-3">
                     <span
                       className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-medium ${STATUS_BADGE[c.status as Status] ?? FALLBACK_BADGE}`}
@@ -112,16 +112,16 @@ export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
                   </td>
                   <td className="px-4 py-3">
                     {c.metricas.total === 0 ? (
-                      <span className="text-xs text-neutral-400">—</span>
+                      <span className="text-xs text-neutral-400 dark:text-neutral-500">—</span>
                     ) : (
                       <div className="flex flex-wrap gap-1 text-[11px]">
-                        <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-neutral-600">
+                        <span className="rounded bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-neutral-600 dark:text-neutral-300">
                           {c.metricas.total} alvos
                         </span>
                         <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-blue-600">
                           {c.metricas.enviados} enviados
                         </span>
-                        <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-emerald-600">
+                        <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-emerald-600 dark:text-emerald-400">
                           {c.metricas.entregues} entregues
                         </span>
                         {c.metricas.falhou > 0 && (
@@ -132,7 +132,7 @@ export function CampaignsTable({ campanhas }: { campanhas: Campanha[] }) {
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-neutral-700">{modo}</td>
+                  <td className="px-4 py-3 text-neutral-700 dark:text-neutral-200">{modo}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
                       {podeDisparar && (

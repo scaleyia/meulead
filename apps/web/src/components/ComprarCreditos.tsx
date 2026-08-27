@@ -36,14 +36,14 @@ export function ComprarCreditos({ packs }: { packs: Pack[] }) {
             key={p.id}
             disabled={pendingId !== null}
             onClick={() => comprar(p.id)}
-            className="rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-left transition hover:border-amber-500/40 disabled:opacity-60"
+            className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-4 text-left transition hover:border-amber-500/40 disabled:opacity-60"
           >
             <p className="text-2xl font-bold text-amber-600">⚡ {p.creditos.toLocaleString("pt-BR")}</p>
-            <p className="text-xs text-neutral-500">créditos</p>
-            <p className="mt-2 text-lg font-semibold text-neutral-900">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">créditos</p>
+            <p className="mt-2 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
               {p.preco.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 })}
             </p>
-            <span className="mt-2 inline-block text-xs text-emerald-600">
+            <span className="mt-2 inline-block text-xs text-emerald-600 dark:text-emerald-400">
               {pendingId === p.id ? "Abrindo checkout…" : "Comprar →"}
             </span>
           </button>

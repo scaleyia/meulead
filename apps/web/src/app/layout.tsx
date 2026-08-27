@@ -18,12 +18,19 @@ export const metadata: Metadata = {
     "Capte o contato do dono, dispare no WhatsApp com segurança e acompanhe no CRM.",
 };
 
+// Aplica o tema salvo antes da primeira pintura, evitando flash de tela branca.
+const themeScript = `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark')}}catch(e){}})();`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

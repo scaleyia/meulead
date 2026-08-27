@@ -178,19 +178,19 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
         />
       )}
       <div
-        className="anim-in absolute w-[320px] rounded-2xl border border-neutral-200 bg-white p-5 shadow-2xl"
+        className="anim-in absolute w-[320px] rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-2xl"
         style={centered ? { top: "50%", left: "50%", transform: "translate(-50%,-50%)" } : { top, left }}
       >
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-emerald-600">
+          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
             Passo {i + 1} de {steps.length}
           </span>
-          <button onClick={fim} className="text-xs text-neutral-400 hover:text-neutral-700">
+          <button onClick={fim} className="text-xs text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200">
             Pular ✕
           </button>
         </div>
-        <h3 className="mt-2 text-lg font-semibold text-neutral-900">{step.title}</h3>
-        <p className="mt-1 text-sm leading-relaxed text-neutral-600">{step.text}</p>
+        <h3 className="mt-2 text-lg font-semibold text-neutral-900 dark:text-neutral-100">{step.title}</h3>
+        <p className="mt-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">{step.text}</p>
         <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center gap-1">
             {steps.map((_, k) => (
@@ -202,7 +202,7 @@ export function Tour({ steps, storageKey }: { steps: TourStep[]; storageKey: str
           </div>
           <div className="flex gap-2">
             {i > 0 && (
-              <button onClick={ant} className="rounded-lg px-3 py-1.5 text-sm text-neutral-500 hover:text-neutral-900">
+              <button onClick={ant} className="rounded-lg px-3 py-1.5 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">
                 Voltar
               </button>
             )}

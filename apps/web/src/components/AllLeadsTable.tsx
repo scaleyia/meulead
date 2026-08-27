@@ -174,10 +174,10 @@ export function AllLeadsTable({
 
   if (leads.length === 0) {
     return (
-      <div className="mt-8 rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
+      <div className="mt-8 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-12 text-center">
         <p className="text-4xl">🗂️</p>
-        <h2 className="mt-3 font-medium text-neutral-900">Nenhum lead ainda</h2>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h2 className="mt-3 font-medium text-neutral-900 dark:text-neutral-100">Nenhum lead ainda</h2>
+        <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
           Capte leads na <strong>Captação</strong> — eles aparecem aqui automaticamente.
         </p>
       </div>
@@ -194,7 +194,7 @@ export function AllLeadsTable({
           className="input max-w-xs"
         />
         {/* Filtro por FONTE da captação */}
-        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200 text-sm">
+        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800 text-sm">
           {(
             [
               { key: "google_maps", label: `🗺️ Google Maps (${totGoogle})` },
@@ -206,8 +206,8 @@ export function AllLeadsTable({
               onClick={() => setFonte(f.key)}
               className={`px-3 py-2 font-medium transition ${
                 fonte === f.key
-                  ? "bg-neutral-100 text-neutral-900"
-                  : "text-neutral-500 hover:text-neutral-900"
+                  ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                  : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
               }`}
             >
               {f.label}
@@ -226,7 +226,7 @@ export function AllLeadsTable({
             </option>
           ))}
         </select>
-        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200 text-sm">
+        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800 text-sm">
           {(
             [
               { key: "todos", label: "Todos" },
@@ -239,8 +239,8 @@ export function AllLeadsTable({
               onClick={() => setFiltro(f.key)}
               className={`px-3 py-2 font-medium transition ${
                 filtro === f.key
-                  ? "bg-neutral-100 text-neutral-900"
-                  : "text-neutral-500 hover:text-neutral-900"
+                  ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                  : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
               }`}
             >
               {f.label}
@@ -265,21 +265,21 @@ export function AllLeadsTable({
         <button
           onClick={exportarCsv}
           disabled={filtered.length === 0}
-          className={`${fonte === "google_maps" ? "" : "ml-auto"} rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 disabled:opacity-40`}
+          className={`${fonte === "google_maps" ? "" : "ml-auto"} rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-200 transition hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40`}
         >
           ⬇ Exportar CSV
         </button>
-        <span className="text-sm text-neutral-500">
+        <span className="text-sm text-neutral-500 dark:text-neutral-400">
           {filtered.length} de {leads.length} leads
         </span>
       </div>
       {aviso && (
-        <p className="mb-3 rounded-lg bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700">{aviso}</p>
+        <p className="mb-3 rounded-lg bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300">{aviso}</p>
       )}
 
       {fonte === "instagram" ? (
         filtered.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center text-sm text-neutral-500">
+          <div className="rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-12 text-center text-sm text-neutral-500 dark:text-neutral-400">
             Nenhum perfil do Instagram nesse filtro.
           </div>
         ) : (
@@ -295,9 +295,9 @@ export function AllLeadsTable({
           </div>
         )
       ) : (
-      <div className="overflow-x-auto rounded-xl border border-neutral-200">
+      <div className="overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-800">
         <table className="w-full min-w-[1040px] text-sm">
-          <thead className="bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500">
+          <thead className="bg-neutral-50 dark:bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
             <tr>
               <th className="px-4 py-3 font-medium">Empresa / Dono</th>
               <th className="whitespace-nowrap px-4 py-3 font-medium">Telefone</th>
@@ -309,20 +309,20 @@ export function AllLeadsTable({
               <th className="px-4 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-200">
+          <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
             {filtered.map((l) => (
-              <tr key={l.id} className="align-top hover:bg-neutral-100">
+              <tr key={l.id} className="align-top hover:bg-neutral-100 dark:hover:bg-neutral-800">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-neutral-900">{l.empresa ?? l.nome ?? "—"}</p>
+                  <p className="font-medium text-neutral-900 dark:text-neutral-100">{l.empresa ?? l.nome ?? "—"}</p>
                   {l.nome && l.empresa && (
-                    <p className="mt-0.5 text-xs text-emerald-700">👤 {l.nome}</p>
+                    <p className="mt-0.5 text-xs text-emerald-700 dark:text-emerald-300">👤 {l.nome}</p>
                   )}
-                  {l.endereco && <p className="mt-0.5 text-xs text-neutral-400">{l.endereco}</p>}
+                  {l.endereco && <p className="mt-0.5 text-xs text-neutral-400 dark:text-neutral-500">{l.endereco}</p>}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-neutral-700">
+                <td className="whitespace-nowrap px-4 py-3 text-neutral-700 dark:text-neutral-200">
                   <span className="tabular-nums">{formatarTelefone(l.telefone)}</span>
                   {l.temWhatsapp === true && (
-                    <span className="ml-2 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-600">
+                    <span className="ml-2 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
                       ✓ zap
                     </span>
                   )}
@@ -340,13 +340,13 @@ export function AllLeadsTable({
                     siteAnalisado={l.siteAnalisado}
                   />
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-neutral-700">
+                <td className="whitespace-nowrap px-4 py-3 text-neutral-700 dark:text-neutral-200">
                   {l.nota != null ? (
                     <span>
                       <span className="font-medium">{l.nota.toFixed(1)}</span>
                       <span className="text-amber-500"> ★</span>
                       {l.total_avaliacoes != null && (
-                        <span className="text-xs text-neutral-400"> ({l.total_avaliacoes})</span>
+                        <span className="text-xs text-neutral-400 dark:text-neutral-500"> ({l.total_avaliacoes})</span>
                       )}
                     </span>
                   ) : (
@@ -366,22 +366,22 @@ export function AllLeadsTable({
                   {l.lista_id ? (
                     <Link
                       href={`/dashboard/lists/${l.lista_id}`}
-                      className="text-xs text-neutral-600 hover:text-neutral-900 hover:underline"
+                      className="text-xs text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 hover:underline"
                     >
                       {l.listaNome ?? "lista"}
                     </Link>
                   ) : (
-                    <span className="text-xs text-neutral-400">—</span>
+                    <span className="text-xs text-neutral-400 dark:text-neutral-500">—</span>
                   )}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-neutral-500">
+                <td className="whitespace-nowrap px-4 py-3 text-neutral-500 dark:text-neutral-400">
                   {sourceLabel(l.origem)}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <button
                     onClick={() => remove(l.id, l.lista_id)}
                     disabled={pending}
-                    className="whitespace-nowrap text-xs text-neutral-500 hover:text-red-600"
+                    className="whitespace-nowrap text-xs text-neutral-500 dark:text-neutral-400 hover:text-red-600"
                   >
                     excluir
                   </button>
@@ -390,7 +390,7 @@ export function AllLeadsTable({
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-8 text-center text-neutral-500">
+                <td colSpan={8} className="px-4 py-8 text-center text-neutral-500 dark:text-neutral-400">
                   Nenhum lead corresponde ao filtro.
                 </td>
               </tr>
@@ -408,13 +408,13 @@ export function AllLeadsTable({
             onClick={() => setConfirmar(null)}
           >
             <div
-              className="anim-in w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-6 shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] ring-1 ring-black/5"
+              className="anim-in w-full max-w-sm rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6 shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] ring-1 ring-black/5"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-lg font-semibold text-neutral-900">
+              <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
                 Excluir leads sem WhatsApp?
               </h2>
-              <p className="mt-2 text-sm text-neutral-600">
+              <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
                 <strong>{confirmar}</strong> {confirmar === 1 ? "lead não tem" : "leads não têm"}{" "}
                 WhatsApp e não {confirmar === 1 ? "serve" : "servem"} pra disparo. Se excluir,{" "}
                 <strong>
@@ -425,7 +425,7 @@ export function AllLeadsTable({
               <div className="mt-6 flex justify-end gap-2">
                 <button
                   onClick={() => setConfirmar(null)}
-                  className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-500 hover:text-neutral-900"
+                  className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
                 >
                   Manter
                 </button>

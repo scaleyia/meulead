@@ -101,7 +101,7 @@ export default async function DashboardPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Visão geral 👋</h1>
-          <p className="mt-1 text-neutral-500">Do lead ao fechamento, tudo num lugar só.</p>
+          <p className="mt-1 text-neutral-500 dark:text-neutral-400">Do lead ao fechamento, tudo num lugar só.</p>
         </div>
         <Link
           href="/dashboard/capture"
@@ -117,26 +117,26 @@ export default async function DashboardPage() {
           <Link
             key={s.label}
             href={s.href}
-            className="group rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+            className="group rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm text-neutral-500">{s.label}</span>
+              <span className="text-sm text-neutral-500 dark:text-neutral-400">{s.label}</span>
               <span
                 className={clsx(
                   "grid h-9 w-9 place-items-center rounded-xl",
-                  s.cor === "emerald" && "bg-emerald-50 text-emerald-600",
-                  s.cor === "blue" && "bg-blue-50 text-blue-600",
+                  s.cor === "emerald" && "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+                  s.cor === "blue" && "bg-blue-50 dark:bg-blue-500/10 text-blue-600",
                   s.cor === "violet" && "bg-violet-50 text-violet-600",
-                  s.cor === "amber" && "bg-amber-50 text-amber-600",
-                  s.cor === "red" && "bg-red-50 text-red-600",
-                  s.cor === "green" && "bg-emerald-50 text-emerald-600",
+                  s.cor === "amber" && "bg-amber-50 dark:bg-amber-500/10 text-amber-600",
+                  s.cor === "red" && "bg-red-50 dark:bg-red-500/10 text-red-600",
+                  s.cor === "green" && "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
                 )}
               >
                 <s.icon className="h-[18px] w-[18px]" />
               </span>
             </div>
-            <p className="mt-3 text-3xl font-bold tracking-tight text-neutral-900">{s.value}</p>
-            {s.sub && <p className="mt-0.5 text-xs text-neutral-400">{s.sub}</p>}
+            <p className="mt-3 text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">{s.value}</p>
+            {s.sub && <p className="mt-0.5 text-xs text-neutral-400 dark:text-neutral-500">{s.sub}</p>}
           </Link>
         ))}
       </div>
@@ -144,13 +144,13 @@ export default async function DashboardPage() {
       {/* Onboarding com progresso */}
       <div className="mt-8">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-semibold text-neutral-900">Comece por aqui</h2>
-          <span className="text-sm text-neutral-500">
+          <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Comece por aqui</h2>
+          <span className="text-sm text-neutral-500 dark:text-neutral-400">
             {feitos} de {passos.length} concluídos
           </span>
         </div>
 
-        <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100">
+        <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800">
           <div
             className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500"
             style={{ width: `${(feitos / passos.length) * 100}%` }}
@@ -163,15 +163,15 @@ export default async function DashboardPage() {
               key={p.titulo}
               href={p.href}
               className={clsx(
-                "group rounded-2xl border bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
-                p.feito ? "border-emerald-200" : "border-neutral-200 hover:border-emerald-200",
+                "group rounded-2xl border bg-white dark:bg-neutral-900 p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
+                p.feito ? "border-emerald-200" : "border-neutral-200 dark:border-neutral-800 hover:border-emerald-200",
               )}
             >
               <div className="flex items-center justify-between">
                 <span
                   className={clsx(
                     "grid h-9 w-9 place-items-center rounded-full text-sm font-bold",
-                    p.feito ? "bg-emerald-500 text-white" : "bg-neutral-100 text-neutral-500",
+                    p.feito ? "bg-emerald-500 text-white" : "bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400",
                   )}
                 >
                   {p.feito ? <Check className="h-4 w-4" /> : i + 1}
@@ -180,11 +180,11 @@ export default async function DashboardPage() {
                   className={clsx("h-5 w-5", p.feito ? "text-emerald-500" : "text-neutral-300")}
                 />
               </div>
-              <h3 className="mt-3 flex items-center gap-1 font-semibold text-neutral-900 group-hover:text-emerald-600">
+              <h3 className="mt-3 flex items-center gap-1 font-semibold text-neutral-900 dark:text-neutral-100 group-hover:text-emerald-600">
                 {p.titulo}
                 <ArrowRight className="h-3.5 w-3.5 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
               </h3>
-              <p className="mt-1 text-sm text-neutral-500">{p.desc}</p>
+              <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">{p.desc}</p>
             </Link>
           ))}
         </div>

@@ -48,7 +48,7 @@ export function AdsCell({
 
   function renderConteudo() {
     if (checando || pending) {
-      return <span className="text-xs text-neutral-400">verificando…</span>;
+      return <span className="text-xs text-neutral-400 dark:text-neutral-500">verificando…</span>;
     }
 
     const verificado = anunciaGoogle !== null || anunciaMeta !== null;
@@ -57,7 +57,7 @@ export function AdsCell({
       return (
         <button
           onClick={disparar}
-          className="whitespace-nowrap rounded-md border border-neutral-300 px-2 py-1 text-xs font-medium text-neutral-600 transition hover:bg-neutral-100"
+          className="whitespace-nowrap rounded-md border border-neutral-300 dark:border-neutral-700 px-2 py-1 text-xs font-medium text-neutral-600 dark:text-neutral-300 transition hover:bg-neutral-100 dark:hover:bg-neutral-800"
         >
           🔎 verificar
         </button>
@@ -72,7 +72,7 @@ export function AdsCell({
           </span>
         ) : anunciaGoogle === false ? (
           <span
-            className="cursor-help rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700"
+            className="cursor-help rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300"
             title="Não encontramos anúncios no Google. Pode ser que o comércio NÃO anuncie — ou que a conta de anúncios esteja registrada com outro nome/razão social (bem comum). Vale checar manualmente."
           >
             Google: não localizado ⓘ
@@ -85,7 +85,7 @@ export function AdsCell({
           </span>
         ) : anunciaMeta === false ? (
           <span
-            className="cursor-help rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700"
+            className="cursor-help rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300"
             title="Não localizamos a página exata anunciando no Meta. Pode ser que não anuncie — ou que o nome da página no Facebook/Instagram seja diferente do nome do comércio. Vale conferir na Biblioteca de Anúncios da Meta."
           >
             Meta: não localizado ⓘ
@@ -94,7 +94,7 @@ export function AdsCell({
 
         <button
           onClick={disparar}
-          className="text-[11px] text-neutral-400 hover:text-neutral-700"
+          className="text-[11px] text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200"
           title="Verificar de novo"
         >
           ↻
@@ -125,14 +125,14 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="anim-in w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] ring-1 ring-black/5"
+        className="anim-in w-full max-w-sm rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6 text-center shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] ring-1 ring-black/5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-2xl">
           🔒
         </div>
-        <h2 className="mt-4 text-lg font-semibold text-neutral-900">Recurso do plano pago</h2>
-        <p className="mt-2 text-sm text-neutral-500">
+        <h2 className="mt-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Recurso do plano pago</h2>
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
           A verificação de anúncios no <strong>Google</strong> e no <strong>Meta</strong> está
           disponível a partir dos planos pagos. Faça o upgrade para descobrir quais leads já
           investem em tráfego — os clientes mais quentes.
@@ -146,7 +146,7 @@ function UpgradeModal({ onClose }: { onClose: () => void }) {
           </Link>
           <button
             onClick={onClose}
-            className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-500 hover:text-neutral-900"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
           >
             Agora não
           </button>

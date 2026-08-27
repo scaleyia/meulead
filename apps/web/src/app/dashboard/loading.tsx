@@ -8,7 +8,7 @@ export default function DashboardLoading() {
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <div key={i} className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-sm">
             <div className="skeleton h-4 w-24 rounded-md" />
             <div className="skeleton mt-3 h-8 w-16 rounded-md" />
           </div>

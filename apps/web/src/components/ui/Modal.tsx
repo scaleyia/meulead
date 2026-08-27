@@ -45,14 +45,14 @@ export function Modal({
         >
           <div
             className={clsx(
-              "anim-in w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6",
+              "anim-in w-full max-w-md rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6",
               "shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] ring-1 ring-black/5",
             )}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4">
-              <h2 className="text-lg font-semibold text-neutral-900">{title}</h2>
-              {description && <p className="mt-1 text-sm text-neutral-500">{description}</p>}
+              <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{title}</h2>
+              {description && <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">{description}</p>}
             </div>
             {children(() => setOpen(false))}
           </div>

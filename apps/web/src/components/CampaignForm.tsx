@@ -141,7 +141,7 @@ function CampaignFields({
       }}
     >
       <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-700">Nome da campanha</span>
+        <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Nome da campanha</span>
         <input
           name="nome"
           required
@@ -154,7 +154,7 @@ function CampaignFields({
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-700">Lista de contatos</span>
+        <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Lista de contatos</span>
         <select
           value={listaId}
           onChange={(e) => setListaId(e.target.value)}
@@ -170,15 +170,15 @@ function CampaignFields({
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-700">Mensagem</span>
+        <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Mensagem</span>
         <div className="flex flex-wrap gap-1.5">
-          <span className="text-xs text-neutral-400">Modelos:</span>
+          <span className="text-xs text-neutral-400 dark:text-neutral-500">Modelos:</span>
           {TEMPLATES.map((t) => (
             <button
               key={t.rotulo}
               type="button"
               onClick={() => setMensagem(t.texto)}
-              className="rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-xs font-medium text-neutral-600 transition hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-700"
+              className="rounded-full border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 px-2.5 py-0.5 text-xs font-medium text-neutral-600 dark:text-neutral-300 transition hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-700"
             >
               {t.rotulo}
             </button>
@@ -192,16 +192,16 @@ function CampaignFields({
           placeholder="Olá {{nome}}, tudo bem?"
           className="input resize-y"
         />
-        <span className="text-xs text-neutral-500">
+        <span className="text-xs text-neutral-500 dark:text-neutral-400">
           Clique num modelo pra preencher. Use {"{{nome}}"} para personalizar com o nome do dono. E
           troque [Sua Agência] pelo seu nome.
         </span>
       </label>
 
       {/* Follow-up (2ª leva) */}
-      <div className="rounded-lg border border-neutral-200 bg-neutral-50 p-3">
-        <span className="text-sm font-medium text-neutral-700">Follow-up (opcional)</span>
-        <p className="mt-0.5 text-xs text-neutral-500">
+      <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-3">
+        <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Follow-up (opcional)</span>
+        <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
           Uma 2ª mensagem para reforçar quem não respondeu. Você dispara com 1 clique depois.
         </p>
         <textarea
@@ -212,7 +212,7 @@ function CampaignFields({
           className="input mt-2 resize-y"
         />
         {followupMensagem.trim() && (
-          <label className="mt-2 flex items-center gap-2 text-xs text-neutral-600">
+          <label className="mt-2 flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-300">
             Sugerir enviar após
             <input
               type="number"
@@ -229,18 +229,18 @@ function CampaignFields({
 
       {/* Chips (contingência) — pool que será revezado no disparo. */}
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium text-neutral-700">Chips (contingência)</span>
+        <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Chips (contingência)</span>
         {sessoes.length === 0 ? (
           <p className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-600">
             Conecte um número em Conectar WhatsApp.
           </p>
         ) : (
           <>
-            <div className="flex flex-col gap-1.5 rounded-lg border border-neutral-200 bg-neutral-100 p-3">
+            <div className="flex flex-col gap-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-800 p-3">
               {sessoes.map((s) => (
                 <label
                   key={s.id}
-                  className="flex cursor-pointer items-center gap-2.5 text-sm text-neutral-800"
+                  className="flex cursor-pointer items-center gap-2.5 text-sm text-neutral-800 dark:text-neutral-100"
                 >
                   <input
                     type="checkbox"
@@ -252,7 +252,7 @@ function CampaignFields({
                 </label>
               ))}
             </div>
-            <span className="text-xs text-neutral-500">
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
               O sistema reveza os disparos entre os números marcados.
             </span>
           </>
@@ -261,7 +261,7 @@ function CampaignFields({
 
       {/* Modo de envio */}
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium text-neutral-700">Modo de envio</span>
+        <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Modo de envio</span>
         <div className="grid grid-cols-2 gap-2">
           <ModeCard
             active={modoEnvio === "auto"}
@@ -280,7 +280,7 @@ function CampaignFields({
         {modoEnvio === "manual" && (
           <div className="mt-1 grid grid-cols-3 gap-2">
             <label className="flex flex-col gap-1">
-              <span className="text-xs text-neutral-500">Intervalo mín. (s)</span>
+              <span className="text-xs text-neutral-500 dark:text-neutral-400">Intervalo mín. (s)</span>
               <input
                 type="number"
                 min={1}
@@ -290,7 +290,7 @@ function CampaignFields({
               />
             </label>
             <label className="flex flex-col gap-1">
-              <span className="text-xs text-neutral-500">Intervalo máx. (s)</span>
+              <span className="text-xs text-neutral-500 dark:text-neutral-400">Intervalo máx. (s)</span>
               <input
                 type="number"
                 min={1}
@@ -300,7 +300,7 @@ function CampaignFields({
               />
             </label>
             <label className="flex flex-col gap-1">
-              <span className="text-xs text-neutral-500">Limite por dia</span>
+              <span className="text-xs text-neutral-500 dark:text-neutral-400">Limite por dia</span>
               <input
                 type="number"
                 min={1}
@@ -348,11 +348,11 @@ function ModeCard({
         "flex flex-col gap-1 rounded-lg border p-3 text-left transition",
         active
           ? "border-emerald-500/60 bg-emerald-500/10"
-          : "border-neutral-200 bg-neutral-100 hover:border-neutral-300",
+          : "border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-800 hover:border-neutral-300",
       )}
     >
-      <span className="text-sm font-medium text-neutral-900">{title}</span>
-      <span className="text-xs text-neutral-500">{hint}</span>
+      <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{title}</span>
+      <span className="text-xs text-neutral-500 dark:text-neutral-400">{hint}</span>
     </button>
   );
 }

@@ -14,9 +14,9 @@ export type CaptureJob = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  pendente: "bg-neutral-100 text-neutral-700 border-neutral-300",
+  pendente: "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 border-neutral-300 dark:border-neutral-700",
   rodando: "bg-blue-500/10 text-blue-600 border-blue-500/30",
-  concluido: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
+  concluido: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
   erro: "bg-red-500/10 text-red-600 border-red-500/30",
 };
 
@@ -53,9 +53,9 @@ function formatDate(value: string): string {
 
 export function CaptureJobsTable({ jobs }: { jobs: CaptureJob[] }) {
   return (
-    <div className="mt-6 overflow-hidden rounded-xl border border-neutral-200">
+    <div className="mt-6 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800">
       <table className="w-full text-left text-sm">
-        <thead className="bg-neutral-50 text-neutral-500">
+        <thead className="bg-neutral-50 dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400">
           <tr>
             <th className="px-4 py-3 font-medium">Origem</th>
             <th className="px-4 py-3 font-medium">Termo</th>
@@ -65,16 +65,16 @@ export function CaptureJobsTable({ jobs }: { jobs: CaptureJob[] }) {
             <th className="px-4 py-3 font-medium">Data</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-neutral-200">
+        <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
           {jobs.map((job) => (
-            <tr key={job.id} className="text-neutral-800 transition hover:bg-neutral-100">
+            <tr key={job.id} className="text-neutral-800 dark:text-neutral-100 transition hover:bg-neutral-100 dark:hover:bg-neutral-800">
               <td className="px-4 py-3">{sourceLabel(job.origem)}</td>
               <td className="px-4 py-3">{job.termo_busca ?? "—"}</td>
-              <td className="px-4 py-3 text-neutral-500">{job.localizacao ?? "—"}</td>
-              <td className="px-4 py-3 text-neutral-500">{job.quantidade ?? "—"}</td>
+              <td className="px-4 py-3 text-neutral-500 dark:text-neutral-400">{job.localizacao ?? "—"}</td>
+              <td className="px-4 py-3 text-neutral-500 dark:text-neutral-400">{job.quantidade ?? "—"}</td>
               <td className="px-4 py-3">
                 {job.status === "concluido" && job.buscandoDonos ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 dark:bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
                     <span className="h-2.5 w-2.5 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
                     Buscando donos…
                   </span>
@@ -82,7 +82,7 @@ export function CaptureJobsTable({ jobs }: { jobs: CaptureJob[] }) {
                   <StatusBadge status={job.status} />
                 )}
               </td>
-              <td className="px-4 py-3 text-neutral-500">{formatDate(job.criado_em)}</td>
+              <td className="px-4 py-3 text-neutral-500 dark:text-neutral-400">{formatDate(job.criado_em)}</td>
             </tr>
           ))}
         </tbody>

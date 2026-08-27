@@ -61,10 +61,10 @@ function normalizar(status: string): Coluna {
 }
 
 const BADGE: Record<Coluna, string> = {
-  nao_disparado: "bg-neutral-100 text-neutral-500 border border-neutral-200",
+  nao_disparado: "bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-800",
   pendente: "bg-amber-500/10 text-amber-600 border border-amber-500/30",
   enviado: "bg-blue-500/10 text-blue-600 border border-blue-500/30",
-  entregue: "bg-emerald-500/10 text-emerald-600 border border-emerald-500/30",
+  entregue: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30",
   falhou: "bg-red-500/10 text-red-600 border border-red-500/30",
 };
 
@@ -160,13 +160,13 @@ export function StatusView({
   return (
     <div className="mt-6">
       <div className="mb-4 flex flex-wrap items-center gap-3">
-        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200">
+        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800">
           <button
             onClick={() => setVisao("kanban")}
             className={`px-4 py-2 text-sm font-medium transition ${
               visao === "kanban"
-                ? "bg-neutral-100 text-neutral-900"
-                : "text-neutral-500 hover:text-neutral-900"
+                ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
             }`}
           >
             Kanban
@@ -175,8 +175,8 @@ export function StatusView({
             onClick={() => setVisao("tabela")}
             className={`px-4 py-2 text-sm font-medium transition ${
               visao === "tabela"
-                ? "bg-neutral-100 text-neutral-900"
-                : "text-neutral-500 hover:text-neutral-900"
+                ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
             }`}
           >
             Tabela
@@ -196,12 +196,12 @@ export function StatusView({
           ))}
         </select>
 
-        <span className="ml-auto text-sm text-neutral-500">{filtrados.length} leads</span>
+        <span className="ml-auto text-sm text-neutral-500 dark:text-neutral-400">{filtrados.length} leads</span>
       </div>
 
       {visao === "kanban" ? (
         <>
-          <p className="mb-3 text-xs text-neutral-400">
+          <p className="mb-3 text-xs text-neutral-400 dark:text-neutral-500">
             Arraste um card entre as colunas para mudar o status · clique para ver os detalhes.
           </p>
           <div className="grid gap-4 overflow-x-auto sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
@@ -217,22 +217,22 @@ export function StatusView({
                   e.preventDefault();
                   if (dragId) mover(dragId, col.key);
                 }}
-                className={`flex min-h-[200px] flex-col overflow-hidden rounded-2xl border bg-neutral-50 transition ${
+                className={`flex min-h-[200px] flex-col overflow-hidden rounded-2xl border bg-neutral-50 dark:bg-neutral-900 transition ${
                   overCol === col.key
                     ? "border-emerald-400 ring-2 ring-emerald-400/30"
-                    : "border-neutral-200"
+                    : "border-neutral-200 dark:border-neutral-800"
                 }`}
               >
                 <div className={`h-1 w-full ${TOPO[col.key]}`} />
                 <div className="flex items-center justify-between px-4 py-3">
-                  <span className="text-sm font-semibold text-neutral-900">{col.label}</span>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-xs font-medium text-neutral-500 ring-1 ring-neutral-200">
+                  <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">{col.label}</span>
+                  <span className="rounded-full bg-white dark:bg-neutral-900 px-2 py-0.5 text-xs font-medium text-neutral-500 dark:text-neutral-400 ring-1 ring-neutral-200 dark:ring-neutral-800">
                     {porColuna[col.key].length}
                   </span>
                 </div>
                 <div className="flex-1 space-y-3 p-3 pt-0">
                   {porColuna[col.key].length === 0 ? (
-                    <p className="rounded-xl border border-dashed border-neutral-200 px-1 py-6 text-center text-xs text-neutral-400">
+                    <p className="rounded-xl border border-dashed border-neutral-200 dark:border-neutral-800 px-1 py-6 text-center text-xs text-neutral-400 dark:text-neutral-500">
                       Solte um lead aqui
                     </p>
                   ) : (
@@ -247,22 +247,22 @@ export function StatusView({
                           setOverCol(null);
                         }}
                         onClick={() => setAberto(i)}
-                        className={`w-full cursor-grab rounded-xl border border-neutral-200 bg-white p-4 text-left shadow-sm transition hover:border-neutral-300 hover:shadow active:cursor-grabbing ${
+                        className={`w-full cursor-grab rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 text-left shadow-sm transition hover:border-neutral-300 hover:shadow active:cursor-grabbing ${
                           dragId === i.id ? "opacity-40" : ""
                         }`}
                       >
-                        <p className="font-semibold leading-snug text-neutral-900">
+                        <p className="font-semibold leading-snug text-neutral-900 dark:text-neutral-100">
                           {i.dono ?? "—"}
                         </p>
                         {i.empresa && (
-                          <p className="mt-1 text-xs leading-snug text-neutral-500">{i.empresa}</p>
+                          <p className="mt-1 text-xs leading-snug text-neutral-500 dark:text-neutral-400">{i.empresa}</p>
                         )}
-                        <p className="mt-2 text-sm tabular-nums text-neutral-700">
+                        <p className="mt-2 text-sm tabular-nums text-neutral-700 dark:text-neutral-200">
                           {formatarTelefone(i.telefone)}
                         </p>
                         <div className="mt-2 flex flex-wrap items-center gap-1.5">
                           {temSite(i) ? (
-                            <span className="rounded-md bg-neutral-100 px-1.5 py-0.5 text-[11px] font-medium text-neutral-600">
+                            <span className="rounded-md bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 text-[11px] font-medium text-neutral-600 dark:text-neutral-300">
                               Com site
                             </span>
                           ) : (
@@ -281,7 +281,7 @@ export function StatusView({
                             </span>
                           )}
                         </div>
-                        <div className="mt-3 flex items-center gap-2 border-t border-neutral-100 pt-2 text-[11px] text-neutral-400">
+                        <div className="mt-3 flex items-center gap-2 border-t border-neutral-100 dark:border-neutral-800 pt-2 text-[11px] text-neutral-400 dark:text-neutral-500">
                           <span className="truncate">{i.campanha ?? "Sem campanha"}</span>
                           {i.chip && (
                             <>
@@ -299,9 +299,9 @@ export function StatusView({
           </div>
         </>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-neutral-200">
+        <div className="overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-800">
           <table className="w-full min-w-[720px] text-sm">
-            <thead className="bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500">
+            <thead className="bg-neutral-50 dark:bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
               <tr>
                 <th className="px-4 py-3 font-medium">Dono</th>
                 <th className="px-4 py-3 font-medium">Empresa</th>
@@ -311,20 +311,20 @@ export function StatusView({
                 <th className="px-4 py-3 font-medium">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-200">
+            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
               {filtrados.map((i) => (
                 <tr
                   key={i.id}
                   onClick={() => setAberto(i)}
-                  className="cursor-pointer align-top hover:bg-neutral-100"
+                  className="cursor-pointer align-top hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 >
-                  <td className="px-4 py-3 text-neutral-900">{i.dono ?? "—"}</td>
-                  <td className="px-4 py-3 text-neutral-700">{i.empresa ?? "—"}</td>
-                  <td className="whitespace-nowrap px-4 py-3 tabular-nums text-neutral-700">
+                  <td className="px-4 py-3 text-neutral-900 dark:text-neutral-100">{i.dono ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-700 dark:text-neutral-200">{i.empresa ?? "—"}</td>
+                  <td className="whitespace-nowrap px-4 py-3 tabular-nums text-neutral-700 dark:text-neutral-200">
                     {formatarTelefone(i.telefone)}
                   </td>
-                  <td className="px-4 py-3 text-neutral-500">{i.campanha ?? "—"}</td>
-                  <td className="px-4 py-3 text-neutral-500">{i.chip ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-500 dark:text-neutral-400">{i.campanha ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-500 dark:text-neutral-400">{i.chip ?? "—"}</td>
                   <td className="px-4 py-3">
                     <Badge coluna={normalizar(i.status)} />
                   </td>
@@ -332,7 +332,7 @@ export function StatusView({
               ))}
               {filtrados.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-neutral-500">
+                  <td colSpan={6} className="px-4 py-8 text-center text-neutral-500 dark:text-neutral-400">
                     Nenhum lead nesta campanha.
                   </td>
                 </tr>
@@ -398,13 +398,13 @@ function LeadDetail({
       onClick={onClose}
     >
       <div
-        className="anim-in w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6 shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] ring-1 ring-black/5"
+        className="anim-in w-full max-w-md rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6 shadow-[0_24px_70px_-20px_rgba(15,23,42,0.35)] ring-1 ring-black/5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-neutral-900">{lead.dono ?? "Lead"}</h2>
-            {lead.empresa && <p className="mt-0.5 text-sm text-neutral-500">{lead.empresa}</p>}
+            <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{lead.dono ?? "Lead"}</h2>
+            {lead.empresa && <p className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">{lead.empresa}</p>}
           </div>
           <Badge coluna={coluna} />
         </div>
@@ -427,14 +427,14 @@ function LeadDetail({
             copiado={copiado === "email"}
           />
           <div className="flex items-center justify-between gap-3">
-            <dt className="shrink-0 text-neutral-400">Site</dt>
+            <dt className="shrink-0 text-neutral-400 dark:text-neutral-500">Site</dt>
             <dd className="text-right">
               {temSite(lead) ? (
                 <a
                   href={hrefUrl(lead.website!)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-emerald-600 hover:text-emerald-500"
+                  className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-500"
                 >
                   {lead.website!.replace(/^https?:\/\//i, "").replace(/^www\./i, "")} ↗
                 </a>
@@ -449,7 +449,7 @@ function LeadDetail({
             <Linha rotulo="Nota (Google)" valor={`${lead.nota.toFixed(1)} ★`} />
           )}
           <div className="flex items-center justify-between gap-3">
-            <dt className="shrink-0 text-neutral-400">Instagram</dt>
+            <dt className="shrink-0 text-neutral-400 dark:text-neutral-500">Instagram</dt>
             <dd className="text-right">
               {lead.instagram ? (
                 <a
@@ -460,7 +460,7 @@ function LeadDetail({
                 >
                   ver perfil
                   {lead.seguidores != null && (
-                    <span className="text-xs text-neutral-400">
+                    <span className="text-xs text-neutral-400 dark:text-neutral-500">
                       {" "}
                       · {lead.seguidores.toLocaleString("pt-BR")}
                     </span>
@@ -468,12 +468,12 @@ function LeadDetail({
                   ↗
                 </a>
               ) : (
-                <span className="text-neutral-500">—</span>
+                <span className="text-neutral-500 dark:text-neutral-400">—</span>
               )}
             </dd>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <dt className="shrink-0 text-neutral-400">Anúncios</dt>
+            <dt className="shrink-0 text-neutral-400 dark:text-neutral-500">Anúncios</dt>
             <dd className="text-right">
               <AdsCell
                 leadId={lead.id}
@@ -504,15 +504,15 @@ function LeadDetail({
           {lead.email && (
             <a
               href={`mailto:${lead.email}`}
-              className="inline-flex items-center rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100"
+              className="inline-flex items-center rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-200 transition hover:bg-neutral-100 dark:hover:bg-neutral-800"
             >
               Enviar e-mail
             </a>
           )}
         </div>
 
-        <div className="mt-6 border-t border-neutral-200 pt-4">
-          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-neutral-400">
+        <div className="mt-6 border-t border-neutral-200 dark:border-neutral-800 pt-4">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
             Mover para
           </p>
           <div className="flex flex-wrap gap-2">
@@ -523,8 +523,8 @@ function LeadDetail({
                 disabled={c.key === coluna}
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                   c.key === coluna
-                    ? "cursor-default bg-neutral-100 text-neutral-400"
-                    : "border border-neutral-300 text-neutral-700 hover:bg-neutral-100"
+                    ? "cursor-default bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500"
+                    : "border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 }`}
               >
                 {c.label}
@@ -536,7 +536,7 @@ function LeadDetail({
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-500 hover:text-neutral-900"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
           >
             Fechar
           </button>
@@ -560,13 +560,13 @@ function Linha({
 }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <dt className="shrink-0 text-neutral-400">{rotulo}</dt>
+      <dt className="shrink-0 text-neutral-400 dark:text-neutral-500">{rotulo}</dt>
       <dd className="flex min-w-0 items-center gap-2 text-right">
-        <span className="truncate text-neutral-800">{valor}</span>
+        <span className="truncate text-neutral-800 dark:text-neutral-100">{valor}</span>
         {acao && (
           <button
             onClick={acao}
-            className="shrink-0 text-xs text-emerald-600 hover:text-emerald-500"
+            className="shrink-0 text-xs text-emerald-600 dark:text-emerald-400 hover:text-emerald-500"
           >
             {copiado ? "copiado!" : "copiar"}
           </button>

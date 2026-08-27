@@ -46,14 +46,14 @@ export default async function ListDetailPage({ params }: { params: Promise<{ id:
   return (
     <div>
       <AutoRefresh ativo={buscandoDonos || donosFaltando > 0} />
-      <Link href="/dashboard/lists" className="text-sm text-neutral-500 hover:text-neutral-800">
+      <Link href="/dashboard/lists" className="text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-800">
         ← Listas
       </Link>
 
       <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">{list.nome}</h1>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
             {sourceLabel(list.origem)} · {leads?.length ?? 0} leads
           </p>
         </div>
@@ -64,7 +64,7 @@ export default async function ListDetailPage({ params }: { params: Promise<{ id:
       </div>
 
       {buscandoDonos && (
-        <div className="mt-4 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+        <div className="mt-4 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
           <span className="h-3 w-3 shrink-0 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
           Buscando o nome dos donos… isto roda em segundo plano e atualiza sozinho (~1-2 min).
         </div>

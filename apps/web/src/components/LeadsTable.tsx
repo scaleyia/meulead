@@ -74,10 +74,10 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
 
   if (leads.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 p-12 text-center">
+      <div className="rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-12 text-center">
         <p className="text-4xl">🗂️</p>
-        <h2 className="mt-3 font-medium text-neutral-900">Lista vazia</h2>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h2 className="mt-3 font-medium text-neutral-900 dark:text-neutral-100">Lista vazia</h2>
+        <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
           Os leads aparecem aqui assim que a captação terminar.
         </p>
       </div>
@@ -93,7 +93,7 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
           placeholder="Buscar por nome, empresa, telefone, e-mail ou site…"
           className="input max-w-md"
         />
-        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200 text-sm">
+        <div className="inline-flex overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800 text-sm">
           {(
             [
               { key: "todos", label: "Todos" },
@@ -106,8 +106,8 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
               onClick={() => setFiltro(f.key)}
               className={`px-3 py-2 font-medium transition ${
                 filtro === f.key
-                  ? "bg-neutral-100 text-neutral-900"
-                  : "text-neutral-500 hover:text-neutral-900"
+                  ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100"
+                  : "text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
               }`}
             >
               {f.label}
@@ -116,9 +116,9 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-neutral-200">
+      <div className="overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-800">
         <table className="w-full min-w-[920px] text-sm">
-          <thead className="bg-neutral-50 text-left text-xs uppercase tracking-wide text-neutral-500">
+          <thead className="bg-neutral-50 dark:bg-neutral-900 text-left text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
             <tr>
               <th className="px-4 py-3 font-medium">Empresa</th>
               <th className="whitespace-nowrap px-4 py-3 font-medium">Telefone</th>
@@ -129,25 +129,25 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
               <th className="px-4 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-200">
+          <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
             {filtered.map((l) => (
-              <tr key={l.id} className="align-top hover:bg-neutral-100">
+              <tr key={l.id} className="align-top hover:bg-neutral-100 dark:hover:bg-neutral-800">
                 <td className="px-4 py-3">
-                  <p className="font-medium text-neutral-900">{l.empresa ?? l.nome ?? "—"}</p>
+                  <p className="font-medium text-neutral-900 dark:text-neutral-100">{l.empresa ?? l.nome ?? "—"}</p>
                   {l.endereco && (
-                    <p className="mt-0.5 text-xs text-neutral-400">{l.endereco}</p>
+                    <p className="mt-0.5 text-xs text-neutral-400 dark:text-neutral-500">{l.endereco}</p>
                   )}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 tabular-nums text-neutral-700">
+                <td className="whitespace-nowrap px-4 py-3 tabular-nums text-neutral-700 dark:text-neutral-200">
                   {formatarTelefone(l.telefone)}
                 </td>
                 <td className="px-4 py-3">
                   {l.nome ? (
-                    <span className="inline-flex items-center gap-1 whitespace-nowrap font-medium text-emerald-700">
+                    <span className="inline-flex items-center gap-1 whitespace-nowrap font-medium text-emerald-700 dark:text-emerald-300">
                       👤 {l.nome}
                     </span>
                   ) : (
-                    <span className="text-xs text-neutral-400">—</span>
+                    <span className="text-xs text-neutral-400 dark:text-neutral-500">—</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
@@ -156,7 +156,7 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
                       href={hrefSite(l.website!)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-md bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-700 hover:bg-neutral-200"
+                      className="inline-flex items-center gap-1 rounded-md bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200"
                     >
                       {dominio(l.website!)} ↗
                     </a>
@@ -166,27 +166,27 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
                     </span>
                   )}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-neutral-700">
+                <td className="whitespace-nowrap px-4 py-3 text-neutral-700 dark:text-neutral-200">
                   {l.nota != null ? (
                     <span>
                       <span className="font-medium">{l.nota.toFixed(1)}</span>
                       <span className="text-amber-500"> ★</span>
                       {l.total_avaliacoes != null && (
-                        <span className="text-xs text-neutral-400"> ({l.total_avaliacoes})</span>
+                        <span className="text-xs text-neutral-400 dark:text-neutral-500"> ({l.total_avaliacoes})</span>
                       )}
                     </span>
                   ) : (
                     "—"
                   )}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-neutral-500">
+                <td className="whitespace-nowrap px-4 py-3 text-neutral-500 dark:text-neutral-400">
                   {sourceLabel(l.origem)}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <button
                     onClick={() => remove(l.id)}
                     disabled={pending}
-                    className="whitespace-nowrap text-xs text-neutral-500 hover:text-red-600"
+                    className="whitespace-nowrap text-xs text-neutral-500 dark:text-neutral-400 hover:text-red-600"
                   >
                     excluir
                   </button>
@@ -195,7 +195,7 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-neutral-500">
+                <td colSpan={7} className="px-4 py-8 text-center text-neutral-500 dark:text-neutral-400">
                   Nenhum lead corresponde ao filtro.
                 </td>
               </tr>
@@ -204,7 +204,7 @@ export function LeadsTable({ listId, leads }: { listId: string; leads: LeadRow[]
         </table>
       </div>
 
-      <p className="mt-2 text-xs text-neutral-500">
+      <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
         {filtered.length} de {leads.length} leads
       </p>
     </div>

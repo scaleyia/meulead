@@ -46,12 +46,12 @@ export function SiteCell({
         href={hrefSite(website)}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1 rounded-md bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-700 hover:bg-neutral-200"
+        className="inline-flex items-center gap-1 rounded-md bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200"
       >
         {dominio(website)} ↗
       </a>
       {pending ? (
-        <span className="text-[11px] text-neutral-400">analisando…</span>
+        <span className="text-[11px] text-neutral-400 dark:text-neutral-500">analisando…</span>
       ) : siteAnalisado && siteScore !== null ? (
         <button onClick={analisar} title="Analisar de novo" className="inline-flex items-center gap-1">
           <span
@@ -60,7 +60,7 @@ export function SiteCell({
                 ? "bg-red-500/10 text-red-600"
                 : siteScore < 80
                   ? "bg-amber-500/10 text-amber-600"
-                  : "bg-emerald-500/10 text-emerald-600"
+                  : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
             }`}
           >
             {siteScore < 60 ? "Site fraco" : siteScore < 80 ? "Site médio" : "Site bom"} · {siteScore}
@@ -69,7 +69,7 @@ export function SiteCell({
       ) : (
         <button
           onClick={analisar}
-          className="text-[11px] text-neutral-500 underline-offset-2 hover:text-neutral-800 hover:underline"
+          className="text-[11px] text-neutral-500 dark:text-neutral-400 underline-offset-2 hover:text-neutral-800 hover:underline"
         >
           🔎 analisar site
         </button>

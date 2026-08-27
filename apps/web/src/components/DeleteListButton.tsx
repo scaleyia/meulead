@@ -20,7 +20,7 @@ export function DeleteListButton({ id, name }: { id: string; name: string }) {
           router.refresh();
         });
       }}
-      className="rounded-md border border-neutral-300 bg-white px-2 py-1 text-xs text-red-600 hover:bg-red-500/10"
+      className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-2 py-1 text-xs text-red-600 hover:bg-red-500/10"
     >
       {pending ? "…" : "Excluir"}
     </button>

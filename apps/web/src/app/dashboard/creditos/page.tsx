@@ -104,15 +104,15 @@ export default async function CreditosPage({
   return (
     <div>
       <h1 className="text-2xl font-semibold">Créditos</h1>
-      <p className="mt-1 text-neutral-500">1 crédito = 1 lead captado. Import manual/CSV não gasta.</p>
+      <p className="mt-1 text-neutral-500 dark:text-neutral-400">1 crédito = 1 lead captado. Import manual/CSV não gasta.</p>
 
       {pagamentoOk && (
-        <p className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-700">
+        <p className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-700 dark:text-emerald-300">
           ✅ Pagamento confirmado! Seus créditos já foram liberados.
         </p>
       )}
       {sp.cancel && (
-        <p className="mt-4 rounded-lg border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-500">
+        <p className="mt-4 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-4 py-2.5 text-sm text-neutral-500 dark:text-neutral-400">
           Pagamento cancelado — nada foi cobrado.
         </p>
       )}
@@ -123,25 +123,25 @@ export default async function CreditosPage({
           <p className="text-sm text-amber-600">Saldo total</p>
           <p className="mt-1 text-3xl font-bold text-amber-600">⚡ {fmt(total)}</p>
         </div>
-        <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-5">
-          <p className="text-sm text-neutral-500">Do plano (renova todo mês)</p>
-          <p className="mt-1 text-2xl font-bold text-neutral-900">{fmt(org.creditosPlano)}</p>
-          <p className="mt-1 text-xs text-neutral-500">Renova em {fmtData(org.creditosRenovamEm)}</p>
+        <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-5">
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Do plano (renova todo mês)</p>
+          <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-neutral-100">{fmt(org.creditosPlano)}</p>
+          <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">Renova em {fmtData(org.creditosRenovamEm)}</p>
         </div>
-        <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-5">
-          <p className="text-sm text-neutral-500">Extras (recarga, não expiram)</p>
-          <p className="mt-1 text-2xl font-bold text-neutral-900">{fmt(org.creditosExtra)}</p>
+        <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-5">
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Extras (recarga, não expiram)</p>
+          <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-neutral-100">{fmt(org.creditosExtra)}</p>
         </div>
       </div>
 
       {/* Plano + recarga */}
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-neutral-50 p-5">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-5">
         <div>
-          <p className="text-sm text-neutral-700">
-            Plano <strong className="capitalize text-neutral-900">{plano.nome}</strong> —{" "}
+          <p className="text-sm text-neutral-700 dark:text-neutral-200">
+            Plano <strong className="capitalize text-neutral-900 dark:text-neutral-100">{plano.nome}</strong> —{" "}
             {fmt(plano.creditosMes)} créditos/mês
           </p>
-          <p className="mt-0.5 text-xs text-neutral-500">
+          <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
             Precisa de mais? Recarga a {formatarPreco(plano.recargaPreco)}/crédito.
           </p>
         </div>
@@ -154,17 +154,17 @@ export default async function CreditosPage({
       </div>
 
       {ehAdmin && (
-        <div className="mt-4 rounded-xl border border-dashed border-neutral-300 bg-neutral-50 p-5">
-          <p className="text-sm font-medium text-neutral-900">Painel do admin</p>
+        <div className="mt-4 rounded-xl border border-dashed border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 p-5">
+          <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Painel do admin</p>
 
-          <p className="mt-3 text-xs font-medium text-neutral-600">
+          <p className="mt-3 text-xs font-medium text-neutral-600 dark:text-neutral-300">
             Dar créditos a um usuário
           </p>
           <div className="mt-2">
             <RecargaUsuario usuarios={usuarios} />
           </div>
 
-          <p className="mt-4 text-xs font-medium text-neutral-600">
+          <p className="mt-4 text-xs font-medium text-neutral-600 dark:text-neutral-300">
             Recarregar a minha própria conta
           </p>
           <div className="mt-2">
@@ -174,31 +174,31 @@ export default async function CreditosPage({
       )}
 
       {/* Comprar créditos */}
-      <h2 className="mt-8 mb-1 font-medium text-neutral-900">Comprar créditos</h2>
-      <p className="mb-3 text-sm text-neutral-500">Pacotes avulsos — caem na hora após o pagamento.</p>
+      <h2 className="mt-8 mb-1 font-medium text-neutral-900 dark:text-neutral-100">Comprar créditos</h2>
+      <p className="mb-3 text-sm text-neutral-500 dark:text-neutral-400">Pacotes avulsos — caem na hora após o pagamento.</p>
       <ComprarCreditos
         packs={PACOTES_RECARGA.map((p) => ({ id: p.id, creditos: p.creditos, preco: p.preco }))}
       />
 
       {/* Assinar / trocar de plano */}
-      <h2 id="assinar" className="mt-8 mb-1 scroll-mt-24 font-medium text-neutral-900">
+      <h2 id="assinar" className="mt-8 mb-1 scroll-mt-24 font-medium text-neutral-900 dark:text-neutral-100">
         Assinar um plano
       </h2>
-      <p className="mb-3 text-sm text-neutral-500">
+      <p className="mb-3 text-sm text-neutral-500 dark:text-neutral-400">
         Mensalidade com créditos que renovam todo mês + mais recursos.
       </p>
       <AssinarPlano planoAtual={org.plano} />
 
       {/* Histórico */}
-      <h2 className="mt-8 mb-3 font-medium text-neutral-900">Histórico</h2>
+      <h2 className="mt-8 mb-3 font-medium text-neutral-900 dark:text-neutral-100">Histórico</h2>
       {!transacoes || transacoes.length === 0 ? (
-        <p className="rounded-xl border border-neutral-200 bg-neutral-50 p-6 text-sm text-neutral-500">
+        <p className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-6 text-sm text-neutral-500 dark:text-neutral-400">
           Nenhuma movimentação ainda. Capte leads para ver o consumo aqui.
         </p>
       ) : (
-        <div className="mb-6 overflow-x-auto rounded-xl border border-neutral-200">
+        <div className="mb-6 overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-800">
           <table className="w-full min-w-[560px] text-left text-sm">
-            <thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
+            <thead className="bg-neutral-50 dark:bg-neutral-900 text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
               <tr>
                 <th className="whitespace-nowrap px-4 py-3 font-medium">Quando</th>
                 <th className="whitespace-nowrap px-4 py-3 font-medium">Tipo</th>
@@ -207,21 +207,21 @@ export default async function CreditosPage({
                 <th className="whitespace-nowrap px-4 py-3 text-right font-medium">Saldo</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-200">
+            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
               {transacoes.map((t) => (
-                <tr key={t.id} className="hover:bg-neutral-100">
-                  <td className="whitespace-nowrap px-4 py-3 text-neutral-500">{fmtDataHora(t.criado_em)}</td>
-                  <td className="whitespace-nowrap px-4 py-3 text-neutral-700">{TIPO_LABEL[t.tipo] ?? t.tipo}</td>
-                  <td className="px-4 py-3 text-neutral-500">{t.descricao ?? "—"}</td>
+                <tr key={t.id} className="hover:bg-neutral-100 dark:hover:bg-neutral-800">
+                  <td className="whitespace-nowrap px-4 py-3 text-neutral-500 dark:text-neutral-400">{fmtDataHora(t.criado_em)}</td>
+                  <td className="whitespace-nowrap px-4 py-3 text-neutral-700 dark:text-neutral-200">{TIPO_LABEL[t.tipo] ?? t.tipo}</td>
+                  <td className="px-4 py-3 text-neutral-500 dark:text-neutral-400">{t.descricao ?? "—"}</td>
                   <td
                     className={`px-4 py-3 text-right font-medium ${
-                      t.quantidade < 0 ? "text-red-600" : "text-emerald-600"
+                      t.quantidade < 0 ? "text-red-600" : "text-emerald-600 dark:text-emerald-400"
                     }`}
                   >
                     {t.quantidade > 0 ? "+" : ""}
                     {fmt(t.quantidade)}
                   </td>
-                  <td className="px-4 py-3 text-right text-neutral-700">{fmt(t.saldo_apos)}</td>
+                  <td className="px-4 py-3 text-right text-neutral-700 dark:text-neutral-200">{fmt(t.saldo_apos)}</td>
                 </tr>
               ))}
             </tbody>

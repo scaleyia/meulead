@@ -32,7 +32,7 @@ export function InstagramLeadCard({
   const user = handle(lead.instagram);
 
   return (
-    <div className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm transition hover:shadow">
+    <div className="flex flex-col rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 shadow-sm transition hover:shadow">
       <div className="flex items-start gap-3">
         {lead.fotoPerfil ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -43,13 +43,13 @@ export function InstagramLeadCard({
             className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-neutral-100"
           />
         ) : (
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-lg text-neutral-400">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 text-lg text-neutral-400 dark:text-neutral-500">
             📸
           </div>
         )}
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1">
-            <p className="truncate font-semibold text-neutral-900">{lead.empresa ?? user}</p>
+            <p className="truncate font-semibold text-neutral-900 dark:text-neutral-100">{lead.empresa ?? user}</p>
             {lead.verificado && <span title="Verificado">☑️</span>}
           </div>
           {user && (
@@ -62,15 +62,15 @@ export function InstagramLeadCard({
               {user}
             </a>
           )}
-          <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-neutral-500">
+          <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-neutral-500 dark:text-neutral-400">
             {lead.seguidores != null && (
               <span>
-                <strong className="text-neutral-800">{compacto(lead.seguidores)}</strong> seguidores
+                <strong className="text-neutral-800 dark:text-neutral-100">{compacto(lead.seguidores)}</strong> seguidores
               </span>
             )}
             {lead.posts != null && (
               <span>
-                <strong className="text-neutral-800">{compacto(lead.posts)}</strong> posts
+                <strong className="text-neutral-800 dark:text-neutral-100">{compacto(lead.posts)}</strong> posts
               </span>
             )}
           </div>
@@ -78,25 +78,25 @@ export function InstagramLeadCard({
       </div>
 
       {lead.bio && (
-        <p className="mt-3 whitespace-pre-line text-sm leading-snug text-neutral-600 line-clamp-4">
+        <p className="mt-3 whitespace-pre-line text-sm leading-snug text-neutral-600 dark:text-neutral-300 line-clamp-4">
           {lead.bio}
         </p>
       )}
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         {lead.categoria && (
-          <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[11px] text-neutral-600">
+          <span className="rounded-md bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 text-[11px] text-neutral-600 dark:text-neutral-300">
             {lead.categoria}
           </span>
         )}
         {lead.telefone && (
-          <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-700">
+          <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-300">
             📞 {lead.telefone}
           </span>
         )}
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-2 border-t border-neutral-100 pt-3">
+      <div className="mt-4 flex items-center justify-between gap-2 border-t border-neutral-100 dark:border-neutral-800 pt-3">
         <div className="flex flex-wrap items-center gap-3 text-sm">
           {lead.instagram && (
             <a
@@ -113,7 +113,7 @@ export function InstagramLeadCard({
               href={hrefUrl(lead.website)}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-neutral-600 hover:text-neutral-900"
+              className="text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100"
             >
               🔗 {dominio(lead.website)}
             </a>
@@ -126,7 +126,7 @@ export function InstagramLeadCard({
         <button
           onClick={onExcluir}
           disabled={excluindo}
-          className="text-xs text-neutral-400 hover:text-red-600"
+          className="text-xs text-neutral-400 dark:text-neutral-500 hover:text-red-600"
         >
           excluir
         </button>

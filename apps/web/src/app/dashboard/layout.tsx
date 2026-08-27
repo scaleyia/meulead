@@ -14,7 +14,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   // isso causaria loop com o proxy. Mostra um aviso com opção de sair.
   if (!org) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white px-6 text-center text-neutral-700">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white px-6 text-center text-neutral-700 dark:bg-neutral-950 dark:text-neutral-300">
         <h1 className="text-xl font-semibold">Não encontramos sua organização</h1>
         <p className="max-w-md text-sm text-neutral-500">
           Sua conta está autenticada, mas não achamos os dados da organização. Recarregue a página
@@ -42,7 +42,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   );
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-white text-neutral-900">
+    <div className="flex h-screen flex-col overflow-hidden bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
       {ehFree && (
         <Link
           href="/dashboard/creditos#assinar"
@@ -63,10 +63,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
       )}
 
       <div className="flex min-h-0 flex-1">
-        <Sidebar isAdmin={isAdmin(org.email)} />
+        <Sidebar isAdmin={isAdmin(org.email)} userEmail={org.email} plano={org.plano} />
 
         <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex shrink-0 items-center justify-end border-b border-neutral-200 bg-white/70 px-6 py-3 backdrop-blur-xl">
+        <header className="flex shrink-0 items-center justify-end border-b border-neutral-200 bg-white/70 px-6 py-3 backdrop-blur-xl dark:border-neutral-800 dark:bg-neutral-900/70">
           <div className="flex items-center gap-3 text-sm">
             <Link
               href="/dashboard/creditos"
@@ -82,9 +82,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
             >
               Plano {org.plano}
             </Link>
-            <span className="text-neutral-500">{org.email}</span>
+            <span className="text-neutral-500 dark:text-neutral-400">{org.email}</span>
             <form action={logout}>
-              <button className="rounded-md border border-neutral-300 px-3 py-1.5 text-neutral-800 transition hover:bg-neutral-100">
+              <button className="rounded-md border border-neutral-300 px-3 py-1.5 text-neutral-800 transition hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-800">
                 Sair
               </button>
             </form>
