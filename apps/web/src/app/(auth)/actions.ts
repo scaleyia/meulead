@@ -44,7 +44,7 @@ export async function signup(_prev: ActionState, formData: FormData): Promise<Ac
 export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/login");
+  redirect("/lp");
 }
 
 function traduzErro(msg: string): string {

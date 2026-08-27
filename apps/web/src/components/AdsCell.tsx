@@ -2,9 +2,9 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { verificarAnuncios } from "@/app/dashboard/crm/actions";
+import { UpgradeDialog } from "@/components/UpgradeDialog";
 
 // Mostra os selos de anúncios (Google/Meta) e o botão de verificar sob demanda.
 // `planoPago` = recurso liberado. No grátis o botão continua clicável, mas o
@@ -15,12 +15,14 @@ export function AdsCell({
   anunciaMeta,
   checando,
   planoPago,
+  plano,
 }: {
   leadId: string;
   anunciaGoogle: boolean | null;
   anunciaMeta: boolean | null;
   checando: boolean;
   planoPago: boolean;
+  plano: string;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -42,7 +44,7 @@ export function AdsCell({
   return (
     <>
       {conteudo}
-      {upgrade && <UpgradeModal onClose={() => setUpgrade(false)} />}
+      {upgrade && <UpgradeModal plano={plano} onClose={() => setUpgrade(false)} />}
     </>
   );
 
@@ -104,7 +106,7 @@ export function AdsCell({
   }
 }
 
-function UpgradeModal({ onClose }: { onClose: () => void }) {
+function UpgradeModal({ plano, onClose }: { plano: string; onClose: () => void }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   useEffect(() => {
