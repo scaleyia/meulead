@@ -125,15 +125,15 @@ export default function LpPlanos() {
                   ) : (
                     <>
                       <div className="flex items-baseline gap-1.5 whitespace-nowrap">
-                        <span className={`text-sm font-semibold ${pop ? "text-blue-200" : "text-neutral-400"}`}>
-                          12x
-                        </span>
                         <span className={`text-[1.9rem] font-extrabold leading-none tracking-tight ${pop ? "text-white" : "text-neutral-900"}`}>
                           {formatarBRL(anual.parcela)}
                         </span>
+                        <span className={`text-sm font-medium ${pop ? "text-blue-100" : "text-neutral-500"}`}>
+                          /mês
+                        </span>
                       </div>
                       <p className={`mt-2 text-sm ${pop ? "text-blue-100" : "text-neutral-500"}`}>
-                        ou {formatarBRL(anual.aVista)} à vista no Pix
+                        {formatarBRL(anual.aVista)} à vista/ano · pagamento único (cartão ou Pix)
                       </p>
                       <span
                         className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${

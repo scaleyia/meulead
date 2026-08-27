@@ -49,8 +49,12 @@ export async function iniciarCheckoutAssinatura(
   const plano = planoPorId(planoId);
   if (!priceId) return { ok: false, error: "Plano inválido." };
 
+  // Mensal = assinatura recorrente. Anual = pagamento único (à vista), sem
+  // renovação automática — 12 meses de acesso, créditos renovados mês a mês.
+  const anual = ciclo === "anual";
+
   const session = await stripe.checkout.sessions.create({
-    mode: "subscription",
+    mode: anual ? "payment" : "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
     customer_email: org.email,
     success_url: `${APP_URL}/dashboard/creditos?success=1&session_id={CHECKOUT_SESSION_ID}`,

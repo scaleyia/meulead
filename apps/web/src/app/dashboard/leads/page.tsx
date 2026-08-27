@@ -47,11 +47,11 @@ async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: bo
     // segue carregando normalmente
   }
 
-  const [{ data: leadsData }, { data: listasData }] = await Promise.all([
+  const [{ data: leadsData }, { data: listasData }, { data: alvosData }] = await Promise.all([
     supabase
       .from("leads")
       .select(
-        "id, nome, empresa, telefone, email, origem, website, instagram, seguidores, nota, total_avaliacoes, endereco, categoria, foto_perfil, bio, verificado, posts, tem_whatsapp, site_score, site_analisado, lista_id, anuncia_google, anuncia_meta, ads_run_google, ads_run_meta",
+        "id, nome, empresa, telefone, email, origem, website, instagram, seguidores, nota, total_avaliacoes, endereco, categoria, foto_perfil, bio, verificado, posts, tem_whatsapp, site_score, site_analisado, lista_id, no_crm, anuncia_google, anuncia_meta, ads_run_google, ads_run_meta",
       )
       .eq("organizacao_id", orgId)
       .order("criado_em", { ascending: false }),
@@ -60,10 +60,16 @@ async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: bo
       .select("id, nome")
       .eq("organizacao_id", orgId)
       .order("criado_em", { ascending: false }),
+    // Leads que já receberam disparo — também contam como "no CRM".
+    supabase
+      .from("campanha_alvos")
+      .select("lead_id")
+      .eq("organizacao_id", orgId),
   ]);
 
   const listas: ListaOption[] = (listasData ?? []).map((l) => ({ id: l.id, nome: l.nome }));
   const nomePorLista = new Map(listas.map((l) => [l.id, l.nome]));
+  const disparados = new Set((alvosData ?? []).map((a) => a.lead_id).filter(Boolean) as string[]);
 
   const leads: AllLeadRow[] = (leadsData ?? []).map((l) => ({
     id: l.id,
@@ -91,6 +97,7 @@ async function LeadsContent({ orgId, planoPago }: { orgId: string; planoPago: bo
     anunciaGoogle: l.anuncia_google,
     anunciaMeta: l.anuncia_meta,
     adsChecando: !!(l.ads_run_google || l.ads_run_meta),
+    noCrm: !!l.no_crm || disparados.has(l.id),
   }));
 
   const adsPendentes = leads.some((l) => l.adsChecando);

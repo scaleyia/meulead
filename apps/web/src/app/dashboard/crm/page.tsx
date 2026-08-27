@@ -25,9 +25,10 @@ function EmptyState() {
   return (
     <div className="mt-10 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-12 text-center">
       <p className="text-4xl">📡</p>
-      <h2 className="mt-3 font-medium text-neutral-900 dark:text-neutral-100">Nenhum lead ainda</h2>
+      <h2 className="mt-3 font-medium text-neutral-900 dark:text-neutral-100">Nenhum lead no CRM ainda</h2>
       <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-        Capte leads na <strong>Captação</strong> — eles aparecem aqui automaticamente.
+        Em <strong>Leads</strong>, clique em <strong>→ CRM</strong> para trazer um lead pra cá — ou
+        faça um <strong>disparo</strong>. Só entram no CRM os leads que você mandar ou disparar.
       </p>
     </div>
   );
@@ -43,11 +44,11 @@ async function CrmContent({ orgId, planoPago }: { orgId: string; planoPago: bool
     // segue carregando normalmente
   }
 
-  // Base = TODOS os leads (mesmo os que ainda não receberam disparo).
+  // Base = todos os leads da org (o filtro de "quem entra no CRM" vem depois).
   const { data: leads } = await supabase
     .from("leads")
     .select(
-      "id, nome, empresa, telefone, email, origem, status_crm, website, instagram, seguidores, nota, endereco, anuncia_google, anuncia_meta, ads_run_google, ads_run_meta",
+      "id, nome, empresa, telefone, email, origem, status_crm, no_crm, website, instagram, seguidores, nota, endereco, anuncia_google, anuncia_meta, ads_run_google, ads_run_meta",
     )
     .eq("organizacao_id", orgId)
     .order("criado_em", { ascending: false });
@@ -90,7 +91,14 @@ async function CrmContent({ orgId, planoPago }: { orgId: string; planoPago: bool
   const campanhasMap = new Map((campanhasRes.data ?? []).map((c) => [c.id, c]));
   const sessoesMap = new Map((sessoesRes.data ?? []).map((s) => [s.id, s]));
 
-  const items: StatusItem[] = leads.map((lead) => {
+  // Só entra no CRM quem foi enviado manualmente (no_crm) OU teve algum disparo.
+  const leadsNoCrm = leads.filter((lead) => lead.no_crm || alvoPorLead.has(lead.id));
+
+  if (leadsNoCrm.length === 0) {
+    return <EmptyState />;
+  }
+
+  const items: StatusItem[] = leadsNoCrm.map((lead) => {
     const alvo = alvoPorLead.get(lead.id);
     const campanha = alvo ? campanhasMap.get(alvo.campanha_id) : undefined;
     const sessao = alvo?.sessao_id ? sessoesMap.get(alvo.sessao_id) : undefined;

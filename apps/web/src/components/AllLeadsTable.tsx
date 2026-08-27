@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { MessageCircle, Loader2 } from "lucide-react";
 import { deleteLead } from "@/app/dashboard/lists/[id]/actions";
 import { createPortal } from "react-dom";
-import { validarWhatsapp, removerSemWhatsapp } from "@/app/dashboard/leads/actions";
+import { validarWhatsapp, removerSemWhatsapp, enviarParaCrm } from "@/app/dashboard/leads/actions";
 import { sourceLabel } from "@/lib/sources";
 import { AdsCell } from "@/components/AdsCell";
 import { SiteCell } from "@/components/SiteCell";
@@ -38,6 +38,7 @@ export interface AllLeadRow {
   anunciaGoogle: boolean | null;
   anunciaMeta: boolean | null;
   adsChecando: boolean;
+  noCrm: boolean;
 }
 
 type Fonte = "google_maps" | "instagram";
@@ -82,6 +83,23 @@ export function AllLeadsTable({
   const [confirmar, setConfirmar] = useState<number | null>(null);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  // Feedback otimista pros leads enviados ao CRM nesta sessão.
+  const [enviadosCrm, setEnviadosCrm] = useState<Set<string>>(new Set());
+  const [crmPendingId, setCrmPendingId] = useState<string | null>(null);
+
+  function enviarCrm(id: string) {
+    setCrmPendingId(id);
+    start(async () => {
+      const res = await enviarParaCrm(id);
+      setCrmPendingId(null);
+      if (res.ok) {
+        setEnviadosCrm((prev) => new Set(prev).add(id));
+        router.refresh();
+      } else {
+        setAviso(res.error ?? "Falha ao enviar para o CRM.");
+      }
+    });
+  }
 
   function validar() {
     setAviso(null);
@@ -290,6 +308,9 @@ export function AllLeadsTable({
                 lead={l}
                 onExcluir={() => remove(l.id, l.lista_id)}
                 excluindo={pending}
+                onEnviarCrm={() => enviarCrm(l.id)}
+                noCrm={l.noCrm || enviadosCrm.has(l.id)}
+                enviandoCrm={crmPendingId === l.id}
               />
             ))}
           </div>
@@ -378,13 +399,29 @@ export function AllLeadsTable({
                   {sourceLabel(l.origem)}
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <button
-                    onClick={() => remove(l.id, l.lista_id)}
-                    disabled={pending}
-                    className="whitespace-nowrap text-xs text-neutral-500 dark:text-neutral-400 hover:text-red-600"
-                  >
-                    excluir
-                  </button>
+                  <div className="flex items-center justify-end gap-3">
+                    {l.noCrm || enviadosCrm.has(l.id) ? (
+                      <span className="inline-flex items-center gap-1 whitespace-nowrap text-xs font-medium text-blue-600 dark:text-blue-400">
+                        ✓ no CRM
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => enviarCrm(l.id)}
+                        disabled={crmPendingId === l.id}
+                        title="Enviar este lead para o CRM"
+                        className="inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-blue-500/30 bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-500/20 disabled:opacity-60 dark:text-blue-300"
+                      >
+                        {crmPendingId === l.id ? "enviando…" : "→ CRM"}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => remove(l.id, l.lista_id)}
+                      disabled={pending}
+                      className="whitespace-nowrap text-xs text-neutral-500 dark:text-neutral-400 hover:text-red-600"
+                    >
+                      excluir
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

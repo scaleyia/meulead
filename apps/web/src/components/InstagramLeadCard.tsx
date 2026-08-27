@@ -24,10 +24,16 @@ export function InstagramLeadCard({
   lead,
   onExcluir,
   excluindo,
+  onEnviarCrm,
+  noCrm,
+  enviandoCrm,
 }: {
   lead: AllLeadRow;
   onExcluir: () => void;
   excluindo: boolean;
+  onEnviarCrm: () => void;
+  noCrm: boolean;
+  enviandoCrm: boolean;
 }) {
   const user = handle(lead.instagram);
 
@@ -123,13 +129,27 @@ export function InstagramLeadCard({
             </span>
           )}
         </div>
-        <button
-          onClick={onExcluir}
-          disabled={excluindo}
-          className="text-xs text-neutral-400 dark:text-neutral-500 hover:text-red-600"
-        >
-          excluir
-        </button>
+        <div className="flex items-center gap-3">
+          {noCrm ? (
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 dark:text-blue-400">✓ no CRM</span>
+          ) : (
+            <button
+              onClick={onEnviarCrm}
+              disabled={enviandoCrm}
+              title="Enviar este lead para o CRM"
+              className="inline-flex items-center gap-1 rounded-md border border-blue-500/30 bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-500/20 disabled:opacity-60 dark:text-blue-300"
+            >
+              {enviandoCrm ? "enviando…" : "→ CRM"}
+            </button>
+          )}
+          <button
+            onClick={onExcluir}
+            disabled={excluindo}
+            className="text-xs text-neutral-400 dark:text-neutral-500 hover:text-red-600"
+          >
+            excluir
+          </button>
+        </div>
       </div>
     </div>
   );

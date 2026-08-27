@@ -223,6 +223,7 @@ export type Database = {
           site_carga_ms: number | null
           site_score: number | null
           status_crm: string | null
+          no_crm: boolean
           telefone: string | null
           tem_whatsapp: boolean | null
           total_avaliacoes: number | null
@@ -256,6 +257,7 @@ export type Database = {
           site_carga_ms?: number | null
           site_score?: number | null
           status_crm?: string | null
+          no_crm?: boolean
           telefone?: string | null
           tem_whatsapp?: boolean | null
           total_avaliacoes?: number | null
@@ -289,6 +291,7 @@ export type Database = {
           site_carga_ms?: number | null
           site_score?: number | null
           status_crm?: string | null
+          no_crm?: boolean
           telefone?: string | null
           tem_whatsapp?: boolean | null
           total_avaliacoes?: number | null

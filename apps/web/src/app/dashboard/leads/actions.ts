@@ -161,3 +161,24 @@ export async function analisarSiteLead(
   revalidatePath("/dashboard/crm");
   return { ok: true };
 }
+
+// Marca o lead como "no CRM" (botão na tela de Leads). A partir daí ele aparece no CRM.
+export async function enviarParaCrm(
+  leadId: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const org = await getActiveOrg();
+  if (!org) return { ok: false, error: "Sessão expirada." };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("leads")
+    .update({ no_crm: true })
+    .eq("id", leadId)
+    .eq("organizacao_id", org.orgId);
+
+  if (error) return { ok: false, error: "Não foi possível enviar para o CRM." };
+
+  revalidatePath("/dashboard/leads");
+  revalidatePath("/dashboard/crm");
+  return { ok: true };
+}

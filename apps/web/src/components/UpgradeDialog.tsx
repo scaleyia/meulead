@@ -207,13 +207,15 @@ function Modal({ planoAtual, onClose }: { planoAtual: string; onClose: () => voi
                   ) : (
                     <>
                       <div className="flex items-baseline gap-1.5 whitespace-nowrap">
-                        <span className={`text-sm font-semibold ${pop ? "text-blue-200" : "text-neutral-400"}`}>12x</span>
-                        <span className={`text-[1.6rem] font-extrabold leading-none tracking-tight ${pop ? "text-white" : "text-neutral-900 dark:text-neutral-100"}`}>
+                        <span className={`text-3xl font-extrabold tracking-tight ${pop ? "text-white" : "text-neutral-900 dark:text-neutral-100"}`}>
                           {formatarBRL(anual.parcela)}
+                        </span>
+                        <span className={`text-sm font-medium ${pop ? "text-blue-100" : "text-neutral-500 dark:text-neutral-400"}`}>
+                          /mês
                         </span>
                       </div>
                       <p className={`mt-2 text-xs ${pop ? "text-blue-100" : "text-neutral-500 dark:text-neutral-400"}`}>
-                        ou {formatarBRL(anual.aVista)} à vista no Pix
+                        {formatarBRL(anual.aVista)} à vista/ano · pagamento único (cartão ou Pix)
                       </p>
                       <span
                         className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${

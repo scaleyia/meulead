@@ -16,11 +16,13 @@ export const PRECOS_ASSINATURA: Record<string, string> = {
   scale: "price_1U5An0FlEn26WuJOqSQVUtVT",
 };
 
-// Preços ANUAIS (recurring interval: year — cobrado 1× por ano, já com 35% off).
+// Preços ANUAIS — pagamento ÚNICO (one_time), à vista, já com 35% off.
+// O cliente paga 1× (cartão à vista ou Pix) e recebemos o valor cheio na hora.
+// Não renova sozinho: dá direito a 12 meses de créditos (renovados mês a mês).
 export const PRECOS_ASSINATURA_ANUAL: Record<string, string> = {
-  starter: "price_1U9CdxFlEn26WuJOoBZTaiKy",
-  pro: "price_1U9Ce4FlEn26WuJOnNx0ZCFM",
-  scale: "price_1U9Ce5FlEn26WuJOHhvQK6WH",
+  starter: "price_1U9CnwFlEn26WuJO25fturI1",
+  pro: "price_1U9CnxFlEn26WuJOHXLfzk3d",
+  scale: "price_1U9CnyFlEn26WuJOaTqv5M0p",
 };
 
 // Resolve o price ID conforme o ciclo escolhido no toggle Mensal/Anual.
