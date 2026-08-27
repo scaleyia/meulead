@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Zap, Sparkles } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { UpgradeDialog } from "@/components/UpgradeDialog";
+import { WhatsappFab } from "@/components/WhatsappFab";
 import { DashboardTour } from "@/components/DashboardTour";
 import { getActiveOrg } from "@/lib/org";
 import { garantirCreditos } from "@/lib/creditos";
@@ -103,6 +104,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       {/* Tour guiado (auto-inicia só na 1ª visita) */}
       <DashboardTour />
+
+      {/* Suporte no WhatsApp */}
+      <WhatsappFab />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Reveal, ScrollProgress, Tilt } from "@/components/lp/Effects";
+import { WhatsappFab } from "@/components/WhatsappFab";
 import LpPlanos from "./LpPlanos";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
@@ -412,6 +413,8 @@ export default function LpPage() {
           </div>
         </div>
       </footer>
+
+      <WhatsappFab />
     </main>
   );
 }

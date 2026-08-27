@@ -73,7 +73,7 @@ function Modal({ planoAtual, onClose }: { planoAtual: string; onClose: () => voi
     setError(null);
     setPendingId(id);
     start(async () => {
-      const res = await iniciarCheckoutAssinatura(id);
+      const res = await iniciarCheckoutAssinatura(id, ciclo);
       if (!res.ok) {
         setError(res.error);
         setPendingId(null);

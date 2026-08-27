@@ -6,7 +6,7 @@ import { isAdmin } from "@/lib/admin";
 import { adicionarCreditosExtra } from "@/lib/creditos";
 import { planoPorId } from "@/lib/planos";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { stripe, stripeConfigurado, PRECOS_ASSINATURA, PACOTES_RECARGA } from "@/lib/stripe";
+import { stripe, stripeConfigurado, precoAssinatura, PACOTES_RECARGA, type Ciclo } from "@/lib/stripe";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 export type CheckoutResult = { ok: true; url: string } | { ok: false; error: string };
@@ -34,13 +34,18 @@ export async function iniciarCheckoutRecarga(packId: string): Promise<CheckoutRe
   return session.url ? { ok: true, url: session.url } : { ok: false, error: "Falha ao criar checkout." };
 }
 
-// Assinatura de um plano (recorrente mensal).
-export async function iniciarCheckoutAssinatura(planoId: string): Promise<CheckoutResult> {
+// Assinatura de um plano. `ciclo` decide o preço: mensal (mês a mês) ou
+// anual (cobrado 1× por ano, com 35% off). Em ambos os casos os créditos
+// continuam renovando mês a mês (creditosMes).
+export async function iniciarCheckoutAssinatura(
+  planoId: string,
+  ciclo: Ciclo = "mensal",
+): Promise<CheckoutResult> {
   if (!stripeConfigurado) return { ok: false, error: "Pagamento não configurado." };
   const org = await getActiveOrg();
   if (!org) return { ok: false, error: "Sessão expirada." };
 
-  const priceId = PRECOS_ASSINATURA[planoId];
+  const priceId = precoAssinatura(planoId, ciclo);
   const plano = planoPorId(planoId);
   if (!priceId) return { ok: false, error: "Plano inválido." };
 
@@ -54,6 +59,7 @@ export async function iniciarCheckoutAssinatura(planoId: string): Promise<Checko
       org_id: org.orgId,
       tipo: "assinatura",
       plano: planoId,
+      ciclo,
       creditos: String(plano.creditosMes),
     },
   });

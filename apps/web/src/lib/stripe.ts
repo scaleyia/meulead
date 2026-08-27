@@ -7,11 +7,26 @@ export const stripeConfigurado = (process.env.STRIPE_SECRET_KEY ?? "").startsWit
   (process.env.STRIPE_SECRET_KEY ?? "").startsWith("sk_");
 
 // Catálogo de preços criados na Stripe (modo LIVE).
+export type Ciclo = "mensal" | "anual";
+
+// Preços MENSAIS (recurring interval: month).
 export const PRECOS_ASSINATURA: Record<string, string> = {
   starter: "price_1U5AmyFlEn26WuJOmNmsB9qR",
   pro: "price_1U5AmzFlEn26WuJOfYdo4nh5",
   scale: "price_1U5An0FlEn26WuJOqSQVUtVT",
 };
+
+// Preços ANUAIS (recurring interval: year — cobrado 1× por ano, já com 35% off).
+export const PRECOS_ASSINATURA_ANUAL: Record<string, string> = {
+  starter: "price_1U9CdxFlEn26WuJOoBZTaiKy",
+  pro: "price_1U9Ce4FlEn26WuJOnNx0ZCFM",
+  scale: "price_1U9Ce5FlEn26WuJOHhvQK6WH",
+};
+
+// Resolve o price ID conforme o ciclo escolhido no toggle Mensal/Anual.
+export function precoAssinatura(planoId: string, ciclo: Ciclo = "mensal"): string | undefined {
+  return ciclo === "anual" ? PRECOS_ASSINATURA_ANUAL[planoId] : PRECOS_ASSINATURA[planoId];
+}
 
 export interface PacoteRecarga {
   id: string;
