@@ -35,9 +35,11 @@ export default async function UsuariosPage() {
     .map((u) => {
       const membro = membroByUser.get(u.id);
       const org = membro ? orgById.get(membro.organizacao_id) : undefined;
+      const whatsapp = (u.user_metadata?.whatsapp as string | undefined) ?? "";
       return {
         id: u.id,
         email: u.email ?? "—",
+        whatsapp: whatsapp || "—",
         criadoEm: u.created_at,
         ultimoLogin: u.last_sign_in_at,
         orgNome: org?.nome ?? "—",
@@ -74,6 +76,7 @@ export default async function UsuariosPage() {
               <thead className="bg-neutral-50 dark:bg-neutral-900 text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
                 <tr>
                   <th className="px-4 py-3 font-medium">E-mail</th>
+                  <th className="px-4 py-3 font-medium">WhatsApp</th>
                   <th className="px-4 py-3 font-medium">Empresa</th>
                   <th className="px-4 py-3 font-medium">Plano</th>
                   <th className="px-4 py-3 font-medium">Papel</th>
@@ -85,6 +88,7 @@ export default async function UsuariosPage() {
                 {rows.map((u) => (
                   <tr key={u.id} className="hover:bg-neutral-100 dark:hover:bg-neutral-800">
                     <td className="px-4 py-3 text-neutral-900 dark:text-neutral-100">{u.email}</td>
+                    <td className="px-4 py-3 text-neutral-700 dark:text-neutral-200">{u.whatsapp}</td>
                     <td className="px-4 py-3 text-neutral-700 dark:text-neutral-200">{u.orgNome}</td>
                     <td className="px-4 py-3 text-neutral-700 dark:text-neutral-200">
                       {PLANO_LABEL[u.plano] ?? u.plano}

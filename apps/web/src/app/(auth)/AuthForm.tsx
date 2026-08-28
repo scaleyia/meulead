@@ -13,14 +13,27 @@ export function AuthForm({ mode, action }: { mode: "login" | "signup"; action: A
   return (
     <form action={formAction} className="flex flex-col gap-4">
       {isSignup && (
-        <Field label="Nome da sua empresa">
-          <input
-            name="org_name"
-            required
-            placeholder="Ex: Agência Família Unida"
-            className="input"
-          />
-        </Field>
+        <>
+          <Field label="Nome da sua empresa">
+            <input
+              name="org_name"
+              required
+              placeholder="Ex: Agência Família Unida"
+              className="input"
+            />
+          </Field>
+
+          <Field label="WhatsApp">
+            <input
+              name="whatsapp"
+              type="tel"
+              required
+              inputMode="tel"
+              placeholder="(11) 99999-9999"
+              className="input"
+            />
+          </Field>
+        </>
       )}
 
       <Field label="E-mail">
