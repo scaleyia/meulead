@@ -4,12 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrg } from "@/lib/org";
 import { saldoDaOrg } from "@/lib/creditos";
-import {
-  iniciarRun,
-  apifyDisponivel,
-  ACTOR_GOOGLE_MAPS,
-  ACTOR_INSTAGRAM,
-} from "@/lib/apify";
+import { iniciarRun, apifyDisponivel, ACTOR_GOOGLE_MAPS } from "@/lib/apify";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -42,23 +37,24 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
   const termo = (input.termoBusca ?? "").trim();
   if (!termo) return { ok: false, error: "Informe o que você quer buscar." };
 
-  const origem = input.origem === "instagram" ? "instagram" : "google_maps";
-  const limite = origem === "instagram" ? 100 : 120;
-  const qtd = Math.min(limite, saldo, Math.max(1, Math.trunc(input.quantidade) || 20));
+  // Instagram desativado por enquanto — captação só via Google Maps.
+  if (input.origem === "instagram") {
+    return { ok: false, error: "A captação por Instagram está temporariamente desativada." };
+  }
+
+  const origem = "google_maps" as const;
+  const qtd = Math.min(120, saldo, Math.max(1, Math.trunc(input.quantidade) || 20));
 
   const supabase = await createClient();
 
   // Nome da lista: usuário escolhe; se vazio, gera automático.
   const localizacao = (input.localizacao ?? "").trim();
-  const auto =
-    origem === "instagram"
-      ? `Instagram · ${termo}${localizacao ? ` · ${localizacao}` : ""}`
-      : `${termo}${localizacao ? ` · ${localizacao}` : ""}`;
+  const auto = `${termo}${localizacao ? ` · ${localizacao}` : ""}`;
   const nomeLista = (input.nomeLista ?? "").trim() || auto;
 
   // Segmento (CNAE) p/ achar o dono (só Google Maps). A cidade/UF é extraída
   // dos endereços dos leads no enriquecimento — mais confiável.
-  const cnae = origem === "google_maps" ? (input.cnae ?? "").trim() || null : null;
+  const cnae = (input.cnae ?? "").trim() || null;
   const donoProcessado = !cnae; // sem segmento, não busca o dono
 
   const { data: lista, error: e1 } = await supabase
@@ -75,26 +71,13 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
   if (e1) return { ok: false, error: e1.message };
 
   // Dispara o Apify (assíncrono). O sync importa quando terminar.
-  const run =
-    origem === "instagram"
-      ? await iniciarRun(ACTOR_INSTAGRAM, {
-          // Termo em português já traz perfis brasileiros. Anexar "brasil"
-          // poluía a busca (trazia gringos). A localização, quando informada,
-          // é uma cidade — aí ajuda a focar.
-          search: `${termo}${localizacao ? ` ${localizacao}` : ""}`,
-          searchType: "user",
-          searchLimit: qtd,
-          resultsType: "details",
-          resultsLimit: qtd,
-          addParentData: false,
-        })
-      : await iniciarRun(ACTOR_GOOGLE_MAPS, {
-          searchStringsArray: [termo],
-          locationQuery: localizacao || undefined,
-          maxCrawledPlacesPerSearch: qtd,
-          language: "pt-BR",
-          skipClosedPlaces: false,
-        });
+  const run = await iniciarRun(ACTOR_GOOGLE_MAPS, {
+    searchStringsArray: [termo],
+    locationQuery: localizacao || undefined,
+    maxCrawledPlacesPerSearch: qtd,
+    language: "pt-BR",
+    skipClosedPlaces: false,
+  });
 
   if (!run) {
     await supabase.from("listas").delete().eq("id", lista.id);

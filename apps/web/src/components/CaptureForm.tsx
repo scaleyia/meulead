@@ -54,19 +54,13 @@ export function CaptureForm() {
             });
           }}
         >
-          {/* Seletor de fonte */}
-          <div className="grid grid-cols-2 gap-2">
+          {/* Seletor de fonte — Instagram desativado por enquanto */}
+          <div className="grid grid-cols-1 gap-2">
             <ModoCard
               ativo={modo === "google_maps"}
               onClick={() => setModo("google_maps")}
               titulo="🗺️ Google Maps"
               sub="Negócios locais — com site, nota e endereço"
-            />
-            <ModoCard
-              ativo={modo === "instagram"}
-              onClick={() => setModo("instagram")}
-              titulo="📸 Instagram"
-              sub="Perfis por nicho — com seguidores e link"
             />
           </div>
 
