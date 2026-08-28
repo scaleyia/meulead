@@ -269,6 +269,8 @@ function Modal({ planoAtual, onClose }: { planoAtual: string; onClose: () => voi
 
         <p className="mt-6 text-center text-xs text-neutral-400 dark:text-neutral-500">
           Pagamento seguro via Stripe. Os créditos e recursos liberam assim que o pagamento é confirmado.
+          <br />
+          Sem fidelidade: no plano mensal você cancela quando quiser em <strong>Créditos → Assinatura</strong>.
         </p>
       </div>
     </div>,

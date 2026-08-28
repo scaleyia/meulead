@@ -10,6 +10,7 @@ import { RecargaManual } from "@/components/RecargaManual";
 import { RecargaUsuario } from "@/components/RecargaUsuario";
 import { ComprarCreditos } from "@/components/ComprarCreditos";
 import { UpgradeDialog } from "@/components/UpgradeDialog";
+import { GerenciarAssinatura } from "@/components/GerenciarAssinatura";
 
 function fmt(n: number) {
   return n.toLocaleString("pt-BR");
@@ -152,6 +153,35 @@ export default async function CreditosPage({
           Fazer upgrade
         </UpgradeDialog>
       </div>
+
+      {/* Assinatura — como cancelar (deixa claro) */}
+      {org.plano !== "free" && (
+        <div className="mt-4 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-5">
+          <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Assinatura</p>
+          {org.planoExpiraEm ? (
+            <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-300">
+              Você está no plano <strong className="capitalize">{plano.nome}</strong>{" "}
+              <strong>anual</strong> (pagamento único). Ele <strong>não renova automaticamente</strong> —
+              vale até <strong>{fmtData(org.planoExpiraEm)}</strong>. Como não há cobrança recorrente,
+              não é preciso cancelar: no vencimento o plano simplesmente expira e você volta ao gratuito.
+            </p>
+          ) : (
+            <>
+              <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-300">
+                Você está no plano <strong className="capitalize">{plano.nome}</strong>{" "}
+                <strong>mensal</strong>. Sem fidelidade — <strong>cancele quando quiser</strong>. Ao
+                cancelar, você continua com acesso até o fim do período já pago e não é cobrado de novo.
+              </p>
+              <div className="mt-3">
+                <GerenciarAssinatura className="rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-60 dark:border-red-500/40 dark:text-red-400 dark:hover:bg-red-500/10" />
+              </div>
+              <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+                Você vai para o portal seguro do Stripe, onde pode trocar o cartão ou cancelar a assinatura.
+              </p>
+            </>
+          )}
+        </div>
+      )}
 
       {ehAdmin && (
         <div className="mt-4 rounded-xl border border-dashed border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 p-5">

@@ -396,6 +396,7 @@ export function AllLeadsTable({
                     anunciaMeta={l.anunciaMeta}
                     checando={l.adsChecando}
                     planoPago={planoPago}
+                    plano={plano}
                   />
                 </td>
                 <td className="px-4 py-3">

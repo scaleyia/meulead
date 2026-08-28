@@ -71,6 +71,34 @@ export async function iniciarCheckoutAssinatura(
   return session.url ? { ok: true, url: session.url } : { ok: false, error: "Falha ao criar checkout." };
 }
 
+// Abre o Portal do Cliente do Stripe (gerenciar/cancelar a assinatura MENSAL).
+// Só faz sentido para assinatura recorrente — o plano anual é pagamento único
+// e simplesmente expira, sem cobrança automática pra cancelar.
+export async function abrirPortalAssinatura(): Promise<CheckoutResult> {
+  if (!stripeConfigurado) return { ok: false, error: "Pagamento não configurado." };
+  const org = await getActiveOrg();
+  if (!org) return { ok: false, error: "Sessão expirada." };
+
+  const admin = createAdminClient();
+  const { data } = await admin
+    .from("organizacoes")
+    .select("stripe_customer_id")
+    .eq("id", org.orgId)
+    .maybeSingle();
+
+  const customerId = data?.stripe_customer_id;
+  if (!customerId) {
+    return { ok: false, error: "Não encontramos uma assinatura para gerenciar. Fale com o suporte." };
+  }
+
+  const session = await stripe.billingPortal.sessions.create({
+    customer: customerId,
+    return_url: `${APP_URL}/dashboard/creditos`,
+  });
+
+  return session.url ? { ok: true, url: session.url } : { ok: false, error: "Falha ao abrir o portal." };
+}
+
 // Recarga manual (admin) — mantida para ajustes internos.
 
 // Recarga manual (admin) — enquanto o Stripe não entra, você libera créditos na mão.

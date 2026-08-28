@@ -106,10 +106,12 @@ export function StatusView({
   items,
   campanhas,
   planoPago,
+  plano,
 }: {
   items: StatusItem[];
   campanhas: CampanhaOption[];
   planoPago: boolean;
+  plano: string;
 }) {
   const router = useRouter();
   const [visao, setVisao] = useState<"kanban" | "tabela">("kanban");
@@ -346,6 +348,7 @@ export function StatusView({
         <LeadDetail
           lead={aberto}
           planoPago={planoPago}
+          plano={plano}
           onClose={() => setAberto(null)}
           onMover={(coluna) => {
             mover(aberto.id, coluna);
@@ -360,11 +363,13 @@ export function StatusView({
 function LeadDetail({
   lead,
   planoPago,
+  plano,
   onClose,
   onMover,
 }: {
   lead: StatusItem;
   planoPago: boolean;
+  plano: string;
   onClose: () => void;
   onMover: (coluna: Coluna) => void;
 }) {
@@ -481,6 +486,7 @@ function LeadDetail({
                 anunciaMeta={lead.anunciaMeta}
                 checando={lead.adsChecando}
                 planoPago={planoPago}
+                plano={plano}
               />
             </dd>
           </div>

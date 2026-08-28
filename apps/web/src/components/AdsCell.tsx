@@ -140,12 +140,12 @@ function UpgradeModal({ plano, onClose }: { plano: string; onClose: () => void }
           investem em tráfego — os clientes mais quentes.
         </p>
         <div className="mt-6 flex flex-col gap-2">
-          <Link
-            href="/planos"
+          <UpgradeDialog
+            planoAtual={plano}
             className="rounded-lg bg-blue-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-400"
           >
             Ver planos e fazer upgrade
-          </Link>
+          </UpgradeDialog>
           <button
             onClick={onClose}
             className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
