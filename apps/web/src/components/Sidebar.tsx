@@ -13,7 +13,6 @@ import {
   Target,
   MessageCircle,
   Coins,
-  Magnet,
   ArrowUpCircle,
   Moon,
   Sun,
@@ -41,7 +40,7 @@ const nav: NavItem[] = [
   { href: "/dashboard/oportunidades", label: "Oportunidades", icon: Target, ready: true },
   { href: "/dashboard/whatsapp", label: "Conexões", icon: MessageCircle, ready: true },
   { href: "/dashboard/creditos", label: "Créditos", icon: Coins, ready: true },
-  { href: "/dashboard/interessados", label: "Interessados", icon: Magnet, ready: true, adminOnly: true },
+  { href: "/dashboard/interessados", label: "Usuários", icon: Users, ready: true, adminOnly: true },
 ];
 
 export function Sidebar({
