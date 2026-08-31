@@ -8,12 +8,16 @@ import { criarJob } from "@/app/dashboard/capture/actions";
 import { SegmentoBusca } from "@/components/SegmentoBusca";
 
 type Modo = "google_maps" | "instagram";
+type MetodoIG = "hashtag" | "local";
 
 export function CaptureForm() {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [modo, setModo] = useState<Modo>("google_maps");
+  const [metodo, setMetodo] = useState<MetodoIG>("hashtag");
+
+  const ehIG = modo === "instagram";
 
   return (
     <Modal
@@ -35,9 +39,19 @@ export function CaptureForm() {
             const quantidade = Number(fd.get("quantidade") ?? 20);
             const nomeLista = String(fd.get("nomeLista") ?? "").trim();
             const termoBusca = String(fd.get("termoBusca") ?? "").trim();
-            if (!termoBusca) return setError("Informe o que você quer buscar.");
             const localizacao = String(fd.get("localizacao") ?? "").trim();
             const cnae = String(fd.get("cnae") ?? "").trim();
+
+            if (!termoBusca) {
+              return setError(
+                ehIG && metodo === "hashtag"
+                  ? "Informe ao menos uma hashtag."
+                  : "Informe o que você quer buscar.",
+              );
+            }
+            if (ehIG && metodo === "local" && !localizacao) {
+              return setError("Informe a localização (cidade) para buscar por local.");
+            }
 
             start(async () => {
               const res = await criarJob({
@@ -47,6 +61,7 @@ export function CaptureForm() {
                 quantidade,
                 nomeLista,
                 cnae,
+                metodo: ehIG ? metodo : undefined,
               });
               if (!res.ok) return setError(res.error);
               close();
@@ -54,13 +69,19 @@ export function CaptureForm() {
             });
           }}
         >
-          {/* Seletor de fonte — Instagram desativado por enquanto */}
-          <div className="grid grid-cols-1 gap-2">
+          {/* Seletor de fonte */}
+          <div className="grid grid-cols-2 gap-2">
             <ModoCard
               ativo={modo === "google_maps"}
               onClick={() => setModo("google_maps")}
               titulo="🗺️ Google Maps"
               sub="Negócios locais — com site, nota e endereço"
+            />
+            <ModoCard
+              ativo={modo === "instagram"}
+              onClick={() => setModo("instagram")}
+              titulo="📸 Instagram"
+              sub="Perfis comerciais por hashtag ou localização"
             />
           </div>
 
@@ -68,7 +89,7 @@ export function CaptureForm() {
             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Nome da lista</span>
             <input
               name="nomeLista"
-              placeholder="Ex: Restaurantes SP — campanha agosto"
+              placeholder="Ex: Clínicas Caruaru — campanha agosto"
               maxLength={80}
               className="input"
             />
@@ -77,34 +98,63 @@ export function CaptureForm() {
             </span>
           </label>
 
+          {/* ----- Campos específicos do Instagram ----- */}
+          {ehIG && (
+            <div className="grid grid-cols-2 gap-2">
+              <ModoCard
+                ativo={metodo === "hashtag"}
+                onClick={() => setMetodo("hashtag")}
+                titulo="#️⃣ Por hashtag"
+                sub="Quem posta em hashtags do nicho"
+              />
+              <ModoCard
+                ativo={metodo === "local"}
+                onClick={() => setMetodo("local")}
+                titulo="📍 Por localização"
+                sub="Quem posta na sua cidade"
+              />
+            </div>
+          )}
+
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
-              {modo === "instagram" ? "Nicho / palavra-chave" : "O que buscar"}
+              {ehIG
+                ? metodo === "hashtag"
+                  ? "Hashtags"
+                  : "Nicho / palavra-chave"
+                : "O que buscar"}
             </span>
             <input
               name="termoBusca"
               required
               placeholder={
-                modo === "instagram"
-                  ? "Ex: hamburgueria, estúdio de tatuagem, petshop"
+                ehIG
+                  ? metodo === "hashtag"
+                    ? "Ex: clinicacaruaru, harmonizacaofacial, esteticacaruaru"
+                    : "Ex: clínica de estética, hamburgueria, petshop"
                   : "Ex: restaurantes, clínicas de estética, academias"
               }
               className="input"
             />
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Localização (recomendado)</span>
-            <input name="localizacao" placeholder="Ex: São José do Rio Preto, SP" className="input" />
-            {modo === "instagram" && (
+            {ehIG && metodo === "hashtag" && (
               <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                O termo em português já traz perfis brasileiros. Informar a cidade/estado ajuda a
-                focar ainda mais na sua região.
+                Separe por vírgula. Não precisa do <strong>#</strong>. Hashtags de nicho +
+                cidade trazem negócios locais (ex: <em>#clinicacaruaru</em>).
               </span>
             )}
           </label>
 
-          {modo === "google_maps" && (
+          {/* Localização: sempre no Google Maps; no IG só no método "local" */}
+          {(!ehIG || metodo === "local") && (
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
+                Localização {ehIG ? "(obrigatória)" : "(recomendado)"}
+              </span>
+              <input name="localizacao" placeholder="Ex: Caruaru, PE" className="input" />
+            </label>
+          )}
+
+          {!ehIG && (
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
                 Segmento — para achar o dono (opcional)
@@ -120,15 +170,16 @@ export function CaptureForm() {
 
           <div
             className={`rounded-md px-3 py-2 text-xs ${
-              modo === "instagram"
-                ? "bg-fuchsia-500/10 text-fuchsia-700"
+              ehIG
+                ? "bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-300"
                 : "bg-blue-500/10 text-blue-700 dark:text-blue-300"
             }`}
           >
-            {modo === "instagram" ? (
+            {ehIG ? (
               <>
-                Traz <strong>perfis do nicho</strong> com seguidores, link da bio e contato quando
-                público. Ideal pra ver presença digital.
+                Traz <strong>perfis comerciais</strong> do nicho — só contas de negócio (com
+                seguidores, link da bio e contato quando público). Perfis pessoais e celebridades
+                são <strong>filtrados</strong>.
               </>
             ) : (
               <>
@@ -140,7 +191,14 @@ export function CaptureForm() {
 
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">Quantidade</span>
-            <input name="quantidade" type="number" defaultValue={20} min={1} max={120} className="input" />
+            <input
+              name="quantidade"
+              type="number"
+              defaultValue={20}
+              min={1}
+              max={ehIG ? 100 : 120}
+              className="input"
+            />
             <span className="text-xs text-amber-600">
               ⚡ Cada lead captado usa 1 crédito (limitado ao seu saldo).
             </span>

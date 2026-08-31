@@ -4,7 +4,12 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveOrg } from "@/lib/org";
 import { saldoDaOrg } from "@/lib/creditos";
-import { iniciarRun, apifyDisponivel, ACTOR_GOOGLE_MAPS } from "@/lib/apify";
+import {
+  iniciarRun,
+  apifyDisponivel,
+  ACTOR_GOOGLE_MAPS,
+  iniciarInstagramDescoberta,
+} from "@/lib/apify";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -12,9 +17,10 @@ interface JobInput {
   origem: "google_maps" | "instagram";
   quantidade: number;
   nomeLista?: string; // nome escolhido pelo usuário (opcional)
-  termoBusca: string; // termo/nicho
-  localizacao?: string; // só google_maps
+  termoBusca: string; // termo/nicho (no IG: hashtags ou nicho do local)
+  localizacao?: string; // google_maps e IG (método local)
   cnae?: string; // segmento p/ achar o dono (só google_maps)
+  metodo?: "hashtag" | "local"; // só instagram
 }
 
 export async function criarJob(input: JobInput): Promise<ActionResult> {
@@ -37,9 +43,10 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
   const termo = (input.termoBusca ?? "").trim();
   if (!termo) return { ok: false, error: "Informe o que você quer buscar." };
 
-  // Instagram desativado por enquanto — captação só via Google Maps.
+  // Instagram tem fluxo próprio (2 etapas): descoberta por hashtag/local →
+  // qualificação dos perfis. Bem diferente do Google Maps.
   if (input.origem === "instagram") {
-    return { ok: false, error: "A captação por Instagram está temporariamente desativada." };
+    return criarJobInstagram(org.orgId, input, saldo);
   }
 
   const origem = "google_maps" as const;
@@ -95,6 +102,79 @@ export async function criarJob(input: JobInput): Promise<ActionResult> {
     localizacao: localizacao || null,
     quantidade: qtd,
     status: "rodando",
+    apify_run_id: run.id,
+  });
+  if (e2) return { ok: false, error: e2.message };
+
+  revalidatePath("/dashboard/capture");
+  return { ok: true };
+}
+
+// Captação por Instagram (2 etapas). Cria a lista + o job na fase 'descoberta';
+// o sincronizarJobs cuida de disparar a etapa 2 e importar os perfis.
+async function criarJobInstagram(
+  orgId: string,
+  input: JobInput,
+  saldo: number,
+): Promise<ActionResult> {
+  const metodo = input.metodo === "local" ? "local" : "hashtag";
+  const termo = (input.termoBusca ?? "").trim();
+  const localizacao = (input.localizacao ?? "").trim();
+
+  // No método hashtag o termo são as hashtags (separadas por vírgula/espaço).
+  const termos =
+    metodo === "hashtag"
+      ? termo.split(/[,\s]+/).map((t) => t.trim()).filter(Boolean)
+      : [termo];
+  if (!termos.length) {
+    return {
+      ok: false,
+      error: metodo === "hashtag" ? "Informe ao menos uma hashtag." : "Informe o nicho do local.",
+    };
+  }
+  if (metodo === "local" && !localizacao) {
+    return { ok: false, error: "Informe a localização (cidade) para buscar por local." };
+  }
+
+  const qtd = Math.min(100, saldo, Math.max(1, Math.trunc(input.quantidade) || 20));
+  // Sobra-busca de posts p/ sobreviver ao filtro rígido (nem todo perfil passa).
+  const postsLimite = Math.min(150, qtd * 3);
+
+  const supabase = await createClient();
+
+  const auto =
+    metodo === "hashtag"
+      ? `Instagram · ${termos.map((t) => `#${t.replace(/^#/, "")}`).join(" ")}`
+      : `Instagram · ${termo}${localizacao ? ` · ${localizacao}` : ""}`;
+  const nomeLista = (input.nomeLista ?? "").trim() || auto;
+
+  const { data: lista, error: e1 } = await supabase
+    .from("listas")
+    .insert({
+      organizacao_id: orgId,
+      nome: nomeLista,
+      origem: "instagram",
+      dono_processado: true, // Instagram não usa discovery de dono (só Google Maps).
+    })
+    .select("id")
+    .single();
+  if (e1) return { ok: false, error: e1.message };
+
+  const run = await iniciarInstagramDescoberta({ metodo, termos, localizacao, limite: postsLimite });
+  if (!run) {
+    await supabase.from("listas").delete().eq("id", lista.id);
+    return { ok: false, error: "Não consegui iniciar a captação. Tente de novo em instantes." };
+  }
+
+  const { error: e2 } = await supabase.from("jobs_apify").insert({
+    organizacao_id: orgId,
+    lista_id: lista.id,
+    origem: "instagram",
+    termo_busca: termos.join(", "),
+    localizacao: localizacao || null,
+    quantidade: qtd,
+    status: "rodando",
+    fase: "descoberta",
     apify_run_id: run.id,
   });
   if (e2) return { ok: false, error: e2.message };

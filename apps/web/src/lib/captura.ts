@@ -1,7 +1,7 @@
 import type { Json } from "@meulead/db";
 import { createClient } from "@/lib/supabase/server";
 import { saldoDaOrg } from "@/lib/creditos";
-import { statusRun, itensDataset } from "@/lib/apify";
+import { statusRun, itensDataset, iniciarInstagramQualificacao } from "@/lib/apify";
 import {
   iniciarDiscoveryDonos,
   resolverDiscovery,
@@ -117,6 +117,33 @@ function mapearInstagram(itens: Record<string, unknown>[]): LeadNovo[] {
     .filter((l) => l.instagram && l.empresa); // precisa do perfil pra contatar
 }
 
+// Coleta os autores (ownerUsername) distintos dos posts da etapa de descoberta.
+function usernamesDePostagens(
+  posts: Record<string, unknown>[],
+  limite: number,
+): string[] {
+  const visto = new Set<string>();
+  for (const p of posts) {
+    const u = str(p.ownerUsername);
+    if (!u) continue;
+    visto.add(u.toLowerCase());
+    if (visto.size >= limite) break;
+  }
+  return [...visto];
+}
+
+// Filtro RÍGIDO (escolha do produto): só mantém perfis que parecem NEGÓCIO.
+// Exige conta comercial (ou categoria de negócio), não-privada, e descarta
+// mega-perfis (celebridades/criadores que também marcam "comercial").
+function ehNegocioInstagram(it: Record<string, unknown>): boolean {
+  if (it.private === true || it.isPrivate === true) return false;
+  const comercial = it.isBusinessAccount === true || !!str(it.businessCategoryName);
+  if (!comercial) return false;
+  const seg = num(it.followersCount);
+  if (seg !== null && seg > 200_000) return false;
+  return true;
+}
+
 function dedup(leads: LeadNovo[]): LeadNovo[] {
   const visto = new Set<string>();
   const out: LeadNovo[] = [];
@@ -135,56 +162,99 @@ export async function sincronizarJobs(orgId: string): Promise<void> {
   const supabase = await createClient();
   const { data: jobs } = await supabase
     .from("jobs_apify")
-    .select("id, lista_id, origem, apify_run_id")
+    .select("id, lista_id, origem, apify_run_id, fase, quantidade")
     .eq("organizacao_id", orgId)
     .eq("status", "rodando");
 
   if (!jobs?.length) return;
 
   for (const job of jobs) {
-    if (!job.apify_run_id) continue;
+    if (!job.apify_run_id) continue; // sem run (ex: virada de fase em andamento)
     const run = await statusRun(job.apify_run_id);
     if (!run) continue;
 
-    if (run.status === "SUCCEEDED") {
-      const itens = await itensDataset(run.defaultDatasetId);
-
-      // "Reivindica" o job (evita importar 2x em renders concorrentes).
-      const { data: claimed } = await supabase
-        .from("jobs_apify")
-        .update({ status: "concluido" })
-        .eq("id", job.id)
-        .eq("status", "rodando")
-        .select("id");
-      if (!claimed?.length) continue;
-
-      const mapped = dedup(
-        job.origem === "instagram" ? mapearInstagram(itens) : mapearGoogleMaps(itens),
-      );
-
-      // Nunca importa mais leads do que o saldo cobre (1 crédito = 1 lead).
-      const saldo = await saldoDaOrg(orgId);
-      const paraInserir = mapped.slice(0, Math.max(0, saldo)).map((l) => ({
-        ...l,
-        organizacao_id: orgId,
-        lista_id: job.lista_id,
-      }));
-
-      if (paraInserir.length) {
-        await supabase.from("leads").insert(paraInserir);
-      }
-      await supabase
-        .from("jobs_apify")
-        .update({ resultado_count: paraInserir.length })
-        .eq("id", job.id);
-    } else if (["FAILED", "ABORTED", "TIMED-OUT"].includes(run.status)) {
+    if (["FAILED", "ABORTED", "TIMED-OUT"].includes(run.status)) {
       await supabase
         .from("jobs_apify")
         .update({ status: "erro", erro: `Apify: ${run.status}` })
         .eq("id", job.id)
         .eq("status", "rodando");
+      continue;
     }
-    // RUNNING / READY: ainda em andamento — deixa pro próximo refresh.
+    if (run.status !== "SUCCEEDED") continue; // RUNNING/READY: próximo refresh.
+
+    // ---- Instagram, etapa 1 (descoberta): posts → autores → dispara etapa 2 ----
+    if (job.origem === "instagram" && job.fase === "descoberta") {
+      const posts = await itensDataset(run.defaultDatasetId);
+      const usernames = usernamesDePostagens(
+        posts,
+        Math.min(60, Math.max(10, (job.quantidade ?? 20) * 2)),
+      );
+
+      // Reivindica a virada de fase (evita disparar a etapa 2 duas vezes em
+      // renders concorrentes). Zera o apify_run_id: um render concorrente pega
+      // o job "sem run" e pula até o novo run ser gravado.
+      const { data: claimed } = await supabase
+        .from("jobs_apify")
+        .update({ fase: "qualificacao", apify_run_id: null })
+        .eq("id", job.id)
+        .eq("fase", "descoberta")
+        .select("id");
+      if (!claimed?.length) continue;
+
+      if (!usernames.length) {
+        await supabase
+          .from("jobs_apify")
+          .update({ status: "concluido", resultado_count: 0 })
+          .eq("id", job.id);
+        continue;
+      }
+
+      const run2 = await iniciarInstagramQualificacao(usernames);
+      if (run2) {
+        await supabase.from("jobs_apify").update({ apify_run_id: run2.id }).eq("id", job.id);
+      } else {
+        await supabase
+          .from("jobs_apify")
+          .update({ status: "erro", erro: "Apify: falha ao iniciar a qualificação" })
+          .eq("id", job.id);
+      }
+      continue;
+    }
+
+    // ---- Sucesso final (Google Maps, ou Instagram etapa 2): importa leads ----
+    const itens = await itensDataset(run.defaultDatasetId);
+
+    // "Reivindica" o job (evita importar 2x em renders concorrentes).
+    const { data: claimed } = await supabase
+      .from("jobs_apify")
+      .update({ status: "concluido" })
+      .eq("id", job.id)
+      .eq("status", "rodando")
+      .select("id");
+    if (!claimed?.length) continue;
+
+    const mapped = dedup(
+      job.origem === "instagram"
+        ? mapearInstagram(itens.filter(ehNegocioInstagram)) // filtro rígido de negócio
+        : mapearGoogleMaps(itens),
+    );
+
+    // Nunca importa mais leads do que o saldo cobre (1 crédito = 1 lead).
+    const saldo = await saldoDaOrg(orgId);
+    const paraInserir = mapped.slice(0, Math.max(0, saldo)).map((l) => ({
+      ...l,
+      organizacao_id: orgId,
+      lista_id: job.lista_id,
+    }));
+
+    if (paraInserir.length) {
+      await supabase.from("leads").insert(paraInserir);
+    }
+    await supabase
+      .from("jobs_apify")
+      .update({ resultado_count: paraInserir.length })
+      .eq("id", job.id);
   }
 }
 

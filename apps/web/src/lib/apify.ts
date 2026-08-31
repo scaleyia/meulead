@@ -70,3 +70,59 @@ export async function itensDataset(
 export function apifyDisponivel(): boolean {
   return !!token();
 }
+
+// ---- Instagram: captação em 2 etapas ----
+// A busca por palavra-chave do Instagram é ranqueada por popularidade global
+// (traz Katy Perry pra "clínica"). O caminho confiável é:
+//   1) descoberta   — raspa POSTS de hashtags/local e coleta os autores;
+//   2) qualificação — raspa os PERFIS (details) e filtra só contas comerciais.
+
+// Normaliza uma hashtag: tira '#', espaços e deixa minúscula (mantém acentos).
+export function limparHashtag(raw: string): string {
+  return raw.replace(/^#/, "").replace(/\s+/g, "").toLowerCase();
+}
+
+// Etapa 1 — descobre perfis raspando posts de hashtags ou de um local.
+// `limite` é o nº de posts a raspar (proxy do nº de perfis candidatos).
+export async function iniciarInstagramDescoberta(opts: {
+  metodo: "hashtag" | "local";
+  termos: string[];
+  localizacao?: string;
+  limite: number;
+}): Promise<ApifyRun | null> {
+  const { metodo, termos, localizacao, limite } = opts;
+
+  const input: Record<string, unknown> =
+    metodo === "hashtag"
+      ? {
+          directUrls: termos
+            .map(limparHashtag)
+            .filter(Boolean)
+            .map((t) => `https://www.instagram.com/explore/tags/${encodeURIComponent(t)}/`),
+          resultsType: "posts",
+          resultsLimit: limite,
+        }
+      : {
+          // Busca a página de local (geotag) e raspa quem postou ali.
+          search: [termos.join(" "), localizacao].filter(Boolean).join(" ").trim(),
+          searchType: "place",
+          searchLimit: 3,
+          resultsType: "posts",
+          resultsLimit: limite,
+        };
+
+  return iniciarRun(ACTOR_INSTAGRAM, input);
+}
+
+// Etapa 2 — raspa os PERFIS (details) dos autores descobertos.
+export async function iniciarInstagramQualificacao(
+  usernames: string[],
+): Promise<ApifyRun | null> {
+  if (!usernames.length) return null;
+  return iniciarRun(ACTOR_INSTAGRAM, {
+    directUrls: usernames.map((u) => `https://www.instagram.com/${u}/`),
+    resultsType: "details",
+    resultsLimit: 1,
+    addParentData: false,
+  });
+}

@@ -155,6 +155,7 @@ export type Database = {
           apify_run_id: string | null
           criado_em: string
           erro: string | null
+          fase: string | null
           id: string
           lista_id: string | null
           localizacao: string | null
@@ -169,6 +170,7 @@ export type Database = {
           apify_run_id?: string | null
           criado_em?: string
           erro?: string | null
+          fase?: string | null
           id?: string
           lista_id?: string | null
           localizacao?: string | null
@@ -183,6 +185,7 @@ export type Database = {
           apify_run_id?: string | null
           criado_em?: string
           erro?: string | null
+          fase?: string | null
           id?: string
           lista_id?: string | null
           localizacao?: string | null
