@@ -5,10 +5,48 @@ import { SUPABASE_ANON_KEY, SUPABASE_URL, supabaseConfigured } from "@/lib/env";
 // No Next 16 o "middleware" foi renomeado para "proxy" (runtime nodejs).
 // Aqui mantemos a sessão do Supabase atualizada e protegemos as rotas privadas.
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const response = NextResponse.next({ request });
 
   // Sem chaves reais ainda: não tenta autenticar, só deixa passar.
   if (!supabaseConfigured) return response;
+
+  // Este proxy roda em TODAS as rotas. Se qualquer coisa aqui estourar (ex.:
+  // cookie de sessão corrompido faz o @supabase/ssr lançar no parse, ou o
+  // Supabase fica momentaneamente indisponível), um throw vira 500 em toda
+  // página e o usuário ganha a tela preta "This page couldn't load" da Vercel
+  // — e o reload não resolve porque o cookie ruim continua no navegador.
+  // Por isso todo o miolo fica dentro de um try/catch com "fail-open".
+  try {
+    return await autenticar(request, response);
+  } catch (erro) {
+    console.error("[proxy] falha ao validar sessão:", erro);
+    // Cookie/sessão provavelmente corrompido: limpa os cookies do Supabase pra
+    // que o próximo request (o reload) comece limpo, e não deixa o site inteiro
+    // travado. Em rota privada mandamos pro login; nas públicas, deixa passar.
+    const limpo = limparSessao(request);
+    if (request.nextUrl.pathname.startsWith("/dashboard")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      const redir = NextResponse.redirect(url);
+      for (const c of limpo.cookies.getAll()) redir.cookies.set(c.name, c.value, c);
+      return redir;
+    }
+    return limpo;
+  }
+}
+
+// Remove os cookies de sessão do Supabase (sb-*) da resposta. Usado quando um
+// cookie corrompido faz a autenticação estourar.
+function limparSessao(request: NextRequest) {
+  const response = NextResponse.next({ request });
+  for (const c of request.cookies.getAll()) {
+    if (c.name.startsWith("sb-")) response.cookies.delete(c.name);
+  }
+  return response;
+}
+
+async function autenticar(request: NextRequest, initial: NextResponse) {
+  let response = initial;
 
   const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     cookies: {
