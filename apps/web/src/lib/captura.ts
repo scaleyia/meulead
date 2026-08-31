@@ -132,13 +132,14 @@ function usernamesDePostagens(
   return [...visto];
 }
 
-// Filtro RÍGIDO (escolha do produto): só mantém perfis que parecem NEGÓCIO.
-// Exige conta comercial (ou categoria de negócio), não-privada, e descarta
-// mega-perfis (celebridades/criadores que também marcam "comercial").
+// Filtro EQUILIBRADO: a hashtag/local já garante relevância de nicho+região
+// (validado em 2026-08-31: #esteticacaruaru trouxe só negócios de Caruaru),
+// então aqui só removemos o que claramente não é lead — perfis privados e
+// mega-perfis (celebridades/criadores >200k). Perfil pessoal com cara de
+// negócio (comum no negócio local que não marca conta comercial) é MANTIDO:
+// exigir isBusinessAccount descartava ~36% de negócios reais.
 function ehNegocioInstagram(it: Record<string, unknown>): boolean {
   if (it.private === true || it.isPrivate === true) return false;
-  const comercial = it.isBusinessAccount === true || !!str(it.businessCategoryName);
-  if (!comercial) return false;
   const seg = num(it.followersCount);
   if (seg !== null && seg > 200_000) return false;
   return true;

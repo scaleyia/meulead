@@ -177,9 +177,9 @@ export function CaptureForm() {
           >
             {ehIG ? (
               <>
-                Traz <strong>perfis comerciais</strong> do nicho — só contas de negócio (com
-                seguidores, link da bio e contato quando público). Perfis pessoais e celebridades
-                são <strong>filtrados</strong>.
+                Traz <strong>perfis do nicho na sua região</strong> (com seguidores, link da bio e
+                contato quando público). Perfis <strong>privados e celebridades</strong> são
+                filtrados.
               </>
             ) : (
               <>

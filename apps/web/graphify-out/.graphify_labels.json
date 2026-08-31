@@ -30,7 +30,7 @@
   "28": "global-error.tsx",
   "29": "package.json",
   "30": "scripts",
-  "31": "next",
+  "31": "@meulead/db",
   "32": "papaparse",
   "33": "@types/node"
 }

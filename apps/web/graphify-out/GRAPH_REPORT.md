@@ -1,7 +1,7 @@
 # Graph Report - web  (2026-08-31)
 
 ## Corpus Check
-- 104 files · ~148,279 words
+- 104 files · ~148,299 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b1c53ec5`
+- Built from commit: `08727d11`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -41,7 +41,7 @@
 - termos/page.tsx
 - package.json
 - scripts
-- next
+- @meulead/db
 - papaparse
 - @types/node
 
@@ -80,7 +80,7 @@ Nodes (28): dom, dom.iterable, esnext, **/*.mts, .next/dev/types/**/*.ts, next-e
 
 ### Community 1 - "dependencies"
 Cohesion: 0.12
-Nodes (17): lucide-react, @meulead/db, @meulead/shared, dependencies, lucide-react, @meulead/db, @meulead/shared, react (+9 more)
+Nodes (17): lucide-react, @meulead/shared, next, dependencies, lucide-react, @meulead/shared, next, react (+9 more)
 
 ### Community 2 - "(auth)/actions.ts"
 Cohesion: 0.10
